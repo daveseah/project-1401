@@ -10,11 +10,11 @@
 }
 
 .splash .message {
-    font-size: 5em;
+    font-size: 3em;
     line-height: 1.5em;
-    -webkit-text-shadow: rgba(0, 0, 0, 0.5) 0 0 15px;
-    text-shadow: rgba(0, 0, 0, 0.5) 0 0 15px;
-    text-transform: uppercase;
+    -webkit-text-shadow: rgba(0, 0, 0, 0.25) 0 0 10px;
+    text-shadow: rgba(0, 0, 0, 0.25) 0 0 10px;
+    text-transform: none;
 }
 
 .splash .icon-spinner {
