@@ -1,4 +1,4 @@
-/* filename of this module */
+/* demo/main.js */
 define ([
 	'gamesys/api/gameloop',
 	'gamesys/api/gamestep'
@@ -8,14 +8,13 @@ define ([
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
-/**	NAME OF MODULE **********************************************************\
+/**	DEMO GAME ***************************************************************\
 
 	This file, main.js, is the starting point of the game. It uses the API
 	for Game Loops.
 
 	NOTES: PieceFactory example below is how the loaded modules would work!
 	System Modules and Players use API GameStep.
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
