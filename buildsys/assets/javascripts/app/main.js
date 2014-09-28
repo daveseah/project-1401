@@ -6,7 +6,11 @@ requirejs.config({
         'bootstrap': '../vendor/bootstrap/bootstrap',
         'durandal':'../vendor/durandal',
         'plugins' : '../vendor/durandal/plugins',
-        'transitions' : '../vendor/durandal/transitions'
+        'transitions' : '../vendor/durandal/transitions',
+// ---- project 1401 paths added --------------------------------------------- // 
+        'gamesys' : '../app/gamesys',   // game system
+        'games' : '../app/games',       // games folder
+        'mygames' : '../../mygames'     // gitignored game path
     },
     shim: {
         'bootstrap': {

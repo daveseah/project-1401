@@ -11,6 +11,9 @@
 /assets/javascripts/vendor
 /assets/stylesheets/vendor
 
+# 1401 - Also ignore mygames folder, so users can maintain a separate repo
+/assets/mygames
+
 # 1401 - Also ignore large binary assets that change frequently
 # because we'll use something other than git to manage them
 # - placeholder -

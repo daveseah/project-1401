@@ -5,7 +5,9 @@ define(function() {
         this.features = [
             'Make a clean Durandal/Mimosa shell',
             'Customize text for project',
-            'Commit installation instructions to Github'
+            'Commit installation instructions to Github',
+            'Created documentation wiki on Github',
+            'Added Game Demo Shell'
         ];
     };
 

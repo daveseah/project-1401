@@ -42,4 +42,10 @@ The project-1401 directory has a folder called `buildsys` that has all the sourc
 * Install local Javascript packages with `mimosa build`. This grabs the Javascript client libraries using Mimosa-Bower, as specified by the `bower.json` config file.
 * If everything seemed to work, type `mimosa watch -s` and then open Chrome to **http://localhost:3000**, on the same machine you installed Project 1401.
 
-As of September 20, 2014, I only have committed the pristine Durandal/Mimosa setup, with cosmetic text changes. My goal is to make very careful commits that show EXACTLY how I'm adapting this framework into a Javascript game platform, explaining the underlying architecture of the system so I don't forget how it works.
+## Updates
+
+September 20, 2014
+: I only have committed the pristine Durandal/Mimosa setup, with cosmetic text changes. My goal is to make very careful commits that show EXACTLY how I'm adapting this framework into a Javascript game platform, explaining the underlying architecture of the system so I don't forget how it works.
+
+September 28, 2014
+: Added game module loading w/ basic gameloop and gamestep control (text only), rewriting it to be easier to create modules from scratch.
