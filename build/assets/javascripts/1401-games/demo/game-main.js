@@ -22,7 +22,7 @@ define ([
 	MAIN.SetHandler('LoadAssets', function () {} );
 	MAIN.SetHandler('Construct', function () {} );
 	MAIN.SetHandler('Start', function () {} );
-	MAIN.SetHandler('Step', function () {} );
+	MAIN.SetHandler('Update', function () {} );
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PUBLIC API **************************************************************/
