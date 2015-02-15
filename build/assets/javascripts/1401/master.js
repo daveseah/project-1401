@@ -115,7 +115,7 @@ define ([
 
 		SETTINGS.MasterTime(m_current_time_ms);
 		if (m_game.IsRunning()) {
-			m_game.Update( m_interval_ms );
+			m_game.Step ( m_interval_ms );
 		}
 		m_current_time_ms += m_interval_ms;
 	}

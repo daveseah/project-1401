@@ -1,4 +1,4 @@
-/* system-loop.js */
+/* sysloop.js */
 define ([
 ], function ( 
 ) {
@@ -8,38 +8,62 @@ define ([
 ///////////////////////////////////////////////////////////////////////////////
 /**	API SYSLOOP *************************************************************\
 
-	This module creates a "SysLoop" object that is used by any module
-	that needs to manage asset loading and connections with other high-level
-	game modules and systems. Typically this is "Activity", and any activity
-	submodules. It provides pre-defined handlers so you can 
-	create a new module easily and just patch in what you need.
+	This module creates a "SysLoop" object that codifies the main lifetime
+	and runtime events for the game system so you don't have to type out a
+	lot of boilerplate. 
 
-	The order of operation in the game loop is as follows:
+	The order of LIFETIME operations in the game loop is as follows:
 
 	Connect 	Pass the parent Durandal viewmodel instance if the module 
 				needs it for DOM access. 
-
 	Initialize	Module can initialize data structures for itself, 
 				allocate memory, set simple variables, but not
 				use any other game systems yet.
-
 	LoadAssets	Module can load any assets. When the assets are loaded,
 				Module should call the passed Done() function to allow
 				game initialization to proceed.
-
 	Construct 	Module may access game systems like RENDERER and PIECEFACTORY,
 				which by now are fully initialized and safe to use.
-
 	Start 		Module may access OTHER modules and communicate with them,
 				setting final parameters
-
 	Step 		Module receives periodical timestamps, with the elapsed
 				time since the last step as a parameter
+	
+	Additionally, the RUNTIME operations that are supported are:
 
-	Assuming module is imported as GLOOP:
-		var OBJ = GLOOP.New ('name')
-		OBJ.SetConnectFunction( func );
+	GetInput 	received input notification
+	Update 		Called from within Step after GetInput and before Think.
+	Think 		time to process AI on your module
+	OverThink 	time to override any thoughts of managed pieces
+	Execute 	time to execute actual action commands
+
+	Note that you need to call EnableUpdate(), EnableInput() and EnableAI() for
+	runtime calls to be made. 
+
+	EXAMPLE:
+
+	Assuming module is imported as SYSLOOP:
+		var OBJ = SYSLOOP.New ('name')
+		OBJ.SetHandler('Connect', function_object );
 		etc...
+
+	SYSLOOP keeps track of all loop objects that have been created, and MASTER
+	calls module's ConnectAll(), InitializeAll(), etc so game-main.js doesn't
+	have to. If you use SYSLOOP to create your own modules, you also don't
+	have to worry about it either. You do have to be mindful, though, that
+	the order of phases (e.g. input, update, think) is not guaranteed.
+	If you need to be sure, don't use SYSLOOP for your module, and implement 
+	the calls yourself.
+
+	IMPORTANT:
+
+	The game-main.js file should use the following call to establish itself
+	as the prime game loop:
+
+		var MAIN = SYSLOOP.InitializeGame('name');
+
+	This ensures that it is always called before all other SYSLOOP modules.
+	It should only be called once in the lifetime of the game.
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -52,27 +76,35 @@ define ([
 		} else {
 			console.error("SysLoop constructor requires string");
 		}
+		// lifetime
 		this.HandleConnect = null;
 		this.HandleInitialize = null;
 		this.HandleLoadAssets = null;
 		this.HandleConstruct = null;
 		this.HandleStart = null;
-		this.HandleUpdate = null;
+		this.HandleStep = null;
+		this.HandleStop = null;
+		this.HandlePause = null;
+		// runtime
 		this.processInput = false;
-		this.HandleInput = null;
 		this.processAI = false;
+		this.processUpdate = false;
+		this.HandleInput = null;
+		this.HandleUpdate = null;
 		this.HandleThink = null;
 		this.HandleOverThink = null;
 		this.HandleExecute = null;
+		// events
 		this.HandleChangeStage = null;
-
+		// current runmode
 		this._runmode = SysLoop.RUNMODE_INIT;
 	}
 	/* constants */
-	SysLoop.RUNMODE_INIT = 0;
+	SysLoop.RUNMODE_INIT 	= 0;
 	SysLoop.RUNMODE_RUNNING = 1;
-	SysLoop.RUNMODE_PAUSED = 2;
-	SysLoop.RUNMODE_EXIT = 3;
+	SysLoop.RUNMODE_PAUSED 	= 2;
+	SysLoop.RUNMODE_EXITING = 3;
+	SysLoop.RUNMODE_STOPPED = 4;
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('IsRunning', function () { 
 		return (this._runmode==SysLoop.RUNMODE_RUNNING);
@@ -84,6 +116,7 @@ define ([
 		type = type || 'undefined';
 		type = type.toLowerCase();
 		switch (type) {
+			// lifetime
 			case 'connect':
 				this.HandleConnect = f;
 				break;
@@ -99,8 +132,24 @@ define ([
 			case 'start':
 				this.HandleStart = f;
 				break;
+			case 'step':
+				this.HandleStep = f;
+				break;
+			// runtime
 			case 'update':
 				this.HandleUpdate = f;
+				break;
+			case 'getinput':
+				this.HandleInput = f;
+				break;
+			case 'think':
+				this.HandleThink = f;
+				break;
+			case 'overthink':
+				this.HandleOverThink = f;
+				break;
+			case 'execute':
+				this.HandleExecute = f;
 				break;
 			default:
 				console.error('SYSTEMLOOP:','unknown handler',type.bracket());
@@ -111,13 +160,23 @@ define ([
 /**	FEATURE ENABLING FUNCTIONS **********************************************/
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('EnableAI', function ( flag ) {
-		if (flag===undefined) flag = true;
+		flag = flag || true;
 		this.processAI = flag;
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('EnableInput', function ( flag ) {
-		if (flag===undefined) flag = true;
+		flag = flag || true;
 		this.processInput = flag;
+	});
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	SysLoop.method('EnableUpdate', function ( flag ) {
+		flag = flag || true;
+		this.processUpdate = flag;
+	});
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	SysLoop.method('EnableDebug', function ( flag ) {
+		flag = flag || true;
+		DBGOUT = flag;
 	});
 
 /**	INITIALIZATION FUNCTIONS ************************************************/
@@ -163,6 +222,14 @@ define ([
 			if (DBGOUT) console.log(this.name,"Start: no handler defined");
 		}
 	});
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	SysLoop.method('Step', function ( intervalMs ) {
+		if (this.HandleStep) {
+			this.HandleStep.call(this, intervalMs);
+		} else {
+			if (DBGOUT) console.log(this.name,"Step: no handler defined");
+		}
+	});
 
 /**	STEP FUNCTIONS **********************************************************/
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -176,6 +243,7 @@ define ([
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('Update', function ( intervalMs ) {
+		if (!this.processUpdate) return;
 		if (this.HandleUpdate) {
 			this.HandleUpdate.call(this, intervalMs);
 		} else {
@@ -215,11 +283,7 @@ define ([
 /**	EVENT FUNCTIONS *********************************************************/
 
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*/	ChangeStage() is called indirectly via onChange of the current
-	stage selector dropdown, which is handled by activity.js which
-	eventually calls SYSLOOP.ChangeStageAll(). This calls all the ChangeStage
-	handlers it knows about, and is dispatcehd through this method.
-	It is also called after Sysloop.Construct(), but before Sysloop.Start().
+/*/	ChangeStage() stub for levels
 /*/	SysLoop.method('ChangeStage', function ( stage_id ) {
 		if (this.HandleChangeStage) {
 			this.HandleChangeStage.call(this, stage_id);
@@ -352,8 +416,8 @@ define ([
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE PRIVATE VARIABLES ************************************************/
 
-	var m_loops = {};		// loop collection to ensure uniqueness
 	var m_master_loop;		// the master loop that is run first
+	var m_loops = {};		// loop collection to ensure uniqueness
 
 
 ///////////////////////////////////////////////////////////////////////////////

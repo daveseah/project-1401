@@ -22,7 +22,9 @@ define ([
 	MAIN.SetHandler('LoadAssets', function () {} );
 	MAIN.SetHandler('Construct', function () {} );
 	MAIN.SetHandler('Start', function () {} );
-	MAIN.SetHandler('Update', function () {} );
+	MAIN.SetHandler('Step', function () {} );
+
+	See sysloop.js for documentation.
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PUBLIC API **************************************************************/
@@ -33,7 +35,7 @@ define ([
 	// add handlers as needed
 	MAIN.SetHandler('Connect', API_HandleConnect);
 	MAIN.SetHandler('Initialize', API_HandleInitialize);
-	MAIN.SetHandler('Update', API_HandleStep);
+	MAIN.SetHandler('Step', API_HandleStep);
 
 
 ///////////////////////////////////////////////////////////////////////////////
