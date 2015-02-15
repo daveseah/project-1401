@@ -30,7 +30,7 @@ define(function(require) {
 		system = require('durandal/system');
 
 	//>>excludeStart("build", true);
-	system.debug(true);
+	// system.debug(true);
 	//>>excludeEnd("build");
 
 	app.title = '1401 Game Project';
