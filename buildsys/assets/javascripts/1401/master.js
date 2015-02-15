@@ -1,11 +1,10 @@
 define ([
-	'gamesys/util/jshacks',
-	'gamesys/settings'
+	'1401/settings'
 ], function (
-	JSHACKS,
 	SETTINGS
 ) {
 
+///////////////////////////////////////////////////////////////////////////////
 /**	GAME MASTER *************************************************************\
 
 	Initializes and launches the game system.
@@ -28,9 +27,11 @@ define ([
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE PRIVATE VARIABLES ************************************************/
 
+	var m_game_path = null;		// current path to game
 	var m_game = null;			// current game
 	var m_viewmodel = null;		// parent viewmodel
 	var m_game_counter = 0;		// module-wide instance counter
+
 
 	var m_current_time_ms = 0;	// global timer
 	var m_interval_ms = SETTINGS('TIMESTEP');
@@ -44,6 +45,16 @@ define ([
 		// save viewmodel to talk to later
 		console.assert(viewModel,"Master.Start: ViewModel required");
 		m_viewmodel = viewModel || {};
+
+		// add utilities for viewmodel object
+		m_viewmodel.GamePath = function ( extra ) {
+			extra = extra || '';
+			if (!m_game_path) {
+				console.log(m_game_path,"GamePath() is valid after GameLoop.Connect");
+			} else {
+				return m_game_path + extra;
+			}
+		}
 
 		// select game to load
 		m_GameLoad ( gameSpec.game );
@@ -59,11 +70,10 @@ define ([
 /*/	function m_GameLoad ( gameId ) {
 		console.log('!!! LOADING GAME', gameId.angle());
 
-		// use 'PATH_MYGAMES' or 'PATH_GAMES'
-		// 'PATH_MYGAMES' is ignored by Project 1401 Git
 		var path = SETTINGS('PATH_GAMES');	
-		var runfile = SETTINGS('PATH_RUNFILE');
-		var module_path = path + '/' + gameId + '/' + runfile;
+		m_game_path = path + '/' + gameId + '/';
+		console.log(m_game_path);
+		var module_path = m_game_path + SETTINGS('PATH_RUNFILE');
 
 		m_game = null;
 

@@ -2,11 +2,15 @@
 define ([ 
     'durandal/app', 
     'knockout', 
-    'gamesys/master' 
+    '1401/master',
+    '1401/js-extend/oop',        // returns empty object
+    '1401/js-extend/format'  // returns empty object
 ], function (
     app, 
     ko, 
-    MASTER
+    MASTER,
+    js_oop,
+    js_format
 ) {
 
 

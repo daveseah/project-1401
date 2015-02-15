@@ -39,9 +39,8 @@ define ([
 ///	GAME LOCATIONS ///////////////////////////////////////////////////////////
 ///	pathnames
 
-	PROP.PATH_MYGAMES = '/mygames/';
-	PROP.PATH_GAMES = '/javascripts/app/games';
-	PROP.PATH_RUNFILE = 'main.js';
+	PROP.PATH_GAMES = '/javascripts/1401-games';				// this should be set in main.js
+	PROP.PATH_RUNFILE = 'game-main.js';		// the default entry point
 
 
 ///	MASTER TIME //////////////////////////////////////////////////////////////

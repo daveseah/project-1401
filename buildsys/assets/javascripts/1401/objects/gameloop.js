@@ -1,6 +1,6 @@
 /* gameloop.js */
 define ([
-	'gamesys/api/gamestep'
+	'1401/objects/gamestep'
 ], function ( 
 	API_GSTEP
 ) {
@@ -35,6 +35,11 @@ define ([
 	Step 		Module receives periodical timestamps, with the elapsed
 				time since the last step as a parameter
 
+	Assuming module is imported as GLOOP:
+		var OBJ = GLOOP.New ('name')
+		OBJ.SetConnectFunction( func );
+		etc...
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /** SUPPORT CLASS ************************************************************/
@@ -47,12 +52,13 @@ define ([
 		} else {
 			console.error("GameLoop constructor requires string");
 		}
-		this._connect = null;
-		this._init = null;
-		this._load = null;
-		this._construct = null;
-		this._start = null;
-		this._step = null;
+		this.HandleConnect = null;
+		this.HandleInitialize = null;
+		this.HandleLoadAssets = null;
+		this.HandleConstruct = null;
+		this.HandleStart = null;
+		this.HandleStep = null;
+
 		this._runmode = GameLoop.RUNMODE_INIT;
 	}
 	/* constants */
@@ -65,75 +71,75 @@ define ([
 		return (this._runmode==GameLoop.RUNMODE_RUNNING);
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	GameLoop.method('HandleConnect', function ( f ) {
-		this._connect = f;
+	GameLoop.method('SetConnectFunction', function ( f ) {
+		this.HandleConnect = f;
 	});	
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	GameLoop.method('Connect', function ( viewModel ) {
-		if (this._connect) {
-			this._connect.call(this,viewModel);
+		if (this.HandleConnect) {
+			this.HandleConnect.call(this,viewModel);
 		} else {
 			console.log(this._req_obj.name,"Connect event");
 		}
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	GameLoop.method('HandleInitialize', function ( f ) {
-		this._init = f;
+	GameLoop.method('SetInitializeFunction', function ( f ) {
+		this.HandleInitialize = f;
 	});	
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	GameLoop.method('Initialize', function () {
-		if (this._init) {
-			this._init.call(this);
+		if (this.HandleInitialize) {
+			this.HandleInitialize.call(this);
 		} else {
 			console.log(this._req_obj.name,"Initialize event");
 		}
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	GameLoop.method('HandleLoadAssets', function ( f ) {
-		this._load = f;
+	GameLoop.method('SetLoadAssetsFunction', function ( f ) {
+		this.HandleLoadAssets = f;
 	});	
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	GameLoop.method('LoadAssets', function ( doneFunc ) {
-		if (this._load) {
-			this._load.call(this, doneFunc);
+		if (this.HandleLoadAssets) {
+			this.HandleLoadAssets.call(this, doneFunc);
 		} else {
 			console.log(this._req_obj.name,"LoadAssets event");
 			doneFunc.call(this);
 		}
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	GameLoop.method('HandleConstruct', function ( f ) {
-		this._construct = f;
+	GameLoop.method('SetConstructFunction', function ( f ) {
+		this.HandleConstruct = f;
 	});	
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	GameLoop.method('Construct', function () {
-		if (this._construct) {
-			this._construct.call(this);
+		if (this.HandleConstruct) {
+			this.HandleConstruct.call(this);
 		} else {
 			console.log(this._req_obj.name,"Construct event");
 		}
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	GameLoop.method('HandleStart', function ( f ) {
-		this._start = f;
+	GameLoop.method('SetStartFunction', function ( f ) {
+		this.HandleStart = f;
 	});	
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	GameLoop.method('Start', function ( startTimeMs ) {
 		this._runmode = GameLoop.RUNMODE_RUNNING;
-		if (this._start) {
-			this._start.call(this, startTimeMs);
+		if (this.HandleStart) {
+			this.HandleStart.call(this, startTimeMs);
 		} else {
 			console.log(this._req_obj.name,"Start event");
 		}
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	GameLoop.method('HandleStep', function ( f ) {
-		this._step = f;
+	GameLoop.method('SetStepFunction', function ( f ) {
+		this.HandleStep = f;
 	});	
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	GameLoop.method('Step', function ( intervalMs ) {
-		if (this._step) {
-			this._step.call(this, intervalMs);
+		if (this.HandleStep) {
+			this.HandleStep.call(this, intervalMs);
 		} else {
 			console.log(this._req_obj.name,"Step event");
 		}
