@@ -210,7 +210,11 @@ define ([
 		}
 	});
 
+
+//////////////////////////////////////////////////////////////////////////////
 /**	EVENT FUNCTIONS *********************************************************/
+
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	ChangeStage() is called indirectly via onChange of the current
 	stage selector dropdown, which is handled by activity.js which
 	eventually calls SYSLOOP.ChangeStageAll(). This calls all the ChangeStage
@@ -242,30 +246,14 @@ define ([
 	};
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	The Main Loop is executed first!
-/*/	FACTORY.SetMainLoop = function ( loopObj ) {
-		if (loopObj===undefined) {
-			console.warn('attempt to unset MasterSysLoop failed');
+/*/	FACTORY.InitializeGame = function ( name ) {
+		if (m_master_loop) {
+			console.error('Game already initialized; did you mean to call "New" instead?');
 			return;
 		}
-
-		if (m_master_loop) {
-			console.warn('resetting MasterSysLoop from',m_master_loop.name,'to',loopObj.name);
-		}
-
-		if (m_loops.length) {
-			var found = m_loops.indexOf(loopObj);
-			if (found < 0) {
-				console.warn('could not set MasterSysLoop to',loopObj.name);
-				return;
-			} else {
-				m_master_loop = m_loops[found];
-				m_loops.splice(found,1);
-				console.log('Setting MasterSysLoop to',loopObj.name);
-			} 
-		} else {
-			m_master_loop = loopObj;
-			console.log('Setting MasterSysLoop to',loopObj.name);
-		}
+		m_master_loop = new SysLoop(name);
+		console.info("master game loop",m_master_loop.name,"initialized!");
+		return m_master_loop;
 	};
 
 

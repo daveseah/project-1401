@@ -28,9 +28,7 @@ define ([
 /** PUBLIC API **************************************************************/
 
 	// create a game loop handler object with all necessary functions
-	var MAIN = SYSLOOP.New('GameDemoMain');
-	// set 
-	SYSLOOP.SetMainLoop(MAIN);
+	var MAIN = SYSLOOP.InitializeGame('GameDemoMain');
 
 	// add handlers as needed
 	MAIN.SetHandler('Connect', API_HandleConnect);
