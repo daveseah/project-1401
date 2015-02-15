@@ -1,9 +1,11 @@
 /* demo/game-main.js */
 define ([
+	'1401/settings',
 	'1401/objects/gameloop',
 	'1401/objects/gamestep',
 	'1401/system/renderer'
 ], function ( 
+	SETTINGS,
 	API_GLOOP,
 	API_GSTEP,
 	RENDERER
@@ -51,7 +53,7 @@ define ([
 	function API_HandleInitialize () {
 		console.log("MAIN: Initializing!");
 		RENDERER.Initialize ();
-		var bg_png = MASTER1401.GamePath('resources/bg.png');
+		var bg_png = SETTINGS.GamePath('resources/bg.png');
 		RENDERER.SetBackgroundStill ( bg_png );
 		RENDERER.AutoRender();
 	}

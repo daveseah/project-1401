@@ -20,7 +20,6 @@ define ([
 /** PUBLIC API **************************************************************/
 
 	var MASTER = {};			// module
-	var SYS1401 = {};			// used for exposing globals
 
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	This is called by the associated viewmodel on composition.Complete
@@ -60,9 +59,10 @@ define ([
 /*/	function m_GameLoad ( gameId ) {
 		console.log('!!! LOADING GAME', gameId.angle());
 
+		// construct path to game directory
 		var path = SETTINGS('PATH_GAMES');	
 		m_game_path = path + '/' + gameId + '/';
-		console.log(m_game_path);
+		SETTINGS.SetGamePath(m_game_path);
 		var module_path = m_game_path + SETTINGS('PATH_RUNFILE');
 
 		m_game = null;
@@ -95,7 +95,9 @@ define ([
 		m_game.Start ( m_current_time_ms );
 		// game will get called on every Step() from here on out
 
+		// initialize globals
 		m_current_time_ms = 0;
+		SETTINGS.SetMasterTime(m_current_time_ms);
 
 		// initialize timestep
 		setInterval( m_TimeStep, m_interval_ms );
@@ -108,25 +110,14 @@ define ([
 /*/	Resume game loading process...
 /*/	function m_TimeStep() {
 		if (!m_game) return;
-		if (m_game.IsRunning()) m_game.Step( m_interval_ms );
+
+		SETTINGS.MasterTime(m_current_time_ms);
+		if (m_game.IsRunning()) {
+			m_game.Step( m_interval_ms );
+		}
 		m_current_time_ms += m_interval_ms;
 	}
 
-
-///////////////////////////////////////////////////////////////////////////////
-/** MAKE KEY SYSTEM PROPERTIES AVAILABLE *************************************/
-
-	SYS1401.MasterTime = function () {
-		return m_current_time_ms;
-	};
-	SYS1401.ViewModel = function () {
-		return m_viewmodel;
-	};
-	SYS1401.GamePath = function ( extra ) {
-		extra = extra || '';
-		return m_game_path+extra;
-	};
-	window.MASTER1401 = SYS1401;
 
 ///////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
