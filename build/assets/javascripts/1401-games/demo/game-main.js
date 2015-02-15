@@ -1,13 +1,11 @@
 /* demo/game-main.js */
 define ([
 	'1401/settings',
-	'1401/objects/gameloop',
-	'1401/objects/gamestep',
+	'1401/objects/sysloop',
 	'1401/system/renderer'
 ], function ( 
 	SETTINGS,
-	API_GLOOP,
-	API_GSTEP,
+	SYSLOOP,
 	RENDERER
 ) {
 
@@ -19,23 +17,25 @@ define ([
 
 	In general, you'll be hooking into these functions as necessary.
 
-	MAIN.HandleInitialize = function () { };
-	MAIN.HandleConnect = function () { };
-	MAIN.HandleLoadAssets = function ( done ) { done(); };
-	MAIN.HandleConstruct = function () { };
-	MAIN.HandleStart = function ( startTimeMs ) { };
-	MAIN.HandleStep = function ( intervalMs ) { };
+	MAIN.SetHandler('Initialize', function () {} );
+	MAIN.SetHandler('Connect', function () {} );
+	MAIN.SetHandler('LoadAssets', function () {} );
+	MAIN.SetHandler('Construct', function () {} );
+	MAIN.SetHandler('Start', function () {} );
+	MAIN.SetHandler('Step', function () {} );
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PUBLIC API **************************************************************/
 
 	// create a game loop handler object with all necessary functions
-	var MAIN = API_GLOOP.New('GameDemoMain');
+	var MAIN = SYSLOOP.New('GameDemoMain');
+	// set 
+	SYSLOOP.SetMainLoop(MAIN);
 
 	// add handlers as needed
-	MAIN.HandleConnect = API_HandleConnect;
-	MAIN.HandleInitialize = API_HandleInitialize;
-	MAIN.HandleStep = API_HandleStep;
+	MAIN.SetHandler('Connect', API_HandleConnect);
+	MAIN.SetHandler('Initialize', API_HandleInitialize);
+	MAIN.SetHandler('Update', API_HandleStep);
 
 
 ///////////////////////////////////////////////////////////////////////////////

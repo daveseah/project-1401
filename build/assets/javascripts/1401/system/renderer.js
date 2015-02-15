@@ -16,7 +16,7 @@ define ([
 /** PUBLIC API **************************************************************/
 
 	var API = {};
-	API.name = "gamesys.renderer";
+	API.name = "renderer";
 
 
 ///	RENDERSYSTEM CONTROL /////////////////////////////////////////////////////

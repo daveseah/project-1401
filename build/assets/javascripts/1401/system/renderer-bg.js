@@ -13,13 +13,6 @@ define ([
 
 /*/
 
-
-/** private module declarations *********************************************/
-
-this.name = 'RendererBGInternal';
-var _this_renderer_bg = this;
-
-
 /** MODULE UTILITY FUNCTIONS *************************************************/	
 
 var bg_sprite;
