@@ -51,7 +51,7 @@ define ([
 	function API_HandleInitialize () {
 		console.log("MAIN: Initializing!");
 		RENDERER.Initialize ();
-		var bg_png = m_viewmodel.GamePath('resources/bg.png');
+		var bg_png = MASTER1401.GamePath('resources/bg.png');
 		RENDERER.SetBackgroundStill ( bg_png );
 		RENDERER.AutoRender();
 	}

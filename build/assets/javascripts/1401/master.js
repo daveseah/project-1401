@@ -1,67 +1,57 @@
 define ([
-	'1401/settings'
+	'1401/settings',
+	'1401/system/renderer'
 ], function (
-	SETTINGS
+	SETTINGS,
+	RENDERER
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 /**	GAME MASTER *************************************************************\
 
 	Initializes and launches the game system.
-	The system loads "activities" 
+	Also maintains the time step.
+
+	The system loads "games" that are located in the 1401-games directory,
+	and loads the 'game-main' module to start.
 
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PUBLIC API **************************************************************/
 
-	var MASTER = {};
+	var MASTER = {};			// module
+	var SYS1401 = {};			// used for exposing globals
 
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	This is called by the associated viewmodel on composition.Complete
 	The viewModel and gameId are passed for safekeeping
-/*/	MASTER.Start = function ( viewModel, gameId ) {
-		API_Start(viewModel, gameId);
-	};
-
-
-///////////////////////////////////////////////////////////////////////////////
-/** MODULE PRIVATE VARIABLES ************************************************/
-
-	var m_game_path = null;		// current path to game
-	var m_game = null;			// current game
-	var m_viewmodel = null;		// parent viewmodel
-	var m_game_counter = 0;		// module-wide instance counter
-
-
-	var m_current_time_ms = 0;	// global timer
-	var m_interval_ms = SETTINGS('TIMESTEP');
-
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-/*/	Initialize and run game system.
-/*/	function API_Start( viewModel, gameSpec ) {
-
+/*/	MASTER.Start = function ( viewModel, gameSpec ) {
 		console.group('Master Startup');
 
 		// save viewmodel to talk to later
 		console.assert(viewModel,"Master.Start: ViewModel required");
 		m_viewmodel = viewModel || {};
 
-		// add utilities for viewmodel object
-		m_viewmodel.GamePath = function ( extra ) {
-			extra = extra || '';
-			if (!m_game_path) {
-				console.log(m_game_path,"GamePath() is valid after GameLoop.Connect");
-			} else {
-				return m_game_path + extra;
-			}
-		}
-
 		// select game to load
 		m_GameLoad ( gameSpec.game );
 
 		console.groupEnd();
+	};
 
-	}
+
+///////////////////////////////////////////////////////////////////////////////
+/** MODULE PRIVATE VARIABLES *************************************************/
+
+	var m_game_path = null;		// current path to game
+	var m_game = null;			// current game
+	var m_viewmodel = null;		// parent viewmodel
+
+	var m_current_time_ms = 0;	// global timer
+	var m_interval_ms = SETTINGS('TIMESTEP');
+
+
+///////////////////////////////////////////////////////////////////////////////
+/** SUPPORTING PRIVATE FUNCTIONS *********************************************/
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Given the gameId, look for corresponding folder in the
@@ -124,7 +114,23 @@ define ([
 
 
 ///////////////////////////////////////////////////////////////////////////////
+/** MAKE KEY SYSTEM PROPERTIES AVAILABLE *************************************/
+
+	SYS1401.MasterTime = function () {
+		return m_current_time_ms;
+	};
+	SYS1401.ViewModel = function () {
+		return m_viewmodel;
+	};
+	SYS1401.GamePath = function ( extra ) {
+		extra = extra || '';
+		return m_game_path+extra;
+	};
+	window.MASTER1401 = SYS1401;
+
+///////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
+
 	return MASTER;
 
 });
