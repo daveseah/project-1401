@@ -35,17 +35,21 @@ You must have Git, NodeJS, and Mimosa installed. For the purposes of these instr
 
 #### Build the Project and Run
 
-The project-1401 directory has a folder called `buildsys` that has all the source files. We have to do some one-time initialization that will pull Node modules and Javascript modules from the Internet.
+The project-1401 directory has a folder called `build` that has all the source files. We have to do some one-time initialization that will pull Node modules and Javascript modules from the Internet.
 
-* `cd project-1401/buildsys` 
+* `cd project-1401/build` 
 * Initialize Mimosa with `npm install`. This grabs the Node modules using the Node Package Manager (npm), as specified by the `package.json` config file.
 * Install local Javascript packages with `mimosa build`. This grabs the Javascript client libraries using Mimosa-Bower, as specified by the `bower.json` config file.
 * If everything seemed to work, type `mimosa watch -s` and then open Chrome to **http://localhost:3000**, on the same machine you installed Project 1401.
 
 ## Updates
 
-September 20, 2014
-: I only have committed the pristine Durandal/Mimosa setup, with cosmetic text changes. My goal is to make very careful commits that show EXACTLY how I'm adapting this framework into a Javascript game platform, explaining the underlying architecture of the system so I don't forget how it works.
+February 16, 2015
+: Spent the past couple of days refactoring the main system loops and renderer management. When I had written the renderer before, I didn't have a good grasp of how to manage the different coordinate systems (there are three: browser, webgl/screen, and world). Also, it was a mess. 
 
 September 28, 2014
 : Added game module loading w/ basic gameloop and gamestep control (text only), rewriting it to be easier to create modules from scratch.
+
+September 20, 2014
+: I only have committed the pristine Durandal/Mimosa setup, with cosmetic text changes. My goal is to make very careful commits that show EXACTLY how I'm adapting this framework into a Javascript game platform, explaining the underlying architecture of the system so I don't forget how it works.
+
