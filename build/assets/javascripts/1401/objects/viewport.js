@@ -195,8 +195,10 @@ define ([
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('GetScreenCam', function () { return this.camSCREEN; });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Viewport.method('Clear', function () { this.webGL.clear() });
-	Viewport.method('ClearDepth', function () { this.webGL.clearDepth() });
+	Viewport.method('Clear', function () { this.webGL.clear(); });
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	Viewport.method('ClearDepth', function () { this.webGL.clearDepth(); });
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('Render', function ( rpass ) { 
 		this.webGL.render(rpass,rpass.camera);
 	});
