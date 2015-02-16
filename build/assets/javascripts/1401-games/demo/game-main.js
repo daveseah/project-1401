@@ -52,9 +52,16 @@ define ([
 
 	function API_HandleInitialize () {
 		console.log("MAIN: Initializing!");
-		RENDERER.Initialize ();
+		var parm = {
+			canvasWidth: 1024,
+			canvasHeight: 768,
+			attachTo: '#container',
+			worldWidth: 4,
+			worldDepth: 3,
+		};
+		RENDERER.Initialize ( parm );
 		var bg_png = SETTINGS.GamePath('resources/bg.png');
-		RENDERER.SetBackgroundStill ( bg_png );
+		RENDERER.SetBackgroundImage ( bg_png );
 		RENDERER.AutoRender();
 	}
 

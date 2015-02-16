@@ -1,11 +1,9 @@
 define ([
 	'1401/settings',
-	'1401/objects/sysloop',
-	'1401/system/renderer'
+	'1401/objects/sysloop'
 ], function (
 	SETTINGS,
-	SYSLOOP,
-	RENDERER
+	SYSLOOP
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -22,6 +20,7 @@ define ([
 /** PUBLIC API **************************************************************/
 
 	var MASTER = {};			// module
+
 
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	This is called by the associated viewmodel on composition.Complete
@@ -113,10 +112,14 @@ define ([
 /*/	function m_TimeStep() {
 		if (!m_game) return;
 
-		SETTINGS.MasterTime(m_current_time_ms);
+		// update mastertime
+		SETTINGS.MasterTime ( m_current_time_ms );
+
+		// step the game
 		if (m_game.IsRunning()) {
 			m_game.Step ( m_interval_ms );
 		}
+		// update mastertime counter
 		m_current_time_ms += m_interval_ms;
 	}
 
