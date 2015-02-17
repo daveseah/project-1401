@@ -2,11 +2,13 @@
 define ([
 	'1401/settings',
 	'1401/objects/sysloop',
-	'1401/system/renderer'
+	'1401/system/renderer',
+	'1401/system/visualfactory'
 ], function ( 
 	SETTINGS,
 	SYSLOOP,
-	RENDERER
+	RENDERER,
+	VISUALFACTORY
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -35,6 +37,8 @@ define ([
 	// add handlers as needed
 	MAIN.SetHandler('Connect', API_HandleConnect);
 	MAIN.SetHandler('Initialize', API_HandleInitialize);
+	MAIN.SetHandler('Construct', API_HandleConstruct);
+	MAIN.SetHandler('LoadAssets', API_LoadAssets);
 	MAIN.SetHandler('Step', API_HandleStep);
 
 
@@ -43,21 +47,26 @@ define ([
 
 	var m_viewmodel;	// durandal viewmodel for databinding, system props
 
+	var spr01;
+	var spr02;
+	var spr03;
+
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE PRIVATE FUNCTIONS ************************************************/
 
 	function API_HandleConnect ( viewModel ) {
 		m_viewmodel = viewModel;
 	}
-
+	function API_LoadAssets ( callback ) {
+		VISUALFACTORY.LoadAssets (callback);
+	}
 	function API_HandleInitialize () {
 		console.log("MAIN: Initializing!");
 		var parm = {
-			canvasWidth: 1024,
-			canvasHeight: 768,
-			attachTo: '#container',
-			worldWidth: 4,
-			worldDepth: 3,
+			attachTo: '#container',		// WebGL attaches to this
+			renderWidth: 1024,			// width of render context
+			renderHeight: 768,			// height of render context
+			worldUnits: 768				// world units to fit in shortest dim
 		};
 		RENDERER.Initialize ( parm );
 		var bg_png = SETTINGS.GamePath('resources/bg.png');
@@ -65,8 +74,35 @@ define ([
 		RENDERER.AutoRender();
 	}
 
+	function API_HandleConstruct() {
+		spr01 = VISUALFACTORY.MakeDefaultSprite();
+		spr02 = VISUALFACTORY.MakeDefaultSprite();
+		spr03 = VISUALFACTORY.MakeDefaultSprite();
+		spr01.position.x = -350;
+		spr02.position.x = 350;
+
+		RENDERER.AddWorldVisual(spr01);
+		RENDERER.AddWorldVisual(spr02);
+		RENDERER.AddWorldVisual(spr03);
+
+		var seq = {
+            grid: { columns:2, rows:1, stacked:true },
+            sequences: [
+                { name: 'flicker', framecount: 2, fps:4 }
+            ]
+        };
+        spr03.DefineSequences(SETTINGS.GamePath('resources/crixa.png'),seq);
+
+	}
+
 	function API_HandleStep () {
-		console.log("MAIN: Step!");
+		// sprite rotate by rotating the material
+		var mat = spr01.material;
+			mat.rotation += 0.05;
+			mat = spr02.material;
+			mat.rotation -= 0.01;
+			mat = spr03.material;
+			mat.rotation -= 0.02;
 	}
 
 ///////////////////////////////////////////////////////////////////////////////

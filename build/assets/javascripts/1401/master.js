@@ -60,8 +60,12 @@ define ([
 /*/	function m_GameLoad ( gameId ) {
 		console.log('!!! LOADING GAME', gameId.angle());
 
+		var path;
+		// construct path to 1401 system directory
+		path = SETTINGS('PATH_SYSTEM')+'/';
+		SETTINGS.SetSystemPath(path);
 		// construct path to game directory
-		var path = SETTINGS('PATH_GAMES');	
+		path = SETTINGS('PATH_GAMES');	
 		m_game_path = path + '/' + gameId + '/';
 		SETTINGS.SetGamePath(m_game_path);
 		var module_path = m_game_path + SETTINGS('PATH_RUNFILE');

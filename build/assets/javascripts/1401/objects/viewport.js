@@ -42,9 +42,6 @@ define ([
 		this.cam2D			= null;		// ...2d orthographic (world coords)
 		this.cam3D			= null;		// ...3d perspective (world coords)
 		this.camSCREEN 		= null;		// screen (pixel coords)
-		// renderpasses
-		this.renderpasses	= {};
-		// loader
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('InitializeRenderer', function ( width, height, containerId ) {
@@ -84,33 +81,32 @@ define ([
 
 	});
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Viewport.method('InitializeWorld', function ( width, depth ) {
+	Viewport.method('InitializeWorld', function ( worldUnits ) {
 		if (!this.webGL) {
 			console.error("Call InitializeViewport() before calling InitializeWorld()");
 			return;
 		}
-		if (!(width && depth)) {
-			console.error("Call with wwidth, wdepth");
+		if (!worldUnits) {
+			console.error("Call with worldUnits, the min");
 			return;
 		}
 		// save world values
 		this.worldOrigin = new THREE.Vector3(0,0,0);
 		this.worldUp = new THREE.Vector3(0,1,0);	// y-axis is up, camera looks on XY
-		this.worldWidth = width;	
-		this.worldDepth = depth;
-		this.worldAspect = width/depth;
+		this.worldUnits = worldUnits;
+		this.worldScale = Math.min(this.width/worldUnits,this.height/worldUnits);
 	});
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('InitializeCameras', function () {
-		if (!this.worldAspect) {
+		if (!this.worldScale) {
 			console.error("Call InitializeWorld() before calling InitializeCameras()");
 		}
 		var hw = this.width/2;
 		var hh = this.height/2;
 		this.camBG = new THREE.OrthographicCamera(-hw,hw,hh,-hh,0,1000);
 		this.camSCREEN = new THREE.OrthographicCamera(-hw,hw,hh,-hh,0,1000);
-		var whw = this.worldWidth/2;
-		var whh = this.worldDepth/2;
+		var whw = this.width * this.worldScale / 2;
+		var whh = this.height * this.worldScale / 2;
 		var wox = this.worldOrigin.x;
 		var woy = this.worldOrigin.y;
 		this.cam2D = new THREE.OrthographicCamera(-whw+wox,whw+wox,whh+woy,-whh+woy,0,1000);

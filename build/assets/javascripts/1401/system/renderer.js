@@ -40,14 +40,12 @@ define ([
 
 		// order of initialization is important
 		VIEWPORT.InitializeRenderer(
-			parm.canvasWidth,
-			parm.canvasHeight,
+			parm.renderWidth,
+			parm.renderHeight,
 			parm.attachTo
 		);
 		VIEWPORT.InitializeWorld(
-			parm.worldWidth,
-			parm.worldDepth,
-			parm
+			parm.worldUnits
 		);
 		VIEWPORT.InitializeCameras();
 
@@ -136,8 +134,6 @@ define ([
 ///	BACKGROUND IMAGE /////////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.SetBackgroundImage = function ( textureName, callback, callee ) {
-
-		textureName = textureName || '/images/bg.png';
 
 		var bgMap = LOADER.LoadTexture(textureName,mi_SaveHeight);
 		var bgMat = new THREE.SpriteMaterial( {map:bgMap} );
