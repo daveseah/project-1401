@@ -101,7 +101,7 @@ define ([
 		this.worldOrigin = new THREE.Vector3(0,0,0);
 		this.worldUp = new THREE.Vector3(0,1,0);	// y-axis is up, camera looks on XY
 		this.worldUnits = worldUnits;
-		this.worldScale = Math.min(this.width/worldUnits,this.height/worldUnits);
+		this.worldScale = Math.max(worldUnits/this.width,worldUnits/this.height);
 	});
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Step 3. Create all the cameras
@@ -123,7 +123,7 @@ define ([
 		this.cam3D.up = this.worldUp;
 		this.cam3D.lookAt(this.worldOrigin);
 
-		this.cam2D = new THREE.OrthographicCamera(-whw+wox,whw+wox,whh+woy,-whh+woy,0,1000);
+		this.cam2D = new THREE.OrthographicCamera(-whw+wox,whw+wox,whh+woy,-whh+woy,0,10000);
 		this.cam2D.position.set(wox,woy,10);
 		this.cam2D.up = this.worldUp;
 		this.cam2D.lookAt(this.worldOrigin);
@@ -132,7 +132,7 @@ define ([
 
 		// update world3d camera by positioning it
 		// to default see the entire world
-		var d = m_GetFramingDistance(this.cam3D,hw,hh);
+		var d = m_GetFramingDistance(this.cam3D,whw,whh);
 
 		this.cam3D.position.z = d;
 		this.cam2D.position.z = d;		
@@ -140,7 +140,6 @@ define ([
 		// assign default world camera as 2D
 		this.camWORLD = this.cam2D;
 	});
-
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// for updating when browser size changes (TBD)
 	Viewport.method('SetViewportDimensions',function ( width, height ){
@@ -229,7 +228,7 @@ define ([
 
 	function m_GetFramingDistance ( cam3D, fWidth, fHeight ) {
 
-		var safety = 0.1;
+		var safety = 0.2;
 		var buffer = fWidth * safety;
 
 		fWidth += buffer;

@@ -78,11 +78,14 @@ define ([
 
 	function API_HandleConstruct() {
 
+		console.log("constructing test visuals");
+
+
 		spr01 = VISUALFACTORY.MakeDefaultSprite();
 		spr02 = VISUALFACTORY.MakeDefaultSprite();
 		spr03 = VISUALFACTORY.MakeDefaultSprite();
-		spr01.position.x = -350;
-		spr02.position.x = 350;
+		spr01.position.x = -512;
+		spr02.position.x = 512;
 
 		RENDERER.AddWorldVisual(spr01);
 		RENDERER.AddWorldVisual(spr02);
@@ -118,11 +121,12 @@ define ([
 		directionalLight.position.set(1, 1, 1).normalize();
 		RENDERER.AddWorldVisual(directionalLight);
 
+		console.info("WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump");
 	}
 
 	var counter = 0;
 	var mode3d = true;
-	function API_HandleStep () {
+	function API_HandleStep ( interval_ms ) {
 		// sprite rotate by rotating the material
 		var mat = spr01.material;
 			mat.rotation += 0.05;
@@ -137,7 +141,8 @@ define ([
 		var cam = vp.GetWorldCam();
 		obj02.rotation.y += 0.01;
 
-		if (++counter>30) {
+		counter += interval_ms;
+		if (counter>3000) {
 			counter=0;
 			mode3d = !mode3d;
 		}

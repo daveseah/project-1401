@@ -316,7 +316,7 @@ define ([
 			return;
 		}
 		m_master_loop = new SysLoop(name);
-		console.info("master game loop",m_master_loop.name,"initialized!");
+		console.info("MASTER SYSLOOP",m_master_loop.name.bracket(),"SET");
 		return m_master_loop;
 	};
 
