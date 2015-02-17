@@ -3,13 +3,11 @@ define ([
 	'three',
 	'1401/objects/viewport',
 	'1401/settings',
-	'1401/system/loader',
 	'1401/objects/sprite'
 ], function ( 
 	THREE,
 	VIEWPORT,
 	SETTINGS,
-	LOADER,
 	InqSprite
 ) {
 

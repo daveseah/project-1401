@@ -2,13 +2,11 @@
 define ([
 	'three',
 	'1401/objects/viewport',
-	'1401/settings',
-	'1401/system/loader'
+	'1401/settings'
 ], function ( 
 	THREE,
 	VIEWPORT,
-	SETTINGS,
-	LOADER
+	SETTINGS
 ) {
 
 /**	RENDERER *****************************************************************\
@@ -135,7 +133,7 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.SetBackgroundImage = function ( textureName, callback, callee ) {
 
-		var bgMap = LOADER.LoadTexture(textureName,mi_SaveHeight);
+		var bgMap = THREE.ImageUtils.loadTexture(textureName,THREE.UVMAPPING, mi_SaveHeight);
 		var bgMat = new THREE.SpriteMaterial( {map:bgMap} );
 		if (BG_SPRITE) rpass.remove(BG_SPRITE);
 		BG_SPRITE = new THREE.Sprite(bgMat);
