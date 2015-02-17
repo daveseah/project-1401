@@ -47,7 +47,7 @@ define ([
 		);
 		VIEWPORT.InitializeCameras();
 
-		// assign default cameras
+		// assign default cameras to renderpasses
 		RP_BG.camera = VIEWPORT.GetBackgroundCam();
 		RP_WORLD.camera = VIEWPORT.GetWorldCam();
 		RP_WORLD2.camera = VIEWPORT.GetWorldCam();
@@ -127,6 +127,23 @@ define ([
 	API.RemoveScreenOverlayVisual = function ( visual ) {
 		RP_OVER.remove(visual);
 	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.GetViewport = function ( index ) {
+		return VIEWPORT;
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.SelectWorld2D = function ( index ) {
+		VIEWPORT.SelectWorld2D();
+		RP_WORLD.camera = VIEWPORT.GetWorldCam();
+		RP_WORLD2.camera = VIEWPORT.GetWorldCam();
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.SelectWorld3D = function ( index ) {
+		VIEWPORT.SelectWorld3D();
+		RP_WORLD.camera = VIEWPORT.GetWorldCam();
+		RP_WORLD2.camera = VIEWPORT.GetWorldCam();
+	};
+
 
 
 ///	BACKGROUND IMAGE /////////////////////////////////////////////////////////
@@ -137,7 +154,7 @@ define ([
 		var bgMat = new THREE.SpriteMaterial( {map:bgMap} );
 		if (BG_SPRITE) rpass.remove(BG_SPRITE);
 		BG_SPRITE = new THREE.Sprite(bgMat);
-		BG_SPRITE.position.set(0,0,-100);
+		BG_SPRITE.position.set(0,0,-1000); // clip for 2D is 1000
 		RP_BG.add(BG_SPRITE);
 	
 		function mi_SaveHeight(texture) {

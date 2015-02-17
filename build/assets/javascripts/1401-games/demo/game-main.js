@@ -50,6 +50,8 @@ define ([
 	var spr01;
 	var spr02;
 	var spr03;
+	var obj01;
+	var obj02;
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE PRIVATE FUNCTIONS ************************************************/
@@ -75,6 +77,7 @@ define ([
 	}
 
 	function API_HandleConstruct() {
+
 		spr01 = VISUALFACTORY.MakeDefaultSprite();
 		spr02 = VISUALFACTORY.MakeDefaultSprite();
 		spr03 = VISUALFACTORY.MakeDefaultSprite();
@@ -93,8 +96,32 @@ define ([
         };
         spr03.DefineSequences(SETTINGS.GamePath('resources/crixa.png'),seq);
 
+        obj01 = VISUALFACTORY.MakeGroundPlane({
+        	width: 800,
+        	depth: 600,
+        	color: 0xFF0000
+        });
+        obj01.position.z = -200;
+        RENDERER.AddWorldVisual(obj01);
+
+        obj02 = VISUALFACTORY.MakeSphere({
+        	radius:100,
+        	color: 0x00FF00
+        });
+        obj02.position.z = -250;
+        RENDERER.AddWorldVisual(obj02);
+
+		var ambientLight = new THREE.AmbientLight(0x222222);
+      	RENDERER.AddWorldVisual(ambientLight);
+
+		var directionalLight = new THREE.DirectionalLight(0xffffff);
+		directionalLight.position.set(1, 1, 1).normalize();
+		RENDERER.AddWorldVisual(directionalLight);
+
 	}
 
+	var counter = 0;
+	var mode3d = true;
 	function API_HandleStep () {
 		// sprite rotate by rotating the material
 		var mat = spr01.material;
@@ -103,6 +130,21 @@ define ([
 			mat.rotation -= 0.01;
 			mat = spr03.material;
 			mat.rotation -= 0.02;
+
+		obj01.rotation.x += 0.1;
+
+		var vp = RENDERER.GetViewport();
+		var cam = vp.GetWorldCam();
+		obj02.rotation.y += 0.01;
+
+		if (++counter>30) {
+			counter=0;
+			mode3d = !mode3d;
+		}
+		if (mode3d) RENDERER.SelectWorld3D();
+		else RENDERER.SelectWorld2D();
+
+
 	}
 
 ///////////////////////////////////////////////////////////////////////////////

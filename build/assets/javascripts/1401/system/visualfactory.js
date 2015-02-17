@@ -125,6 +125,18 @@ define ([
 		return mesh;
 	};
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.MakeSphere = function ( spec ) {
+		spec = spec || {};
+		spec.radius = spec.radius || 10;
+		spec.segmentsW = spec.segmentsW || 8;
+		spec.segmentsH = spec.segmentsH || 8;
+
+		var mat = new THREE.MeshPhongMaterial ( spec );
+		var geo = new THREE.SphereGeometry (spec.radius, spec.segmentsW, spec.segmentsH);
+		var mesh = new THREE.Mesh(geo,mat);
+		return mesh;
+	};
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.MakeTextSprite = function ( text, spec ) {
 		/* very very raw */
 		spec = m_ValidateTextSpec(spec);
