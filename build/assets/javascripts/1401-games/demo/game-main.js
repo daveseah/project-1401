@@ -3,12 +3,14 @@ define ([
 	'1401/settings',
 	'1401/objects/sysloop',
 	'1401/system/renderer',
-	'1401/system/visualfactory'
+	'1401/system/visualfactory',
+	'1401/system/piecefactory'
 ], function ( 
 	SETTINGS,
 	SYSLOOP,
 	RENDERER,
-	VISUALFACTORY
+	VISUALFACTORY,
+	PIECEFACTORY
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -78,8 +80,13 @@ define ([
 
 	function API_HandleConstruct() {
 
-		console.log("constructing test visuals");
+		console.group("constructing test pieces");
 
+		var p = PIECEFACTORY.NewPiece("test");
+		console.log(p);
+
+		console.groupEnd();
+		console.group("constructing test visuals");
 
 		spr01 = VISUALFACTORY.MakeDefaultSprite();
 		spr02 = VISUALFACTORY.MakeDefaultSprite();
@@ -121,7 +128,11 @@ define ([
 		directionalLight.position.set(1, 1, 1).normalize();
 		RENDERER.AddWorldVisual(directionalLight);
 
-		console.info("WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump");
+		console.groupEnd();
+
+		console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
+
+
 	}
 
 	var counter = 0;
