@@ -53,12 +53,12 @@ There is not a lot of online material that details the birth of a video game arc
 ## Updates
 
 February 17, 2015
-: Refactoring the ports of SYSLOOP and RENDERER, two manager modules. When I had written the renderer before, I didn't have a good grasp of how to manage the different coordinate systems (there are three: browser, webgl/screen, and world). Also, it was a mess. 
-: Ported/cleaned-up Visual and Viewport managers.
+* Refactoring the ports of SYSLOOP and RENDERER, two manager modules. When I had written the renderer before, I didn't have a good grasp of how to manage the different coordinate systems (there are three: browser, webgl/screen, and world). Also, it was a mess. 
+* Ported/cleaned-up Visual and Viewport managers.
 
 September 28, 2014
-: Added game module loading w/ basic gameloop and gamestep control (text only), rewriting it to be easier to create modules from scratch.
+* Added game module loading w/ basic gameloop and gamestep control (text only), rewriting it to be easier to create modules from scratch.
 
 September 20, 2014
-: I only have committed the pristine Durandal/Mimosa setup, with cosmetic text changes. My goal is to make very careful commits that show EXACTLY how I'm adapting this framework into a Javascript game platform, explaining the underlying architecture of the system so I don't forget how it works.
+* I only have committed the pristine Durandal/Mimosa setup, with cosmetic text changes. My goal is to make very careful commits that show EXACTLY how I'm adapting this framework into a Javascript game platform, explaining the underlying architecture of the system so I don't forget how it works.
 
