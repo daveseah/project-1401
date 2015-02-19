@@ -9,6 +9,8 @@ define ([
 	SETTINGS
 ) {
 
+	var DBGOUT = true;
+
 /**	RENDERER *****************************************************************\
 
 	ThreeJS-based rendering system
@@ -90,42 +92,52 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddWorldVisual = function ( visual ) {
 		RP_WORLD.add(visual);
+		if (DBGOUT) console.log("vis "+visual.id,">>> RP_WORLD");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddWorldOverlayVisual = function ( visual ) {
 		RP_WORLD2.add(visual);
+		if (DBGOUT) console.log("vis "+visual.id,">>> RP_WORLD2");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddBackgroundVisual = function ( visual ) {
 		RP_BG.add(visual);
+		if (DBGOUT) console.log("vis "+visual.id,">>> RP_BG");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddUIVisual = function ( visual ) {
 		RP_UI.add(visual);
+		if (DBGOUT) console.log("vis "+visual.id,">>> RP_UI");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddScreenOverlayVisual = function ( visual ) {
 		RP_OVER.add(visual);
+		if (DBGOUT) console.log("vis "+visual.id,">>> RP_OVER");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveWorldVisual = function ( visual ) {
 		RP_WORLD.remove(visual);
+		if (DBGOUT) console.log("RP_WORLD >>>",visual.id.toString());
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveWorldVisual = function ( visual ) {
 		RP_WORLD2.remove(visual);
+		if (DBGOUT) console.log("RP_WORLD2 >>>",visual.id.toString());
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveBackgroundVisual = function ( visual ) {
 		RP_BG.remove(visual);
+		if (DBGOUT) console.log("RP_BG >>>",visual.id.toString());
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveUIVisual = function ( visual ) {
 		RP_UI.remove(visual);
+		if (DBGOUT) console.log("RP_UI >>>",visual.id.toString());
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveScreenOverlayVisual = function ( visual ) {
 		RP_OVER.remove(visual);
+		if (DBGOUT) console.log("RP_OVER >>>",visual.id.toString());
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.GetViewport = function ( index ) {
@@ -155,7 +167,7 @@ define ([
 		if (BG_SPRITE) rpass.remove(BG_SPRITE);
 		BG_SPRITE = new THREE.Sprite(bgMat);
 		BG_SPRITE.position.set(0,0,-1000); // clip for 2D is 1000
-		RP_BG.add(BG_SPRITE);
+		this.AddBackgroundVisual(BG_SPRITE);
 	
 		function mi_SaveHeight(texture) {
 			BG_SPRITE.scale.set(texture.image.width,texture.image.height,1);
