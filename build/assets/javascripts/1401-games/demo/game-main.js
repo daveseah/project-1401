@@ -82,8 +82,11 @@ define ([
 
 		console.group("constructing test pieces");
 
-		var p = PIECEFACTORY.NewPiece("test");
-		console.log(p);
+		var numpieces = 100000;
+		console.log("creating",numpieces,"pieces without visuals");
+		for (var i=0;i<numpieces;i++) {
+			var p = PIECEFACTORY.NewPiece("test");
+		}
 
 		console.groupEnd();
 		console.group("constructing test visuals");
