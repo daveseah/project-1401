@@ -28,6 +28,10 @@ define ([
 		return p;
 	};
 
+	API.HeartBeat = function ( interval_ms ) {
+		ProtoPiece.UpdateAll( interval_ms );
+	};
+
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
 
 	return API;

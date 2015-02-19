@@ -1,9 +1,11 @@
 define ([
 	'1401/settings',
-	'1401/objects/sysloop'
+	'1401/objects/sysloop',
+	'1401/system/autosystem'
 ], function (
 	SETTINGS,
-	SYSLOOP
+	SYSLOOP,
+	AUTOSYS
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -121,7 +123,8 @@ define ([
 
 		// step the game
 		if (m_game.IsRunning()) {
-			m_game.Step ( m_interval_ms );
+			AUTOSYS.HeartBeat( m_interval_ms );
+			m_game.Step( m_interval_ms );
 		}
 		// update mastertime counter
 		m_current_time_ms += m_interval_ms;

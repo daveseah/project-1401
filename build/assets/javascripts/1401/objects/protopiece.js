@@ -40,10 +40,23 @@ define ([
 	}
 
 ///	PROTOTYPE PROPERTIES /////////////////////////////////////////////////////
-///	these are unique instances (class static variables)
+///	these are unique instances (like static class variables)
 
 	ProtoPiece.PieceDict = {};
-	ProtoPiece.idCounter = 100;
+	ProtoPiece.KeyArray = [];
+	ProtoPiece.idCounter = 1;
+
+	ProtoPiece.UpdateAll = function( interval_ms ) {
+		var dict = ProtoPiece.PieceDict;
+		var keys = ProtoPiece.KeyArray = Object.keys(dict);
+		var num = keys.length;
+		if (!num) return;
+		console.log("calling Update() on",num,"pieces");
+		for (var i=0;i<num;i++) {
+			var p = dict[keys[i]];
+			p.Update( interval_ms );
+		}
+	};
 
 
 /** PRIVATE SUPPORT METHODS **************************************************/
@@ -65,7 +78,7 @@ define ([
 			console.error("attempted to save duplicate id. aborting.");
 			return;
 		} else { 
-			ProtoPiece.PieceDict[piece.id] = ProtoPiece;
+			ProtoPiece.PieceDict[piece.id] = piece;
 		}
 	}
 
