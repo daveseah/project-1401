@@ -44,7 +44,6 @@ define ([
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	API.NewMovingPiece = function ( name ) {
-		console.info("creating new moving piece, I hope");
 		var p = new MovingPiece(name);
 		return p;
 	};

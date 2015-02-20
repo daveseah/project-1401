@@ -282,7 +282,7 @@ define ([
 				var str2 = '';
 				var str3 = '';
 
-				str2 += "SEQ <"+name+">";
+				str2 += "SEQ "+name.bracket();
 				if (grid.stacked) {
 					str2+=" stacked";
 					var mod = index % grid.columns;

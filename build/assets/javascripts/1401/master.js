@@ -60,7 +60,7 @@ define ([
 	activities directory, and load asyncronously.
 	TODO: Make re-entrant proof
 /*/	function m_GameLoad ( gameId ) {
-		console.log('!!! LOADING GAME', gameId.angle());
+		console.log('!!! LOADING GAME', gameId.bracket());
 
 		var path;
 		// construct path to 1401 system directory

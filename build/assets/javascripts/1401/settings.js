@@ -38,11 +38,25 @@ define ([
 		return CURRENT_TIME_MS;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	SETTINGS.MasterTime = function () {
+		if (CURRENT_TIME_MS===undefined) {
+			console.warn("Calling Settings.MasterTime() before MasterStart will always returns 0ms");
+			return 0;
+		}
+		return CURRENT_TIME_MS;
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	SETTINGS.SetGamePath = function ( path ) {
 		if (path!==undefined) {
 			CURRENT_GAME_PATH = path;
 		}
 		return CURRENT_GAME_PATH;
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	SETTINGS.GamePath = function ( extra ) {
+		extra = extra || '';
+		if (CURRENT_GAME_PATH===undefined) console.warn("GamePath is invalid before MasterGameLoad");
+		return CURRENT_GAME_PATH+extra;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	SETTINGS.SetSystemPath = function ( path ) {
@@ -52,23 +66,9 @@ define ([
 		return SYSTEM_PATH;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	SETTINGS.MasterTime = function () {
-		if (CURRENT_TIME_MS===undefined) {
-			console.warn("Settings.MasterTime() before MasterStart always returns 0ms");
-			return 0;
-		}
-		return CURRENT_TIME_MS;
-	};
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	SETTINGS.GamePath = function ( extra ) {
-		extra = extra || '';
-		if (CURRENT_GAME_PATH===undefined) console.warn("GamePath is invalid before Game Load");
-		return CURRENT_GAME_PATH+extra;
-	};
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	SETTINGS.SystemPath = function ( extra ) {
 		extra = extra || '';
-		if (SYSTEM_PATH===undefined) console.error("SystemPath is invalid before Game Load");
+		if (SYSTEM_PATH===undefined) console.error("SystemPath is invalid before MasterGameLoad");
 		return SYSTEM_PATH+extra;
 	};
 
