@@ -38,7 +38,9 @@ define ([
 ///	stores position, visual, event queues, and behavior hooks
 
 	/*/ constructor /*/
-	function Piece( name ) {
+	function Piece ( name ) {
+
+	//	call the parent constructor		
 		ProtoPiece.call (this, name);
 
 	//	position and orientation
@@ -77,42 +79,41 @@ define ([
 
 ///	BASIC LIFECYCLE METHODS ///////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('Update', function ( interval_ms ) {
+	Piece.method ('Update', function ( interval_ms ) {
 
 		var override = false;
 		if (this.updateFunc) {
-			override = this.updateFunc.call( this, interval_ms );
+			override = this.updateFunc.call (this, interval_ms);
 			if (override) return;
 		}
-		if (this.State) this.State.Update( interval_ms );
-		if (this.Visual && this.Visual.Update) this.Visual.Update( interval_ms );
-		if (this.ai) this.ai.Update( interval_ms );
+		if (this.State) this.State.Update (interval_ms);
+		if (this.ai) this.ai.Update (interval_ms);
 
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('Think', function ( interval_ms ) {
+	Piece.method ('Think', function ( interval_ms ) {
 
 		var override = false;
 		if (this.thinkFunc) {
 			override = this.thinkFunc.call( this, interval_ms );
 			if (override) return;
 		}
-		if (this.ai) this.ai.Think( interval_ms );
+		if (this.ai) this.ai.Think(interval_ms);
 
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('Execute', function ( interval_ms ) {
+	Piece.method ('Execute', function ( interval_ms ) {
 
 		var override = false;
 		if (this.executeFunc) {
 			override = this.executeFunc.call( this, interval_ms );
 			if (override) return;
 		}
-		if (this.ai) this.ai.Execute( interval_ms );
+		if (this.ai) this.ai.Execute(interval_ms);
 
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('OverrideUpdate', function ( func ) {
+	Piece.method ('OverrideUpdate', function ( func ) {
 		if (typeof func!=='function') {
 			console.error("not a function");
 			return;
@@ -120,7 +121,7 @@ define ([
 		this.updateFunc = func;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('OverrideThink', function ( func ) {
+	Piece.method ('OverrideThink', function ( func ) {
 		if (typeof func!=='function') {
 			console.error("not a function");
 			return;
@@ -128,7 +129,7 @@ define ([
 		this.thinkFunc = func;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('OverrideExecute', function ( func ) {
+	Piece.method ('OverrideExecute', function ( func ) {
 		if (typeof func!=='function') {
 			console.error("not a function");
 			return;
@@ -139,14 +140,14 @@ define ([
 ///	POSITION ACCESS METHODS //////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Position() - preferred way to read position of piece 
-/*/	Piece.method('Position', function () {
+/*/	Piece.method ('Position', function () {
 		// return a copy, so callee can manipulate it without borking
 		// the piece's actual position.
 		return this.position.clone();
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	SetPosition() - preferred way to set the position of the piece 
-/*/	Piece.method('SetPosition', function ( vector3 ) {
+/*/	Piece.method ('SetPosition', function ( vector3 ) {
 
 		// note we are copying values instead of assigning objects
 		// to avoid object reuse bugs in vector operations
@@ -157,9 +158,9 @@ define ([
 
 		// NOTE: visuals are THREE.object3d instances
 		if (this.visual) {
-			this.visual.position.x = vpos.x;
-			this.visual.position.y = vpos.y;
-			this.visual.position.z = vpos.z;
+			this.visual.position.x = vector3.x;
+			this.visual.position.y = vector3.y;
+			this.visual.position.z = vector3.z;
 		}
 
 		// NOTE: MatterJS is a verlet physics engine so this may create
@@ -175,27 +176,27 @@ define ([
 		return this.position.clone();
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('SetPositionXYZ', function ( x, y, z ) {
+	Piece.method ('SetPositionXYZ', function ( x, y, z ) {
 		this.SetPosition( new THREE.Vector3( x, y, z ) );
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('SetPositionXY', function ( x, y ) {
+	Piece.method ('SetPositionXY', function ( x, y ) {
 		this.SetPosition( new THREE.Vector3( x, y, this.position.z ) );
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('SetPositionX', function ( x ) {
+	Piece.method ('SetPositionX', function ( x ) {
 		this.SetPosition(
 			new THREE.Vector3( x, this.position.y, this.position.z)
 		);
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('SetPositionY', function ( y ) {
+	Piece.method ('SetPositionY', function ( y ) {
 		this.SetPosition(
 			new THREE.Vector3( this.position.x, y, this.position.z)
 		);
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('SetPositionZ', function ( z ) {
+	Piece.method ('SetPositionZ', function ( z ) {
 		this.SetPosition(
 			new THREE.Vector3( this.position.x, this.position.y, z )
 		);
@@ -204,11 +205,11 @@ define ([
 
 ///	VISUAL METHODS ////////////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('Visual', function () {
+	Piece.method ('Visual', function () {
 		return this.visual;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method('SetVisual', function ( vis ) {
+	Piece.method ('SetVisual', function ( vis ) {
 
 		if (vis===undefined) {
 			console.warn("To unset visual, use value of 'null' instead of 'undefined");
@@ -233,11 +234,6 @@ define ([
 			this.visual.pieceId = this.id;
 		}
 	});
-
-
-///	BASIC LIFECYCLE METHODS ///////////////////////////////////////////////////
-///	BASIC LIFECYCLE METHODS ///////////////////////////////////////////////////
-
 
 
 /** UTILITY FUNCTIONS ********************************************************/
