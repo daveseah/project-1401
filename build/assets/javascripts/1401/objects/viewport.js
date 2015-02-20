@@ -32,8 +32,8 @@ define ([
 		this.webGL 			= null;
 		// world
 		this.worldOrigin 	= null;		// where world cams are looking
-		this.worldWidth		= null;		// x-range of world values to frame in camera
-		this.worldDepth 	= null;		// y-range of world values to frame in camera
+		this.worldUnits		= null;		// number of visible world units in frame
+		this.worldScale 	= null;		// scale factor for world cams to fit world units
 		this.worldAspect	= null;		// computed world aspect ratio for 3d cams
 		this.worldUp	 	= null;		// up-vector for orienting world cams
 		// cameras
