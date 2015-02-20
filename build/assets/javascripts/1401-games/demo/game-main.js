@@ -82,54 +82,64 @@ define ([
 
 		console.group("constructing test pieces");
 
-		var numpieces = 100000;
-		console.log("creating",numpieces,"pieces without visuals");
-		for (var i=0;i<numpieces;i++) {
-			var p = PIECEFACTORY.NewPiece("test");
-		}
+			var numpieces = 100000;
+			console.log("creating",numpieces,"pieces without visuals");
+			for (var i=0;i<numpieces;i++) {
+				var p = PIECEFACTORY.NewPiece("test");
+			}
 
 		console.groupEnd();
+		
 		console.group("constructing test visuals");
 
-		spr01 = VISUALFACTORY.MakeDefaultSprite();
-		spr02 = VISUALFACTORY.MakeDefaultSprite();
-		spr03 = VISUALFACTORY.MakeDefaultSprite();
-		spr01.position.x = -512;
-		spr02.position.x = 512;
+			spr01 = VISUALFACTORY.MakeDefaultSprite();
+			spr02 = VISUALFACTORY.MakeDefaultSprite();
+			spr03 = VISUALFACTORY.MakeDefaultSprite();
+			spr01.position.x = -512;
+			spr02.position.x = 512;
 
-		RENDERER.AddWorldVisual(spr01);
-		RENDERER.AddWorldVisual(spr02);
-		RENDERER.AddWorldVisual(spr03);
+			RENDERER.AddWorldVisual(spr01);
+			RENDERER.AddWorldVisual(spr02);
+			RENDERER.AddWorldVisual(spr03);
 
-		var seq = {
-            grid: { columns:2, rows:1, stacked:true },
-            sequences: [
-                { name: 'flicker', framecount: 2, fps:4 }
-            ]
-        };
-        spr03.DefineSequences(SETTINGS.GamePath('resources/crixa.png'),seq);
+			/* make crixa ship */
+			var seq = {
+	            grid: { columns:2, rows:1, stacked:true },
+	            sequences: [
+	                { name: 'flicker', framecount: 2, fps:4 }
+	            ]
+	        };
+	        spr03.DefineSequences(SETTINGS.GamePath('resources/crixa.png'),seq);
+	        spr03.PlaySequence("flicker");
+	        spr03.PulseDown(1000,true);
+	        var crixa = PIECEFACTORY.NewPiece("crixa");
+	        crixa.SetVisual(spr03);
+	        crixa.SetPositionXY(0,192);
 
-        obj01 = VISUALFACTORY.MakeGroundPlane({
-        	width: 800,
-        	depth: 600,
-        	color: 0xFF0000
-        });
-        obj01.position.z = -200;
-        RENDERER.AddWorldVisual(obj01);
+	        /* make ground plane */
+	        obj01 = VISUALFACTORY.MakeGroundPlane({
+	        	width: 800,
+	        	depth: 600,
+	        	color: 0xFF0000
+	        });
+	        obj01.position.z = -200;
+	        RENDERER.AddWorldVisual(obj01);
 
-        obj02 = VISUALFACTORY.MakeSphere({
-        	radius:100,
-        	color: 0x00FF00
-        });
-        obj02.position.z = -250;
-        RENDERER.AddWorldVisual(obj02);
+	        /* make sphere */
+	        obj02 = VISUALFACTORY.MakeSphere({
+	        	radius:100,
+	        	color: 0x00FF00
+	        });
+	        obj02.position.z = -250;
+	        RENDERER.AddWorldVisual(obj02);
 
-		var ambientLight = new THREE.AmbientLight(0x222222);
-      	RENDERER.AddWorldVisual(ambientLight);
+	        /* add lights so mesh colors show */
+			var ambientLight = new THREE.AmbientLight(0x222222);
+	      	RENDERER.AddWorldVisual(ambientLight);
 
-		var directionalLight = new THREE.DirectionalLight(0xffffff);
-		directionalLight.position.set(1, 1, 1).normalize();
-		RENDERER.AddWorldVisual(directionalLight);
+			var directionalLight = new THREE.DirectionalLight(0xffffff);
+			directionalLight.position.set(1, 1, 1).normalize();
+			RENDERER.AddWorldVisual(directionalLight);
 
 		console.groupEnd();
 
