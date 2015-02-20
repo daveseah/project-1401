@@ -45,14 +45,14 @@ define ([
 		DEFAULT_SPR_TEXTURE = THREE.ImageUtils.loadTexture (path,THREE.UVMAPPING,
 			la_onload, la_onerr);
 		function la_onload ( texture ) {
-			if (DBGOUT) console.log("VisualFactory.LoadAssets() complete");
+			if (DBGOUT)    console.log("VisualFactory.LoadAssets() complete");
 			// signal we are done loading
 			if (callback) callback(this);
 		}
 		function la_onerr ( err ) {
 			console.log("LoadAssets",err);
 		}
-	}
+	};
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.HeartBeat = function ( interval_ms ) {
 		for (var i=0;i<m_updatable.length;i++) {
@@ -140,7 +140,7 @@ define ([
 		var mesh = new THREE.Mesh(geom,mat);
 		mesh.position.z = -1;
 		mesh.scale.x = spec.width;
-		mesh.scale.y = spec.depth
+		mesh.scale.y = spec.depth;
 
 		mesh.SetSize = function ( w, h ) {
 			// size by scale
