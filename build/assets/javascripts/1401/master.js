@@ -82,8 +82,7 @@ define ([
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Called after m_GameLoad's require has loaded the module.
-/*/	function m_GameInstantiate ( loadedGame )
-	{
+/*/	function m_GameInstantiate ( loadedGame ) {
 		console.group('Game Startup');
 
 		m_game = loadedGame;
@@ -119,13 +118,14 @@ define ([
 		if (!m_game) return;
 
 		// update mastertime
-		SETTINGS.MasterTime ( m_current_time_ms );
+		SETTINGS.SetMasterTime ( m_current_time_ms );
 
 		// step the game
 		if (m_game.IsRunning()) {
 			AUTOSYS.HeartBeat( m_interval_ms );
 			m_game.Step( m_interval_ms );
 		}
+		
 		// update mastertime counter
 		m_current_time_ms += m_interval_ms;
 	}
