@@ -92,52 +92,52 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddWorldVisual = function ( visual ) {
 		RP_WORLD.add(visual);
-		if (DBGOUT) console.log("vis "+visual.id,">>> RP_WORLD");
+		if (DBGOUT) console.log("added "+visual.id,">>> RP_WORLD");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddWorldOverlayVisual = function ( visual ) {
 		RP_WORLD2.add(visual);
-		if (DBGOUT) console.log("vis "+visual.id,">>> RP_WORLD2");
+		if (DBGOUT) console.log("added "+visual.id,">>> RP_WORLD2");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddBackgroundVisual = function ( visual ) {
 		RP_BG.add(visual);
-		if (DBGOUT) console.log("vis "+visual.id,">>> RP_BG");
+		if (DBGOUT) console.log("added "+visual.id,">>> RP_BG");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddUIVisual = function ( visual ) {
 		RP_UI.add(visual);
-		if (DBGOUT) console.log("vis "+visual.id,">>> RP_UI");
+		if (DBGOUT) console.log("added "+visual.id,">>> RP_UI");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddScreenOverlayVisual = function ( visual ) {
 		RP_OVER.add(visual);
-		if (DBGOUT) console.log("vis "+visual.id,">>> RP_OVER");
+		if (DBGOUT) console.log("added "+visual.id,">>> RP_OVER");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveWorldVisual = function ( visual ) {
 		RP_WORLD.remove(visual);
-		if (DBGOUT) console.log("RP_WORLD >>>",visual.id.toString());
+		if (DBGOUT) console.log("RP_WORLD >>>",visual.id.toString(),"removed");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveWorldVisual = function ( visual ) {
 		RP_WORLD2.remove(visual);
-		if (DBGOUT) console.log("RP_WORLD2 >>>",visual.id.toString());
+		if (DBGOUT) console.log("RP_WORLD2 >>>",visual.id.toString(),"removed");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveBackgroundVisual = function ( visual ) {
 		RP_BG.remove(visual);
-		if (DBGOUT) console.log("RP_BG >>>",visual.id.toString());
+		if (DBGOUT) console.log("RP_BG >>>",visual.id.toString(),"removed");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveUIVisual = function ( visual ) {
 		RP_UI.remove(visual);
-		if (DBGOUT) console.log("RP_UI >>>",visual.id.toString());
+		if (DBGOUT) console.log("RP_UI >>>",visual.id.toString(),"removed");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveScreenOverlayVisual = function ( visual ) {
 		RP_OVER.remove(visual);
-		if (DBGOUT) console.log("RP_OVER >>>",visual.id.toString());
+		if (DBGOUT) console.log("RP_OVER >>>",visual.id.toString(),"removed");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.GetViewport = function ( index ) {
