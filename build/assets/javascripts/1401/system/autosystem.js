@@ -41,7 +41,7 @@ define ([
 	API.name = "autosystem";
 
 	API.HeartBeat = function ( interval_ms ) {
-		// VISUALFACTORY.HeartBeat( interval_ms );
+		VISUALFACTORY.HeartBeat( interval_ms );
 		PIECEFACTORY.HeartBeat( interval_ms );
 		// RENDERER.HeartBeat( interval_ms );
 	};

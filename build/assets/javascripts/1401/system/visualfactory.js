@@ -25,30 +25,49 @@ define ([
 
 	var DEFAULT_SPR_TEXTURE = null;
 
+	// any visuals that need update time should be added to this array
+	// to be called during HeartBeat()
+	var m_updatable = [];
+
 /** PUBLIC API ***************************************************************/
 
 	var API = {};
 	API.name = "visualfactory";
 
-	// implement preloading of default texture
-	API.LoadAssets = function ( callback ) {
+
+/// SYSTEM INTERFACE ////////////////////////////////////////////////////////
+
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Load preliminary assets when called by master.js. Callback signals that
+	its assets have been completely loaded.
+/*/	API.LoadAssets = function ( callback ) {
 		var path = SETTINGS.SystemPath('common/default-visual.png');
 		DEFAULT_SPR_TEXTURE = THREE.ImageUtils.loadTexture (path,THREE.UVMAPPING,
 			la_onload, la_onerr);
 		function la_onload ( texture ) {
-			console.log("VisualFactory.LoadAssets Complete");
+			if (DBGOUT) console.log("VisualFactory.LoadAssets() complete");
 			// signal we are done loading
 			if (callback) callback(this);
 		}
 		function la_onerr ( err ) {
 			console.log("LoadAssets",err);
 		}
-
 	}
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.HeartBeat = function ( interval_ms ) {
+		for (var i=0;i<m_updatable.length;i++) {
+			var v = m_updatable[i];
+			v.Update (interval_ms);
+		}
+	};
+
 
 /// OBJECT MAKERS ///////////////////////////////////////////////////////////
 
-	API.MakeDefaultSprite = function () {
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Make a sprite that uses a default texture that has been already loaded
+	and defined during VisualFactory LoadAssets initialization
+/*/	API.MakeDefaultSprite = function () {
 		var spr;
 		if (DEFAULT_SPR_TEXTURE) {
 			var mat = new THREE.SpriteMaterial({
@@ -62,13 +81,16 @@ define ([
 			var ww = DEFAULT_SPR_TEXTURE.image.width;
 			var hh = DEFAULT_SPR_TEXTURE.image.height;
 			spr.SetScaleXYZ(ww,hh,1);
+			// save in update array
+			m_updatable.push(spr);
 		} else {
 			console.error("DEFAULT_SPR_TEXTURE is undefined");
 		}
 		return spr;	
 	};
-
-/*/	Main Sprite Maker Method. 
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Main Sprite Maker Method, taking a texturePath and an optional callback when the sprite
+	is completely initialized.
 /*/	API.MakeStaticSprite = function ( texturePath, onValid ) {
 		if (typeof texturePath != 'string') throw "texturePath must be string";
 		if (!texturePath) throw "texturePath can not be empty";
@@ -81,6 +103,9 @@ define ([
 		console.assert(mat, "could not create THREE.SpriteMaterial");
 
 		var threeSprite = new InqSprite (mat);
+		// save in update array
+		m_updatable.push(spr);
+
 		console.assert(threeSprite, "could not create THREE.Sprite");
 
 		function mss_onload ( texture ) {
