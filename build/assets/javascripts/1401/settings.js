@@ -53,19 +53,22 @@ define ([
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	SETTINGS.MasterTime = function () {
-		if (CURRENT_TIME_MS===undefined) console.error("Use of MasterTime before Start() is invalid!");
+		if (CURRENT_TIME_MS===undefined) {
+			console.warn("Settings.MasterTime() before MasterStart always returns 0ms");
+			return 0;
+		}
 		return CURRENT_TIME_MS;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	SETTINGS.GamePath = function ( extra ) {
 		extra = extra || '';
-		if (CURRENT_GAME_PATH===undefined) console.error("Use of GamePath before Start() is invalid!");
+		if (CURRENT_GAME_PATH===undefined) console.warn("GamePath is invalid before Game Load");
 		return CURRENT_GAME_PATH+extra;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	SETTINGS.SystemPath = function ( extra ) {
 		extra = extra || '';
-		if (SYSTEM_PATH===undefined) console.error("Use of SystemPath before Start() is invalid!");
+		if (SYSTEM_PATH===undefined) console.error("SystemPath is invalid before Game Load");
 		return SYSTEM_PATH+extra;
 	};
 
