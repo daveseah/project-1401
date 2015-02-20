@@ -1,11 +1,13 @@
 /* sprite.js */
 define ([
-	'three'
+	'three',
+	'1401/settings'
 ], function ( 
-	THREE
+	THREE,
+	SETTINGS
 ) {
 
-	var DBGOUT = false;
+	var DBGOUT = true;
 
 /**	SPRITE *******************************************************************\
 
@@ -22,6 +24,10 @@ define ([
 
 	/* constructor */
 	function InqSprite ( spriteMaterial ) {
+
+		// pass up constructor
+		THREE.Sprite.call(this,spriteMaterial);
+
 		// make this testable
 		this.inqsprite=true;
 
@@ -30,13 +36,15 @@ define ([
 		this.frameIndex = 0;	// deprecated
 		this.frameRate = 6;		// default framerate, on 4s (deprecated)
 
-		// new spritesheet support
+		// spritesheet support
 		this.sequences = {};	// sequence objects
 		this.seqRateTimer = Math.floor(1000/DEFAULT_FPS);
 		this.seqRuns = 0;		// run counter/pause countrol
 		// full sequence play mode
 		this.seqMode = InqSprite.RUN_INIT;
 		this.seq = null;		// current sequence
+		// deferred spritesheet load
+		this.sequenceQueue = [];
 
 		// set when spritesheet in use
 		// to ensure proper scaling
@@ -44,11 +52,13 @@ define ([
 		this.fractionalHeight = null;
 		this.scaleFactor = 1;
 
-		// pass up constructor
-		THREE.Sprite.call(this,spriteMaterial);
-
 		// update handler
 		this.updateFunc = null;
+
+		// async loading flags
+		this.textureQueue = [];
+		this.textureQCount = 0;
+
 	}
 	/* special values for seqRuns */
 	InqSprite.MODE_FOREVER = -1;
@@ -66,19 +76,19 @@ define ([
 	/* methods */
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	InqSprite.method('Update', function ( ms ) {
-		if (SEMAPHORE('pause')) {
-			return;
-		}
-
 		// private updateFunction for certain kinds of animation support
 		var override = false;
 		if (this.updateFunc) {
 			// updateFunc can override default update methods by returning TRUE
-			override = this.updateFunc.call(this,interval_ms);
+			override = this.updateFunc.call (this, ms);
 		}
 		if (!override) {
-			if (this.seq) this.PRI_UpdateSequence ( ms );
-			if (this.pulseDirection!==undefined) this.PRI_UpdatePulse ( ms );
+			if (this.seq) {
+				this.PRI_UpdateSequence ( ms );
+			}
+			if (this.pulseDirection!==undefined) {
+				this.PRI_UpdatePulse ( ms );
+			}
 		}
 	});
 
@@ -92,7 +102,6 @@ define ([
 			this.seqMode = InqSprite.RUN_COMPLETE;
 		}
 		if (this.seqRuns==InqSprite.MODE_STOPPED) return;
-
 		var seq = this.seq;
 		if (this.seqRateTimer <= 0 ) {
 			this.seqRateTimer = seq.rate;
@@ -121,7 +130,7 @@ define ([
 	pulseStart, pulseEnd, pulseDuration, pulseDirection
 /*/	InqSprite.method('PRI_UpdatePulse', function ( ms ) {
 
-		var elapsed = window.INQSIM.MasterTime() - this.pulseStart;
+		var elapsed = SETTINGS.MasterTime() - this.pulseStart;
 		if (elapsed>this.pulseDuration) {
 			elapsed=this.pulseDuration;
 		}
@@ -132,25 +141,26 @@ define ([
 		if (elapsed===this.pulseDuration) {
 			if (this.pulseRepeat) {
 				this.pulseDirection *= -1;
-				this.pulseStart=window.INQSIM.MasterTime();
+				this.pulseStart=SETTINGS.MasterTime();
 				this.pulseSend=this.pulseStart+this.pulseDuration;
 			} else {
 				this.pulseDirection=undefined;
 			}
 		}
 	});
-
-
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	InqSprite.method('SetTexture', function ( texturePath, onValid ) {
 		if (!onValid) console.warn("InqSprite.SetTexture() should use callback");
 		var that = this;
+		this.textureQueue.push('['+(this.textureQCount++)+']'+texturePath);
 		var texture = THREE.ImageUtils.loadTexture ( texturePath, THREE.UVMAPPING, st_onload, st_onerr );
 		console.assert(texture,"Can't find texture",texturePath);
 		this.material.map = texture;
 		this.material.needsUpdate = true;
 
 		function st_onload ( texture ) {
+			var loaded = that.textureQueue.shift();
+			if (DBGOUT) console.log("Sprite.SetTexture(): async load complete",loaded);
 
 			// get fullsize dimensions of texture in pixels
 			var ww = texture.image.width;
@@ -158,15 +168,19 @@ define ([
 
 			// set the sprite to the proper size
 			that.SetScaleXYZ(ww,hh,1);
-
-			if (DBGOUT) console.log("SetTexture setting scale",ww+'x'+hh);
+			if (DBGOUT) console.log("Sprite.SetTexture(): setting scale",ww+'x'+hh);
 
 			// inform callee
 			if (onValid) onValid.call(that, texture);
+
+			// check for queued sequence play comment
+			that.PRI_CheckSequenceQueue();
 		}
 
 		function st_onerr ( err ) {
-			console.log("SetTexture",err);
+			var loaded = that.textureQueue.shift();
+			if (DBGOUT) console.error("Sprite.SetTexture(): failed to load",loaded);	
+			console.log(err);
 		}
 
 	});
@@ -225,6 +239,7 @@ define ([
 	beginning of a row on the spritesheet, as opposed to a packed
 	spritesheet.
 /*/	InqSprite.method('DefineSequences', function ( textureName, spec, onValid ) {
+
 		var that = this;
 
 	//  validate grid property
@@ -251,8 +266,8 @@ define ([
 
 		/*** this function executes after SetTexture() call succeeds **/
 		function ContinueDefineSequences (texture) {
-			var index = 0;
 
+			var index = 0;
 			var fracWidth = 1 / grid.columns;
 			var fracHeight = 1 / grid.rows;
 
@@ -328,6 +343,11 @@ define ([
 /*/	PlaySequence() starts to play the sequence at the designated seqName +
 	offset, if one is defined.
 /*/	InqSprite.method('PlaySequence', function ( seqName, runs ) {
+		if (this.textureQueue.length) {
+			this.sequenceQueue.push({name:seqName, runs: runs, mode:'play'});
+			console.log("Sprite.PlaySequence(): deferring",seqName.bracket(),"until texture loaded");
+			return;
+		}
 		runs = runs || InqSprite.MODE_FOREVER;
 		var seq = this.sequences[seqName];
 		if (!seq) {
@@ -347,6 +367,11 @@ define ([
 /*/	GoSequence() loads the sequence, with an optional offset, and then
 //  stops.
 /*/	InqSprite.method('GoSequence', function ( seqName, offset ) {
+		if (this.textureQueue.length) {
+			this.sequenceQueue.push({name:seqName, offset: offset, mode:'go'});
+			console.log("Sprite.GoSequence(): deferring",seqName.bracket(),"until texture loaded");
+			return;
+		}
 		var runs = InqSprite.MODE_STOPPED;
 		offset = offset || 0;
 		var seq = this.sequences[seqName];
@@ -464,6 +489,25 @@ define ([
 		this.seqRateTimer = seq.rate;
 		this.seq = seq;
 	});
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	If PlaySequence() or GoSequence() is called while DefineSequence() is
+	still loading, it is queued and checked in SetTexture()'s success func
+/*/	InqSprite.method('PRI_CheckSequenceQueue', function () {
+		var cmd = this.sequenceQueue.shift();
+		if (!cmd) return;
+		switch (cmd.mode) {
+			case 'go':
+				if (DBGOUT) console.info("executing deferred GoSequence",cmd.name.bracket());
+				this.GoSequence(cmd.name,cmd.offset);
+				break;
+			case 'play':
+				if (DBGOUT) console.info("executing deferred PlaySequence",cmd.name.bracket());
+				this.PlaySequence(cmd.name,cmd.runs);
+				break;
+			default: 
+				console.error('unknown seqcmd',cmd.name);
+		} 
+	});
 
 
 /// SPRITE PULSING ///////////////////////////////////////////////////////////
@@ -474,7 +518,7 @@ define ([
 		if (this.pulseDuration) return;
 		// otherwise do it
 		period_ms = period_ms || 1000;
-		this.pulseStart = INQSIM.MasterTime();
+		this.pulseStart = SETTINGS.MasterTime();
 		this.pulseEnd = this.pulseStart + period_ms;
 		this.pulseDuration = period_ms;
 		this.pulseDirection = 1;
@@ -487,7 +531,7 @@ define ([
 		if (this.pulseDuration) return;
 		// otherwise do it
 		period_ms = period_ms || 1000;
-		this.pulseStart = INQSIM.MasterTime();
+		this.pulseStart = SETTINGS.MasterTime();
 		this.pulseEnd = this.pulseStart + period_ms;
 		this.pulseDuration = period_ms;
 		this.pulseDirection = -1;
