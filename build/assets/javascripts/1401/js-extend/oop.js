@@ -10,7 +10,7 @@ define (function () {
 
 /// OBJECT INHERITANCE ///////////////////////////////////////////////////////
 
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Add 'method' method to all functions, so there is less mucking about with
 	ugly prototype assignments. Compare:
 
@@ -24,14 +24,6 @@ define (function () {
 			// 'this.prototype' = function object w/ methods
 			// add the method
 			this.prototype[name] = func;
-			// add lame "super" support
-			var sup = this.superproto;
-			if (sup && sup[name]) {
-				// save the function call of overridden method
-				// access via contructorfunction.superMethod['method'].call()
-				if (!this.superMethod) this.superMethod = {};
-				this.superMethod[name] = sup[name];
-			}
 			// return the function object for assignment
 			return this;
 		};
@@ -39,7 +31,7 @@ define (function () {
 		console.warn('JSHACKS: Function.prototype.method already exists');
 	}
 
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Likewise for object inheritance, replace:
 	MovingPiece.prototype = Object.create(Piece.prototype);
 	MovingPiece.prototype.constructor = MovingPiece;
@@ -49,11 +41,6 @@ define (function () {
 	inheritsFrom() operates on constructor function objects. It creates a new
 	prototype object from the passed constructor function, which allows
 	Javascript inheritance to work.
-
-	We also save superproto, which points to the prototype of the parent 
-	constructor function containing all its methods so we can save a reference 
-	to it in the 'method' function above, which gives us something of an
-	ability to use a 'super()' style call in methods.
 /*/
 	if (!Function.prototype.inheritsFrom) {
 		Function.prototype.inheritsFrom = function ( otherConstructor ) {
@@ -66,6 +53,32 @@ define (function () {
 	} else {
 		console.warn('JSHACKS: Function.prototype.inheritsFrom already exists');
 	}
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Syntactic sugar for invoking an "overriden" method as one would with
+	the "super()" call in classical inheritance. A good review of the subject
+	can be found at this url:
+	http://blog.salsify.com/engineering/super-methods-in-javascript
+	Basically, Javascript doesn't need super() because you can call the
+	function directly through the prototype chain. ECMA6 adds super() support,
+	so this will inevitably become obsolete.
+/*/	
+	if (!Function.prototype.superCall) {
+		Function.prototype.superCall = function ( methodName, instance ) {
+			var sup = this.prototype[methodName];
+			if (sup) {
+				var args = Array.prototype.slice.call(arguments);
+				args.splice(0,2);
+				sup.apply(instance,args);
+			} else {
+				console.error('method',methodName.bracket(),"doesn't exist in prototype");
+			}
+		};
+	} else {
+		console.warn('JSHACKS: Function.prototype.superCall already exists');
+	}
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/

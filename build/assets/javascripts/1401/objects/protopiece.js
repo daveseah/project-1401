@@ -50,6 +50,7 @@ define ([
 		var dict = ProtoPiece.PieceDict;
 		var keys = ProtoPiece.KeyArray = Object.keys(dict);
 		var num = keys.length;
+		// console.log("calling update on",num,"pieces");
 		if (!num) return;
 		for (var i=0;i<num;i++) {
 			var p = dict[keys[i]];

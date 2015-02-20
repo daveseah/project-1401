@@ -88,6 +88,9 @@ define ([
 				var p = PIECEFACTORY.NewPiece("test");
 			}
 
+			console.log("creating testSuperPiece");
+			var testSuperPiece = PIECEFACTORY.NewMovingPiece("TestSuper");
+
 		console.groupEnd();
 		
 		console.group("constructing test visuals");
@@ -143,7 +146,7 @@ define ([
 
 		console.groupEnd();
 
-		console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
+		// console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
 
 
 	}
