@@ -4,6 +4,7 @@ define ([
 ) {
 
 	var DBGOUT = true;
+	var GLOBAL = true;
 
 /**	Debug *******************************************************************\
 
@@ -103,6 +104,12 @@ define ([
 		return str;
 	}
 
+/** GLOBAL HOOKS *************************************************************/
+
+	if (GLOBAL) {
+		window.InspectModule = API.InspectModule;
+		window.InspectObject = API.InspectObject;
+	}
 
 /** RETURN MODULE ************************************************************/
 

@@ -148,13 +148,6 @@ define ([
 
 		console.groupEnd();
 
-		console.group('testing debugger methods');
-
-			console.log(DBG.InspectModule("visualfactory"));
-			console.log(DBG.InspectObject(testSuperPiece));
-
-		console.groupEnd();
-
 		// console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
 
 
