@@ -4,13 +4,15 @@ define ([
 	'1401/objects/sysloop',
 	'1401/system/renderer',
 	'1401/system/visualfactory',
-	'1401/system/piecefactory'
+	'1401/system/piecefactory',
+	'1401/system/debug'
 ], function ( 
 	SETTINGS,
 	SYSLOOP,
 	RENDERER,
 	VISUALFACTORY,
-	PIECEFACTORY
+	PIECEFACTORY,
+	DBG
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -143,6 +145,13 @@ define ([
 			var directionalLight = new THREE.DirectionalLight(0xffffff);
 			directionalLight.position.set(1, 1, 1).normalize();
 			RENDERER.AddWorldVisual(directionalLight);
+
+		console.groupEnd();
+
+		console.group('testing debugger methods');
+
+			console.log(DBG.InspectModule("visualfactory"));
+			console.log(DBG.InspectObject(testSuperPiece));
 
 		console.groupEnd();
 
