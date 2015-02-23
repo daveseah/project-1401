@@ -24,6 +24,9 @@ Although I'm using OS X, this project should also build on Linux and Windows. I'
 
 You must have Git, NodeJS, and Mimosa installed. For the purposes of these instructions, the path `/my_code_folder` is the example directory where we'll put the source code; replace that with your own directory (for example, mine is `~dseah/dev/`). You will need to be connected to the Internet, because Node and Mimosa download dependencies from other repositories.
 
+Here's a [5 minute installation video on YouTube](https://www.youtube.com/watch?v=2QaUS15kGbU) that walks through the process of setting up a fresh Mac running OS X Yosemite, from installing Homebrew to pulling the repo and running it. 
+
+
 #### Install Git, NodeJS, Mimosa
 
 You need to install **Git** and **NodeJS**, if you don't have them already. Use a package manager or downloader. 
