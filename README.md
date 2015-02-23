@@ -28,7 +28,8 @@ You must have Git, NodeJS, and Mimosa installed. For the purposes of these instr
 
 You need to install **Git** and **NodeJS**, if you don't have them already. Use a package manager or downloader. 
 
-* On MacOS, I used [homebrew](http://brew.sh/). On Windows, you can download the separate installers for Git and NodeJS. 
+* On MacOS, I used [homebrew](http://brew.sh/) to install NodeJS. Homebrew requires installing the [xcode command line tools](https://developer.apple.com/library/ios/technotes/tn2339/_index.html), which gives you Git as well.
+* On Windows, you can download the separate installers for Git and NodeJS. 
 * Once Git and NodeJS are installed, open a terminal window (powershell on windows), and install Mimosa by typing `npm install -g mimosa`. It may take a while for this to install from the Internet during peak hours, so be patient.
 
 #### Clone the Project 1401 Github Repo
