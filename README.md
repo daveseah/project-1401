@@ -1,10 +1,10 @@
 ## Project 1401 - Javascript Video Game Shell
 
-I am an interactive designer and reluctant programmer that, on my [10-year blogging anniversary][10year], realized that I was not getting some dream projects done. One of the oldest ones is making my own video game. While I don't consider myself a die-hard programmer and have avoided it when possible, I'm seeing that I can't avoid it. Thanks to some recent project work, I've started to pick up some modern web application skills, so I'm using them to kick-start a Javascript-based code base for game design exploration.
+I'm an interactive designer and reluctant programmer that, on my [10-year blogging anniversary][10year], remembered my old dream of making my own video game had never been fulfilled. Thanks to some recent project work, I've started to pick up some modern web application skills, so I'm using Javascript to build a base of exploration.
 
-Although there are a lot of tutorials on the Internet, they often do not teach you how to build an actual working system from scratch. There are also many powerful game engines available, but they don't often explain their founding architectural concepts either. I am hoping that this project will help fill that void, because I am totally obsessive about connecting all the dots together in working code. 
+There is an educational goal as well. There are many powerful game engines available, but they don't often explain their founding architectural concepts. Although there are a lot of tutorials on the Internet, they often do not teach you how to build an actual working system from scratch. I want this project to help me and others understand how to build a working framework from scratch, mistakes and all. I figure this will be helpful to someone of an intermediate programming level who is curious how to build web applications. 
 
-For more detailed project documentation, the [Project 1401 Wiki][wiki] here on Github. For background information, see my [Project 1401][project1401] home page. 
+For project documentation, the [Project 1401 Wiki][wiki] here on Github. For background information, see my [Project 1401][project1401] home page. 
 
 [project1401]:http://davidseah.com/about/make-video-game/
 [10year]:http://davidseah.com/2014/09/my-next-10-years-of-blogging/
@@ -53,9 +53,11 @@ There is not a lot of online material that details the birth of a video game arc
 
 ## Updates
 
-February 17, 2015
+February 19, 2015
 * Refactoring the ports of SYSLOOP and RENDERER, two manager modules. When I had written the renderer before, I didn't have a good grasp of how to manage the different coordinate systems (there are three: browser, webgl/screen, and world). Also, it was a mess. 
 * Ported/cleaned-up Visual and Viewport managers.
+* Ported/cleaned-up ProtoPiece and Piece classes. Created MovingPiece stub.
+* Added module and object inspection functions to help with documentation.
 
 September 28, 2014
 * Added game module loading w/ basic gameloop and gamestep control (text only), rewriting it to be easier to create modules from scratch.
