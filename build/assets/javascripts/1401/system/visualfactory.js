@@ -3,7 +3,7 @@ define ([
 	'three',
 	'1401/objects/viewport',
 	'1401/settings',
-	'1401/objects/sprite'
+	'1401/objects/visual/sprite'
 ], function ( 
 	THREE,
 	VIEWPORT,

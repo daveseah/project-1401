@@ -132,7 +132,7 @@ define ([
 /** MODULE PRIVATE FUNCTIONS ************************************************/
 //////////////////////////////////////////////////////////////////////////////
 
-	function m_InitializeMeta ( gameId, viewModel ) {;
+	function m_InitializeMeta ( gameId, viewModel ) {
 		GAME_ID = gameId;
 		VIEW_MODEL = viewModel;
 	}
