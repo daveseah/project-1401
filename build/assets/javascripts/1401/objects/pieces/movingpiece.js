@@ -1,7 +1,7 @@
 /* movingpiece.js */
 define ([
 	'three',
-	'1401/objects/piece/piece'
+	'1401/objects/pieces/piece'
 ], function ( 
 	THREE,
 	Piece

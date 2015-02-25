@@ -1,7 +1,7 @@
 /* piece.js */
 define ([
 	'three',
-	'1401/objects/piece/protopiece'
+	'1401/objects/pieces/protopiece'
 ], function ( 
 	THREE,
 	ProtoPiece

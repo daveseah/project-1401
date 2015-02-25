@@ -1,9 +1,9 @@
 /* piecefactory.js */
 define ([
 	'1401/settings',
-	'1401/objects/piece/protopiece',
-	'1401/objects/piece/piece',
-	'1401/objects/piece/movingpiece'
+	'1401/objects/pieces/protopiece',
+	'1401/objects/pieces/piece',
+	'1401/objects/pieces/movingpiece'
 ], function ( 
 	SETTINGS,
 	ProtoPiece,
