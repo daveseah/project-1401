@@ -35,7 +35,7 @@ define ([
 		m_viewmodel = viewModel || {};
 
 		// select game to load
-		m_GameLoad ( gameSpec.game );
+		m_GameLoad ( gameSpec.game, viewModel );
 
 		console.groupEnd();
 	};
@@ -59,21 +59,14 @@ define ([
 /*/	Given the gameId, look for corresponding folder in the
 	activities directory, and load asyncronously.
 	TODO: Make re-entrant proof
-/*/	function m_GameLoad ( gameId ) {
+/*/	function m_GameLoad ( gameId, viewModel ) {
 		console.log('!!! LOADING GAME', gameId.bracket());
 
-		var path;
-		// construct path to 1401 system directory
-		path = SETTINGS('PATH_SYSTEM')+'/';
-		SETTINGS.SetSystemPath(path);
-		// construct path to game directory
-		path = SETTINGS('PATH_GAMES');	
-		m_game_path = path + '/' + gameId + '/';
-		SETTINGS.SetGamePath(m_game_path);
-		var module_path = m_game_path + SETTINGS('PATH_RUNFILE');
-
+		SETTINGS._Initialize( gameId, viewModel );
+		var module_path = SETTINGS.GameMainModulePath();
 		m_game = null;
 
+		/* load game module asynchronously */
 		require ( [module_path], m_GameInstantiate );
 		// ...execution continues in m_GameInstantiate()
 		
@@ -103,7 +96,7 @@ define ([
 
 		// initialize globals
 		m_current_time_ms = 0;
-		SETTINGS.SetMasterTime(m_current_time_ms);
+		SETTINGS._SetMasterTime(m_current_time_ms);
 
 		// initialize timestep
 		setInterval( m_TimeStep, m_interval_ms );
@@ -118,7 +111,7 @@ define ([
 		if (!m_game) return;
 
 		// update mastertime
-		SETTINGS.SetMasterTime ( m_current_time_ms );
+		SETTINGS._SetMasterTime ( m_current_time_ms );
 
 		// step the game
 		if (m_game.IsRunning()) {

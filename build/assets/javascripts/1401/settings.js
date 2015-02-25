@@ -1,44 +1,74 @@
-/* gamesys.settings */
+/* 1401.settings */
 define ([
+	'yaml'
 ], function ( 
+	yaml
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 /**	MASTER SETTINGS *********************************************************\
+//////////////////////////////////////////////////////////////////////////////
 	
 	Contains global settings, properties, constants
 
 	The actual global values are stored in an inaccessible object called
-	PROP, which the Property() method checks.
+	S. 
+
+	Note that this module returns a FUNCTION, which also has additional
+	functions attached to it. To retrieve/set a property:
+		var val = SETTINGS('propname');
+		SETTINGS.Set('propname', value);
+
 
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PUBLIC API **************************************************************/
+//////////////////////////////////////////////////////////////////////////////
 
-	var SETTINGS;
+	var SETTINGS = {};
+	SETTINGS.name = "1401.settings";
 
+
+///	BASIC PROPERTY SETTING/GETTING
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-/*/	This checks if a property actually exists 
-/*/	SETTINGS = function ( propName ) {
-		var value = PROP[propName];
-		console.assert(value,"Requested property '"+propName+"' exists");
+/*/	Retrieve value of associated property
+/*/	SETTINGS = function ( key ) {
+		var value = S[key];
+		if (!value)
+			console.warn("Requested key",key.bracket(),"doesn't exist!");
 		return value;
 	};
-
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	SETTINGS.Set = function ( key, value ) { 
-		if (PROP[key]) console.log ('overwriting',key.bracket(),'with new value');
-		PROP[key]=value;
+/*/	Set the value of a key
+/*/	SETTINGS.Set = function ( key, value ) { 
+		if (S[key]) 
+			console.warn ('overwriting',key.bracket(),'with new value ['+value+']');
+		S[key]=value;
 	};
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	SETTINGS.SetMasterTime = function ( current_time_ms ) {
+
+
+/// SYSTEM INITIALIZATION ////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	SETTINGS._Initialize = function ( gameId, viewModel ) {
+		m_InitializeMeta ( gameId, viewModel );
+		m_InitializePaths();
+
+	};
+
+
+/// SYSTEM PROPERTIES ////////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	called from master step every frame to update master time. 
+/*/	SETTINGS._SetMasterTime = function ( current_time_ms ) {
 		if (current_time_ms!==undefined) {
 			CURRENT_TIME_MS = current_time_ms;
 		}
 		return CURRENT_TIME_MS;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	SETTINGS.MasterTime = function () {
+/*/	Return the master time, in milliseconds. Used by system-related services;
+	Games should use the Timer class instead.
+/*/	SETTINGS.MasterTime = function () {
 		if (CURRENT_TIME_MS===undefined) {
 			console.warn("Calling Settings.MasterTime() before MasterStart will always returns 0ms");
 			return 0;
@@ -46,59 +76,83 @@ define ([
 		return CURRENT_TIME_MS;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	SETTINGS.SetGamePath = function ( path ) {
-		if (path!==undefined) {
-			CURRENT_GAME_PATH = path;
-		}
-		return CURRENT_GAME_PATH;
-	};
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	SETTINGS.GamePath = function ( extra ) {
+/*/	Return current game directory path, with <extra> added.
+	Useful for loading assets in the game directory.
+/*/	SETTINGS.GamePath = function ( extra ) {
 		extra = extra || '';
-		if (CURRENT_GAME_PATH===undefined) console.warn("GamePath is invalid before MasterGameLoad");
-		return CURRENT_GAME_PATH+extra;
+		if (PATH_GAME===undefined) 
+			console.warn("GamePath is invalid before MasterGameLoad");
+		return PATH_GAME+extra;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	SETTINGS.SetSystemPath = function ( path ) {
-		if (path!==undefined) {
-			SYSTEM_PATH = path;
-		}
-		return SYSTEM_PATH;
-	};
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	SETTINGS.SystemPath = function ( extra ) {
+/*/	Return current 1401 system path, with <extra> added.
+	Useful for loading assets in the 1401 system directory.
+/*/	SETTINGS.SystemPath = function ( extra ) {
 		extra = extra || '';
-		if (SYSTEM_PATH===undefined) console.error("SystemPath is invalid before MasterGameLoad");
-		return SYSTEM_PATH+extra;
+		if (PATH_SYSTEM===undefined) 
+			console.error("SystemPath is invalid before MasterGameLoad");
+		return PATH_SYSTEM+extra;
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Return path to game module "main" file.
+/*/	SETTINGS.GameMainModulePath = function () {
+		if (PATH_GAME===undefined) 
+			console.error("GameMainModule is invalid before MasterGameLoad");
+		return PATH_GAME+PATH_RUNFILE;
 	};
 
-
-
-///////////////////////////////////////////////////////////////////////////////
-/** MODULE PRIVATE VARIABLES ************************************************/
-
-	var CURRENT_TIME_MS;
-	var CURRENT_GAME_PATH;
-	var SYSTEM_PATH;
-	
-	var PROP = {};
-
-///	IMPORTANT PATHS ///////////////////////////////////////////////////////////
-
-	PROP.PATH_GAMES = '/javascripts/1401-games';	// this should be set in main.js
-	PROP.PATH_RUNFILE = 'game-main.js';				// the default entry point
-	PROP.PATH_SYSTEM = '/javascripts/1401';			// default system path
-
-
-///	MASTER TIME //////////////////////////////////////////////////////////////
-///	The timestep established in master.js uses these variables
-
-	PROP.FPS = 30;
-	PROP.TIMESTEP = 1000 / PROP.FPS;
 
 
 //////////////////////////////////////////////////////////////////////////////
-/** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
+/** MODULE PRIVATE VARIABLES ************************************************/
+//////////////////////////////////////////////////////////////////////////////
+
+	// these variables are dereferenced from S object for
+	// speed (though it's probably not important at all to do this)
+
+	var CURRENT_TIME_MS;	// current time in milliseconds
+	var PATH_GAME;			// specific game path
+	var PATH_SYSTEM;		// 1401 system path
+
+	var VIEW_MODEL;			// durandal viewmodel reference
+	var GAME_ID;			// game id string (e.g. "demo")
+
+
+///	ADD DEFAULT KEY,VALUES ///////////////////////////////////////////////////
+
+	var S = {};		// global system property object
+
+	/* master timimg */
+	S.FPS = 30;
+	S.TIMESTEP = 1000 / S.FPS;
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+/** MODULE PRIVATE FUNCTIONS ************************************************/
+//////////////////////////////////////////////////////////////////////////////
+
+	function m_InitializeMeta ( gameId, viewModel ) {;
+		GAME_ID = gameId;
+		VIEW_MODEL = viewModel;
+	}
+
+	function m_InitializePaths() {
+
+		/* system paths and main file */
+		PATH_SYSTEM = '/javascripts/1401/';				// default system dir
+		PATH_GAMESDIR = '/javascripts/1401-games/';		// default games dir
+		PATH_RUNFILE = 'game-main.js';					// default entry point
+
+		// game path (inside gamesdir)
+		PATH_GAME = PATH_GAMESDIR + GAME_ID + '/';
+	}
+
+
+//////////////////////////////////////////////////////////////////////////////
+/** RETURN MODULE DEFINITION FOR REQUIREJS **********************************/
+//////////////////////////////////////////////////////////////////////////////
+
 	// settings is a FUNCTION that can be invoked. weird, right?
 	return SETTINGS;
 

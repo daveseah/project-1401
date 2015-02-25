@@ -10,7 +10,8 @@ requirejs.config({
 // ---- project 1401 paths added --------------------------------------------- //
 		'1401' : '../1401',
 // ---- project 1401 extra libs ---------------------------------------------- // 
-		'three' : '../vendor-shimmed/three.min'
+		'three' : '../vendor-shimmed/three.min',
+        'yaml':'../vendor/yaml.js/yaml'
 	},
 	shim: {
 		'bootstrap': {
@@ -20,7 +21,10 @@ requirejs.config({
 // ---- project 1401 non-AMD libs -------------------------------------------- // 
 		'three': {
 			exports: 'THREE'
-		}       
+		},
+		'yaml': {
+			exports: 'YAML'
+		}
 	}
 });
 
@@ -30,7 +34,7 @@ define(function(require) {
 		system = require('durandal/system');
 
 	//>>excludeStart("build", true);
-	// system.debug(true);
+	system.debug(true);
 	//>>excludeEnd("build");
 
 	app.title = '1401 Game Project';
