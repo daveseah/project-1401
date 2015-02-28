@@ -79,9 +79,18 @@ define ([
 		console.group('Game Startup');
 
 		m_game = loadedGame;
-		m_game.Connect ( m_viewmodel );
-		m_game.Initialize ();
-		m_game.LoadAssets (m_GameConstructAndStart);
+
+		SYSLOOP.ConnectAll ( m_viewmodel );
+
+		SYSLOOP.InitializeAll();
+
+		/* NOTE */
+		/* the async assets loading is not yet working */
+
+		SYSLOOP.LoadAssetsAll ( function () {} );
+
+		AUTOSYS.LoadAssets ( m_GameConstructAndStart );
+
 		// ...execution continues in m_gameConstructAndStart()
 
 	}
@@ -90,15 +99,15 @@ define ([
 /*/	Resume game loading process...
 /*/	function m_GameConstructAndStart () {
 
-		m_game.Construct ();
-		m_game.Start ( m_current_time_ms );
-		// game will get called on every Step() from here on out
+		SYSLOOP.ConstructAll ();
+
+		SYSLOOP.StartAll ( m_current_time_ms );
 
 		// initialize globals
 		m_current_time_ms = 0;
 		SETTINGS._SetMasterTime(m_current_time_ms);
 
-		// initialize timestep
+		// game will get called on every Step() from here on out
 		setInterval( m_TimeStep, m_interval_ms );
 		
 		console.groupEnd();
@@ -116,7 +125,10 @@ define ([
 		// step the game
 		if (m_game.IsRunning()) {
 			AUTOSYS.HeartBeat( m_interval_ms );
-			m_game.Step( m_interval_ms );
+			// there is only one master step, defined in game-main.js
+			SYSLOOP.GameStep( m_interval_ms );
+			// note that GameStep is responsible for calling
+			// GetInput, Update, Think, etc in the correct order
 		}
 		
 		// update mastertime counter

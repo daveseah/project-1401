@@ -28,10 +28,20 @@ define ([
 
 ///	SYSTEM INTERFACES ////////////////////////////////////////////////////////
 
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.HeartBeat = function ( interval_ms ) {
-		ProtoPiece.UpdateAll( interval_ms );
+		// do piece management, garbage collection if necessary
 	};
+
+
+///	STEP INTERFACES //////////////////////////////////////////////////////////
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	API.PiecesUpdate = ProtoPiece.UpdateAll;
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	API.PiecesThink = ProtoPiece.ThinkAll;
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	API.PiecesExecute = ProtoPiece.ExecuteAll;
 
 
 ///	FACTORY METHODS //////////////////////////////////////////////////////////

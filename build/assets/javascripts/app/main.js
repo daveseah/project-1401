@@ -9,6 +9,7 @@ requirejs.config({
 		'transitions' : '../vendor/durandal/transitions',
 // ---- project 1401 paths added --------------------------------------------- //
 		'1401' : '../1401',
+		'1401-games' : '../1401-games',
 // ---- project 1401 extra libs ---------------------------------------------- // 
 		'three' : '../vendor-shimmed/three.min',
         'yaml':'../vendor/yaml.js/yaml'

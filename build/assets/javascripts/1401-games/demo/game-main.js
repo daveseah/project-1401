@@ -1,18 +1,16 @@
 /* demo/game-main.js */
 define ([
+	'1401/system/debug',
 	'1401/settings',
 	'1401/objects/sysloop',
 	'1401/system/renderer',
-	'1401/system/visualfactory',
-	'1401/system/piecefactory',
-	'1401/system/debug'
+	'1401-games/demo/test01'
 ], function ( 
+	DBG,
 	SETTINGS,
 	SYSLOOP,
 	RENDERER,
-	VISUALFACTORY,
-	PIECEFACTORY,
-	DBG
+	TEST01
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -28,22 +26,20 @@ define ([
 	MAIN.SetHandler('LoadAssets', function () {} );
 	MAIN.SetHandler('Construct', function () {} );
 	MAIN.SetHandler('Start', function () {} );
-	MAIN.SetHandler('Step', function () {} );
+	MAIN.SetHandler('GameStep', function () {} );
 
 	See sysloop.js for documentation.
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PUBLIC API **************************************************************/
 
 	// create a game loop handler object with all necessary functions
-	var MAIN = SYSLOOP.InitializeGame('GameDemoMain');
+	var MAIN = SYSLOOP.InitializeGame('Game-Main');
 
 	// add handlers as needed
-	MAIN.SetHandler('Connect', API_HandleConnect);
-	MAIN.SetHandler('Initialize', API_HandleInitialize);
-	MAIN.SetHandler('Construct', API_HandleConstruct);
-	MAIN.SetHandler('LoadAssets', API_LoadAssets);
-	MAIN.SetHandler('Step', API_HandleStep);
+	MAIN.SetHandler( 'Connect', API_HandleConnect );
+	MAIN.SetHandler( 'GameStep', API_GameStep );
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -51,22 +47,17 @@ define ([
 
 	var m_viewmodel;	// durandal viewmodel for databinding, system props
 
-	var spr01;
-	var spr02;
-	var spr03;
-	var obj01;
-	var obj02;
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE PRIVATE FUNCTIONS ************************************************/
 
-	function API_HandleConnect ( viewModel ) {
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Connect() passes the application viewmodel, giving modules the
+	opportunity to save a reference if it needs to access the HTML
+	layer of code (knockout variables, for example)
+/*/	function API_HandleConnect ( viewModel ) {
+
 		m_viewmodel = viewModel;
-	}
-	function API_LoadAssets ( callback ) {
-		VISUALFACTORY.LoadAssets (callback);
-	}
-	function API_HandleInitialize () {
 		console.log("MAIN: Initializing!");
 		var parm = {
 			attachTo: '#container',		// WebGL attaches to this
@@ -78,108 +69,37 @@ define ([
 		var bg_png = SETTINGS.GamePath('resources/bg.png');
 		RENDERER.SetBackgroundImage ( bg_png );
 		RENDERER.AutoRender();
-	}
-
-	function API_HandleConstruct() {
-
-		console.group("constructing test pieces");
-
-			var numpieces = 100000;
-			console.log("creating",numpieces,"pieces without visuals");
-			for (var i=0;i<numpieces;i++) {
-				var p = PIECEFACTORY.NewPiece("test");
-			}
-
-			console.log("creating testSuperPiece");
-			var testSuperPiece = PIECEFACTORY.NewMovingPiece("TestSuper");
-
-		console.groupEnd();
-		
-		console.group("constructing test visuals");
-
-			spr01 = VISUALFACTORY.MakeDefaultSprite();
-			spr02 = VISUALFACTORY.MakeDefaultSprite();
-			spr03 = VISUALFACTORY.MakeDefaultSprite();
-			spr01.position.x = -512;
-			spr02.position.x = 512;
-
-			RENDERER.AddWorldVisual(spr01);
-			RENDERER.AddWorldVisual(spr02);
-			RENDERER.AddWorldVisual(spr03);
-
-			/* make crixa ship */
-			var seq = {
-	            grid: { columns:2, rows:1, stacked:true },
-	            sequences: [
-	                { name: 'flicker', framecount: 2, fps:4 }
-	            ]
-	        };
-	        spr03.DefineSequences(SETTINGS.GamePath('resources/crixa.png'),seq);
-	        spr03.PlaySequence("flicker");
-	        spr03.PulseDown(1000,true);
-	        var crixa = PIECEFACTORY.NewPiece("crixa");
-	        crixa.SetVisual(spr03);
-	        crixa.SetPositionXY(0,192);
-
-	        /* make ground plane */
-	        obj01 = VISUALFACTORY.MakeGroundPlane({
-	        	width: 800,
-	        	depth: 600,
-	        	color: 0xFF0000
-	        });
-	        obj01.position.z = -200;
-	        RENDERER.AddWorldVisual(obj01);
-
-	        /* make sphere */
-	        obj02 = VISUALFACTORY.MakeSphere({
-	        	radius:100,
-	        	color: 0x00FF00
-	        });
-	        obj02.position.z = -250;
-	        RENDERER.AddWorldVisual(obj02);
-
-	        /* add lights so mesh colors show */
-			var ambientLight = new THREE.AmbientLight(0x222222);
-	      	RENDERER.AddWorldVisual(ambientLight);
-
-			var directionalLight = new THREE.DirectionalLight(0xffffff);
-			directionalLight.position.set(1, 1, 1).normalize();
-			RENDERER.AddWorldVisual(directionalLight);
-
-		console.groupEnd();
-
-		// console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
-
 
 	}
 
-	var counter = 0;
-	var mode3d = true;
-	function API_HandleStep ( interval_ms ) {
-		// sprite rotate by rotating the material
-		var mat = spr01.material;
-			mat.rotation += 0.05;
-			mat = spr02.material;
-			mat.rotation -= 0.01;
-			mat = spr03.material;
-			mat.rotation -= 0.02;
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	MasterStep is a method reserved for the 'master game loop', which is
+	established by the SYSLOOP.InitializeGame() call. MasterStep() is 
+	responsible for implementing the game loop order-of-processing and check
+	for game events that change levels or runtime modes.
+	Note 1: Master.HeartBeat() runs before MasterStep() is called, so
+	system modules have already had their Update() called.
+	Note 2: Pieces are updated individually here too. Order is important.
+/*/	function API_GameStep ( ms ) {
 
-		obj01.rotation.x += 0.1;
-
-		var vp = RENDERER.GetViewport();
-		var cam = vp.GetWorldCam();
-		obj02.rotation.y += 0.01;
-
-		counter += interval_ms;
-		if (counter>3000) {
-			counter=0;
-			mode3d = !mode3d;
-		}
-		if (mode3d) RENDERER.SelectWorld3D();
-		else RENDERER.SelectWorld2D();
-
+		/* game pause control */
+		/* game logic */
+		SYSLOOP.GetInputAll(ms);
+		/* physics step here */
+		SYSLOOP.PiecesUpdate (ms);		// all pieces update
+		SYSLOOP.ModulesUpdate (ms);		// modules update (us included)
+		SYSLOOP.ModulesThink (ms);		// modules AI think (us included)
+		SYSLOOP.PiecesThink (ms);		// all pieces think
+		SYSLOOP.ModulesOverThink (ms);	// modules AI override (us included)
+		SYSLOOP.PiecesExecute (ms);		// all pieces execute
+		SYSLOOP.ModulesExecute (ms);	// modules AI execute (us included)
+		/* ui updates */
+		/* game level management */
 
 	}
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/

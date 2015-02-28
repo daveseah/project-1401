@@ -83,6 +83,11 @@ define ([
 		requestAnimationFrame( API.AutoRender );
 		API.Render();
 	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/ called by Master.Step() prior to Game.MasterStep()
+/*/	API.HeartBeat = function ( interval_ms ) {
+		// do system-related cleanup and processing
+	};
 
 
 ///	RENDERPASSES /////////////////////////////////////////////////////////////

@@ -40,11 +40,24 @@ define ([
 	var API = {};
 	API.name = "autosystem";
 
-	API.HeartBeat = function ( interval_ms ) {
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/ Called by Master
+/*/	API.LoadAssets = function ( callback ) {
+		VISUALFACTORY.LoadAssets (callback);
+	};
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Called by Master so system modules can do housekeeping before GameStep
+/*/	API.HeartBeat = function ( interval_ms ) {
 		VISUALFACTORY.HeartBeat( interval_ms );
 		PIECEFACTORY.HeartBeat( interval_ms );
-		// RENDERER.HeartBeat( interval_ms );
+		RENDERER.HeartBeat( interval_ms );
 	};
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.PiecesUpdate = PIECEFACTORY.PiecesUpdate;
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.PiecesThink = PIECEFACTORY.PiecesThink;
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.PiecesExecute = PIECEFACTORY.PiecesExecute;
 
 
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/

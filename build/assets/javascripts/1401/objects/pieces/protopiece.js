@@ -43,21 +43,50 @@ define ([
 ///	these are unique instances (like static class variables)
 
 	ProtoPiece.PieceDict = {};
-	ProtoPiece.KeyArray = [];
+	ProtoPiece.PieceList = [];
 	ProtoPiece.idCounter = 1;
 
-	ProtoPiece.UpdateAll = function( interval_ms ) {
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Called by MasterGameLoop to call every piece's Update() loop, where
+	they can update state as necessary.
+/*/	ProtoPiece.UpdateAll = function ( interval_ms ) {
 		var dict = ProtoPiece.PieceDict;
 		var keys = ProtoPiece.KeyArray = Object.keys(dict);
 		var num = keys.length;
 		// console.log("calling update on",num,"pieces");
 		if (!num) return;
+		ProtoPiece.PieceList = [];
 		for (var i=0;i<num;i++) {
 			var p = dict[keys[i]];
+			ProtoPiece.PieceList.push(p);
 			p.Update( interval_ms );
 		}
 	};
 
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Called by MasterGameLoop to give every piece thinking time for
+	AI. Each piece establishes an 'intention' that will be carried
+	out during Execute. Piece manager modules will receive an
+	'OverThink' event that can override these intentions.
+/*/	ProtoPiece.ThinkAll = function ( interval_ms ) {
+		var pieces = ProtoPiece.PieceList;
+		for (var i=0;i<pieces.length;i++) {
+			var p = pieces[i];
+			p.Think( interval_ms );
+		}
+	};
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Called by MasterGameLoop to give every piece execution time
+	to carry-out what it had been thinking during Think(), possibly
+	overriden by a piece manager.
+/*/	ProtoPiece.ExecuteAll = function ( interval_ms ) {
+		var pieces = ProtoPiece.PieceList;
+		for (var i=0;i<pieces.length;i++) {
+			var p = pieces[i];
+			p.Execute( interval_ms );
+		}
+	};
 
 /** PRIVATE SUPPORT METHODS **************************************************/
 

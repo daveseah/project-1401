@@ -1,6 +1,8 @@
 /* sysloop.js */
 define ([
+	'1401/system/autosystem'
 ], function ( 
+	AUTOSYS
 ) {
 
 	var DBGOUT = false;
@@ -26,7 +28,7 @@ define ([
 				which by now are fully initialized and safe to use.
 	Start 		Module may access OTHER modules and communicate with them,
 				setting final parameters
-	Step 		Module receives periodical timestamps, with the elapsed
+	GameStep 	Main Module receives periodical timestamps, with the elapsed
 				time since the last step as a parameter
 	
 	Additionally, the RUNTIME operations that are supported are:
@@ -82,13 +84,14 @@ define ([
 		this.HandleLoadAssets = null;
 		this.HandleConstruct = null;
 		this.HandleStart = null;
-		this.HandleStep = null;
+		this.HandleGameStep = null;
 		this.HandleStop = null;
 		this.HandlePause = null;
-		// runtime
+		// runtime flags
 		this.processInput = false;
 		this.processAI = false;
 		this.processUpdate = false;
+		// runtime functions
 		this.HandleInput = null;
 		this.HandleUpdate = null;
 		this.HandleThink = null;
@@ -105,17 +108,20 @@ define ([
 	SysLoop.RUNMODE_PAUSED 	= 2;
 	SysLoop.RUNMODE_EXITING = 3;
 	SysLoop.RUNMODE_STOPPED = 4;
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('IsRunning', function () { 
 		return (this._runmode==SysLoop.RUNMODE_RUNNING);
 	});
 
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	SysLoop.method('SetHandler', function ( type, f ) {
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	All instances of SysLoop are updated by Master at critical moments, but
+	each instance has to define a handler. type is the name of the handler,
+	f is the callback function.
+/*/	SysLoop.method('SetHandler', function ( hook, f ) {
 		console.assert(typeof f === 'function',"must past a function handler!");
-		type = type || 'undefined';
-		type = type.toLowerCase();
-		switch (type) {
+		hook = hook || 'undefined';
+		hook = hook.toLowerCase();
+		switch (hook) {
 			// lifetime
 			case 'connect':
 				this.HandleConnect = f;
@@ -132,10 +138,12 @@ define ([
 			case 'start':
 				this.HandleStart = f;
 				break;
-			case 'step':
-				this.HandleStep = f;
+			// gamestep
+			case 'gamestep':
+				/* called by master sysloop only! */
+				this.HandleGameStep = f;
 				break;
-			// runtime
+			// gamestep phases
 			case 'update':
 				this.HandleUpdate = f;
 				break;
@@ -152,35 +160,35 @@ define ([
 				this.HandleExecute = f;
 				break;
 			default:
-				console.error('SYSTEMLOOP:','unknown handler',type.bracket());
+				console.error('SYSTEMLOOP:','unknown handler',hook.angle(),"in module",this.name.bracket());
 				break;
 		}
 	});	
 
 /**	FEATURE ENABLING FUNCTIONS **********************************************/
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('EnableAI', function ( flag ) {
 		flag = flag || true;
 		this.processAI = flag;
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('EnableInput', function ( flag ) {
 		flag = flag || true;
 		this.processInput = flag;
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('EnableUpdate', function ( flag ) {
 		flag = flag || true;
 		this.processUpdate = flag;
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('EnableDebug', function ( flag ) {
 		flag = flag || true;
 		DBGOUT = flag;
 	});
 
 /**	INITIALIZATION FUNCTIONS ************************************************/
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('Connect', function ( viewModel ) {
 		if (this.HandleConnect) {
 			this.HandleConnect.call(this,viewModel);
@@ -188,7 +196,7 @@ define ([
 			console.log(this.name,"Connect: no handler defined");
 		}
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('Initialize', function () {
 		if (this.HandleInitialize) {
 			this.HandleInitialize.call(this);
@@ -196,7 +204,7 @@ define ([
 			if (DBGOUT) console.log(this.name,"Initialize: no handler defined");
 		}
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('LoadAssets', function ( doneFunc ) {
 		if (this.HandleLoadAssets) {
 			this.HandleLoadAssets.call(this, doneFunc);
@@ -205,7 +213,7 @@ define ([
 			doneFunc.call(this);
 		}
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('Construct', function () {
 		if (this.HandleConstruct) {
 			this.HandleConstruct.call(this);
@@ -213,7 +221,7 @@ define ([
 			if (DBGOUT) console.log(this.name,"Construct: no handler defined");
 		}
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('Start', function ( startTimeMs ) {
 		this._runmode = SysLoop.RUNMODE_RUNNING;
 		if (this.HandleStart) {
@@ -222,55 +230,59 @@ define ([
 			if (DBGOUT) console.log(this.name,"Start: no handler defined");
 		}
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('Step', function ( intervalMs ) {
-		if (this.HandleStep) {
-			this.HandleStep.call(this, intervalMs);
+		if (this!==m_master_gameloop) {
+			console.warn("ERROR in SYSLOOP",this.name.bracket()+': Use Update, not Step');
+			return;
+		};
+		if (this.HandleGameStep) {
+			this.HandleGameStep.call(this, intervalMs);
 		} else {
 			if (DBGOUT) console.log(this.name,"Step: no handler defined");
 		}
 	});
 
 /**	STEP FUNCTIONS **********************************************************/
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('GetInput', function ( intervalMs ) {
-		if (!this.processInput) return;
+		if (!m_CheckDoInput(this)) return;
 		if (this.HandleInput) {
 			this.HandleInput.call(this, intervalMs);
 		} else {
 			if (DBGOUT) console.log(this.name,"GetInput: no handler defined");
 		}
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('Update', function ( intervalMs ) {
-		if (!this.processUpdate) return;
+		if (!m_CheckDoUpdate(this)) return;
 		if (this.HandleUpdate) {
 			this.HandleUpdate.call(this, intervalMs);
 		} else {
 			if (DBGOUT) console.log(this.name,"Update: no handler defined");
 		}
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('Think', function ( intervalMs ) {
-		if (!this.processAI) return;
+		if (!m_CheckDoAI(this)) return;
 		if (this.HandleThink) {
 			this.HandleThink.call(this, intervalMs);
 		} else {
 			if (DBGOUT) console.log(this.name,"Think: no handler defined");
 		}
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('OverThink', function ( intervalMs ) {
-		if (!this.processAI) return;
+		if (!m_CheckDoAI(this)) return;
 		if (this.HandleOverThink) {
 			this.HandleOverThink.call(this, intervalMs);
 		} else {
 			if (DBGOUT) console.log(this.name,"OverThink: no handler defined");
 		}
 	});
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SysLoop.method('Execute', function ( intervalMs ) {
-		if (!this.processAI) return;
+		if (!m_CheckDoAI(this)) return;
 		if (this.HandleExecute) {
 			this.HandleExecute.call(this, intervalMs);
 		} else {
@@ -282,7 +294,7 @@ define ([
 //////////////////////////////////////////////////////////////////////////////
 /**	EVENT FUNCTIONS *********************************************************/
 
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	ChangeStage() stub for levels
 /*/	SysLoop.method('ChangeStage', function ( stage_id ) {
 		if (this.HandleChangeStage) {
@@ -302,28 +314,28 @@ define ([
 
 ///	SysLoop CREATION ///////////////////////////////////////////////////////
 
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Returns a pre-made SysLoop object to handle the MasterJS standard
 	with defaults; just override with your own methods.
 /*/	FACTORY.New = function ( name ) {
 		return m_AddNewSysLoop (name);
 	};
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	The Main Loop is executed first!
 /*/	FACTORY.InitializeGame = function ( name ) {
-		if (m_master_loop) {
+		if (m_master_gameloop) {
 			console.error('Game already initialized; did you mean to call "New" instead?');
 			return;
 		}
-		m_master_loop = new SysLoop(name);
-		console.info("MASTER SYSLOOP",m_master_loop.name.bracket(),"SET");
-		return m_master_loop;
+		m_master_gameloop = new SysLoop(name);
+		console.info("MASTER SYSLOOP",m_master_gameloop.name.bracket(),"SET");
+		return m_master_gameloop;
 	};
 
 
 ///	STAGE CHANGE EVERYONG ///////////////////////////////////////////////////
 	FACTORY.ChangeStageAll = function ( stage_id ) {
-		m_master_loop.ChangeStage(stage_id);
+		m_master_gameloop.ChangeStage(stage_id);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].ChangeStage(stage_id);
@@ -331,81 +343,90 @@ define ([
 	};
 
 ///	SYSTEM CALL EVERYONE ////////////////////////////////////////////////////
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ConnectAll = function ( viewmodel ) {
-		m_master_loop.Connect(viewmodel);
+		m_master_gameloop.Connect(viewmodel);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Connect(viewmodel);
 		}
 	};
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.InitializeAll = function ( ) {
-		m_master_loop.Initialize();
+		m_master_gameloop.Initialize();
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Initialize();
 		}
 	};
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.LoadAssetsAll = function ( doneCallback ) {
-		m_master_loop.LoadAssets(doneCallback);
+		m_master_gameloop.LoadAssets(doneCallback);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].LoadAssets(doneCallback);
 		}
 	};
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ConstructAll = function ( ) {
-		m_master_loop.Construct();
+		m_master_gameloop.Construct();
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Construct();
 		}
 	};
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.StartAll = function ( start_ms ) {
-		m_master_loop.Start(start_ms);
+		m_master_gameloop.Start(start_ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Start(start_ms);
 		}
 	};
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	FACTORY.GameStep = function ( ms ) {
+		m_master_gameloop.Step(ms);
+		/* DON'T CALL STEP on SUBMODULES! */
+		/* Step is reserved for Master Sysloop */
+	};
+
+
+///	STEP SUBCALL EVERYONE ///////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.GetInputAll = function ( ms ) {
-		m_master_loop.GetInput(ms);
+		m_master_gameloop.GetInput(ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].GetInput(ms);
 		}
 	};
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	FACTORY.UpdateAll = function ( ms ) {
-		m_master_loop.Update(ms);
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	FACTORY.ModulesUpdate = function ( ms ) {
+		m_master_gameloop.Update(ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Update(ms);
 		}
 	};
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	FACTORY.ThinkAll = function ( ms ) {
-		m_master_loop.Think(ms);
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	FACTORY.ModulesThink = function ( ms ) {
+		m_master_gameloop.Think(ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Think(ms);
 		}
 	};
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	FACTORY.OverThinkAll = function ( ms ) {
-		m_master_loop.OverThink(ms);
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	FACTORY.ModulesOverThink = function ( ms ) {
+		m_master_gameloop.OverThink(ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].OverThink(ms);
 		}
 	};
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	FACTORY.ExecuteAll = function ( ms ) {
-		m_master_loop.Execute(ms);
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	FACTORY.ModulesExecute = function ( ms ) {
+		m_master_gameloop.Execute(ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Execute(ms);
@@ -413,17 +434,32 @@ define ([
 	};
 
 
+///	PIECE AI UPDATES /////////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	FACTORY.PiecesUpdate = function ( ms ) {
+		AUTOSYS.PiecesUpdate(ms);
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	FACTORY.PiecesThink = function ( ms ) {
+		AUTOSYS.PiecesThink(ms);
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	FACTORY.PiecesExecute = function ( ms ) {
+		AUTOSYS.PiecesExecute(ms);
+	};
+
+
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE PRIVATE VARIABLES ************************************************/
 
-	var m_master_loop;		// the master loop that is run first
+	var m_master_gameloop;		// the master loop that is run first
 	var m_loops = {};		// loop collection to ensure uniqueness
 
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE PRIVATE FUNCTIONS ************************************************/
 
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_AddNewSysLoop ( name ) {
 		var loop = m_loops[name];
 		if (loop) {
@@ -435,9 +471,42 @@ define ([
 			return loop;
 		}
 	}
-//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_LoopsArray () {
 		return Object.keys(m_loops);
+	}
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	function m_CheckDoInput ( slobj ) {
+		var doMe = slobj.processInput;
+		if (doMe) return true;
+		if ((doMe===false) && (slobj.HandleInput)) {
+			// repurpose process flag from "false" to "0" for output-once
+			slobj.processInput = 0;
+			console.error('module',slobj.name.bracket(),'InputHandler is defined but processing is disabled');
+		}
+	}
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	function m_CheckDoUpdate ( slobj ) {
+		var doMe = slobj.processUpdate;
+		if (doMe) return true;
+		if ((doMe===false) && (slobj.HandleUpdate)) {
+			// repurpose process flag from "false" to "0" for output-once
+			slobj.processUpdate = 0;
+			console.error('module',slobj.name.bracket(),'UpdateHandler is defined but processing is disabled');
+		}
+	}
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	function m_CheckDoAI ( slobj ) {
+		var doMe = slobj.processAI;
+		if (doMe) return true;
+		var aiDefined = slobj.HandleThink!==null;
+		aiDefined = aiDefined || slobj.HandleOverThink!==null; 
+		aiDefined = aiDefined || slobj.HandleExecute!==null;
+		if ((doMe===false) && (aiDefined)) {
+			// repurpose process flag from "false" to "0" for output-once
+			slobj.processAI = 0;
+			console.error('module',slobj.name.bracket(),'AI handler(s) defined but processing is disabled');
+		}
 	}
 
 
