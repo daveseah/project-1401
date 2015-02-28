@@ -193,7 +193,7 @@ define ([
 		if (this.HandleConnect) {
 			this.HandleConnect.call(this,viewModel);
 		} else {
-			console.log(this.name,"Connect: no handler defined");
+			if (DBGOUT) console.log(this.name,"Connect: no handler defined");
 		}
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
