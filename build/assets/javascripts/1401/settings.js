@@ -35,7 +35,7 @@ define ([
 /*/	SETTINGS = function ( key ) {
 		var value = S[key];
 		if (!value)
-			console.warn("Requested key",key.bracket(),"doesn't exist!");
+			console.error("Requested key",key.bracket(),"doesn't exist!");
 		return value;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -70,7 +70,7 @@ define ([
 	Games should use the Timer class instead.
 /*/	SETTINGS.MasterTime = function () {
 		if (CURRENT_TIME_MS===undefined) {
-			console.warn("Calling Settings.MasterTime() before MasterStart will always returns 0ms");
+			console.log("*** WARN *** MasterTime() was called before system startup. Returning 0ms.");
 			return 0;
 		}
 		return CURRENT_TIME_MS;
@@ -81,7 +81,7 @@ define ([
 /*/	SETTINGS.GamePath = function ( extra ) {
 		extra = extra || '';
 		if (PATH_GAME===undefined) 
-			console.warn("GamePath is invalid before MasterGameLoad");
+			console.error("GamePath is invalid before MasterGameLoad");
 		return PATH_GAME+extra;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
