@@ -9,6 +9,7 @@
     "bootstrap": "2.3.2",
     "font-awesome": "3.2.1",
     "durandal": "2.0.0",
-    "yaml.js": "0.2.1"
+    "yaml.js": "0.2.1",
+    "es6-promise-polyfill": "~1.0.0"
   }
 }
