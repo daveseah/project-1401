@@ -335,53 +335,53 @@ define ([
 
 ///	STAGE CHANGE EVERYONG ///////////////////////////////////////////////////
 	FACTORY.ChangeStageAll = function ( stage_id ) {
-		m_master_gameloop.ChangeStage(stage_id);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].ChangeStage(stage_id);
 		}
+		m_master_gameloop.ChangeStage(stage_id);
 	};
 
 ///	SYSTEM CALL EVERYONE ////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ConnectAll = function ( viewmodel ) {
-		m_master_gameloop.Connect(viewmodel);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Connect(viewmodel);
 		}
+		m_master_gameloop.Connect(viewmodel);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.InitializeAll = function ( ) {
-		m_master_gameloop.Initialize();
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Initialize();
 		}
+		m_master_gameloop.Initialize();
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.LoadAssetsAll = function ( doneCallback ) {
-		m_master_gameloop.LoadAssets(doneCallback);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].LoadAssets(doneCallback);
 		}
+		m_master_gameloop.LoadAssets(doneCallback);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ConstructAll = function ( ) {
-		m_master_gameloop.Construct();
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Construct();
 		}
+		m_master_gameloop.Construct();
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.StartAll = function ( start_ms ) {
-		m_master_gameloop.Start(start_ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Start(start_ms);
 		}
+		m_master_gameloop.Start(start_ms);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.GameStep = function ( ms ) {
@@ -394,43 +394,43 @@ define ([
 ///	STEP SUBCALL EVERYONE ///////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.GetInputAll = function ( ms ) {
-		m_master_gameloop.GetInput(ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].GetInput(ms);
 		}
+		m_master_gameloop.GetInput(ms);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ModulesUpdate = function ( ms ) {
-		m_master_gameloop.Update(ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Update(ms);
 		}
+		m_master_gameloop.Update(ms);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ModulesThink = function ( ms ) {
-		m_master_gameloop.Think(ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Think(ms);
 		}
+		m_master_gameloop.Think(ms);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ModulesOverThink = function ( ms ) {
-		m_master_gameloop.OverThink(ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].OverThink(ms);
 		}
+		m_master_gameloop.OverThink(ms);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ModulesExecute = function ( ms ) {
-		m_master_gameloop.Execute(ms);
 		var arr = m_LoopsArray();
 		for (var i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Execute(ms);
 		}
+		m_master_gameloop.Execute(ms);
 	};
 
 
