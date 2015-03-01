@@ -56,6 +56,10 @@ There is not a lot of online material that details the birth of a video game arc
 
 ## Updates
 
+February 28, 2015
+* Completed refactor of main system startup and game step, confirmed operation.
+* Updated documentation...woot!
+
 February 19, 2015
 * Refactoring the ports of SYSLOOP and RENDERER, two manager modules. When I had written the renderer before, I didn't have a good grasp of how to manage the different coordinate systems (there are three: browser, webgl/screen, and world). Also, it was a mess. 
 * Ported/cleaned-up Visual and Viewport managers.
