@@ -10,14 +10,14 @@ define ([
 	SETTINGS,
 	SYSLOOP,
 	RENDERER,
-	TEST01
+	TEST
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 /**	DEMO GAME ***************************************************************\
 
 	This file, game-main.js, is the starting point of the game. It uses the 
-	API for Game Loops to run under the control of master.js.
+	API for Game Loops (SYSLOOP) to run under the control of master.js.
 
 	In general, you'll be hooking into these functions as necessary.
 
@@ -26,9 +26,17 @@ define ([
 	MAIN.SetHandler('LoadAssets', function () {} );
 	MAIN.SetHandler('Construct', function () {} );
 	MAIN.SetHandler('Start', function () {} );
-	MAIN.SetHandler('GameStep', function () {} );
+	MAIN.SetHandler('GameStep', function () {} );  // master loop only
 
-	See sysloop.js for documentation.
+	The actual "game code" is in the TEST module defined above. The various
+	test modules (e.g. test01, test02, etc) are also SYSLOOP modules, so
+	master.js is invoking the same handlers on those objects as well, 
+	allowing you to write independent-yet-synchronized modules without
+	having to add the glue code yourself.
+
+	Note that the critical GameStep is ONLY implemented by game-main.js.
+	It uses a different set of SYSLOOP handlers that need to be explicitly
+	enabled. See sysloop.js for documentation.
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -66,8 +74,6 @@ define ([
 			worldUnits: 768				// world units to fit in shortest dim
 		};
 		RENDERER.Initialize ( parm );
-		var bg_png = SETTINGS.GamePath('resources/bg.png');
-		RENDERER.SetBackgroundImage ( bg_png );
 		RENDERER.AutoRender();
 
 	}

@@ -48,7 +48,8 @@ define ([
 	MOD.SetHandler( 'Start', m_Start );
 	MOD.SetHandler( 'Construct', m_Construct );
 	MOD.SetHandler( 'Update', m_Update);
-	MOD.SetHandler( 'Think', function() { console.log("think!")} );
+	MOD.SetHandler( 'Initialize', m_Initialize );
+	MOD.SetHandler( 'Think', function() { console.log("think!"); } );
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -60,13 +61,17 @@ define ([
 	var obj01;
 	var obj02;
 
+	var starfield;
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE HANDLER FUNCTIONS *************************************************/
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	function m_Start() {
-	}	
+	function m_Initialize() {
+		var bg_png = SETTINGS.GamePath('resources/bg.png');
+		RENDERER.SetBackgroundImage ( bg_png );
+	}
 
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -138,8 +143,20 @@ define ([
 
 		console.groupEnd();
 
+		console.group("Starfield");
+			var starfield = VISUALFACTORY.MakeStarField();
+			// starfield.scale.set(100,100,10);
+			RENDERER.AddWorldVisual(starfield);
+
+		console.groupEnd();
+
 		// console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
 	}
+
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	function m_Start() {
+	}	
 
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
