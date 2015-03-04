@@ -142,7 +142,7 @@ define ([
 	});
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// for updating when browser size changes (TBD)
-	Viewport.method('SetViewportDimensions',function ( width, height ){
+	Viewport.method('SetDimensions',function ( width, height ){
 		if (!this.webGL) {
 			console.error("WebGL is not initialized");
 			return;
@@ -153,6 +153,17 @@ define ([
 			console.error("ViewPort requires valid width and height. Did you InitializeRenderer()?");
 		}
 		this.aspect = width/height;
+	});
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	Viewport.method('Dimensions', function () {
+		if (!this.webGL) {
+			console.error("WebGL is not initialized");
+			return;
+		}
+		return { 
+			width: this.width,
+			height: this.height
+		};
 	});
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('UpdateWorldCameras', function () {
@@ -221,6 +232,14 @@ define ([
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('SelectWorld3D', function () {
 		this.camWORLD = this.cam3D;
+	});
+
+///	CAMERA CONTROL ///////////////////////////////////////////////////////////
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	Viewport.method('Track', function ( vector3 ) {
+		this.cam2D.position.x = vector3.x;
+		this.cam2D.position.y = vector3.y;
 	});
 
 
