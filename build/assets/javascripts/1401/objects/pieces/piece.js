@@ -43,8 +43,8 @@ define ([
 	//	call the parent constructor		
 		ProtoPiece.call (this, name);
 
-	//	position and orientation
-		this.position = null;
+	//	position and orientationS
+		this.position = null;	// initialized later
 		this.rotation = null;
 
 	//	utility position data
@@ -136,6 +136,60 @@ define ([
 		}
 		this.executeFunc = func;
 	});
+
+
+///	POSITION ACCESS METHODS //////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	
+/*/	Piece.method('Rotation', function () {
+		return this.rotation.clone();
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	
+/*/	Piece.method('SetRotation', function ( vector3 ) {	
+		if (vector3===undefined) console.error("rotation vector is undefined");
+		if (typeof vector3!=='object') console.error('SetRotation requires Vector3, not',typeof vector3);
+
+		this.rotation.x = vector3.x;
+		this.rotation.y = vector3.y;
+		this.rotation.z = vector3.z;
+
+		// NOTE: visuals are THREE.object3d instances
+		if (this.visual) {
+			this.visual.rotation.x = vector3.x;
+			this.visual.rotation.y = vector3.y;
+			this.visual.rotation.z = vector3.z;
+			if (this.visual.inqsprite) {
+				this.visual.Rotate(vector3.z);
+			}
+		}
+
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	
+/*/	Piece.method('SetRotationX', function ( rot ) {	
+		if (rot===undefined) console.error("rotationX is undefined");
+		this.SetRotation(
+			new THREE.Vector3( rot, this.position.y, this.position.x )
+		);
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	
+/*/	Piece.method('SetRotationY', function ( rot ) {	
+		if (rot===undefined) console.error("rotationY is undefined");
+		this.SetRotation(
+			new THREE.Vector3( this.position.x, rot, this.position.z )
+		);
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	
+/*/	Piece.method('SetRotationZ', function ( rot ) {
+		if (rot===undefined) console.error("rotationZ is undefined");
+		this.SetRotation(
+			new THREE.Vector3( this.position.x, this.position.y, rot )
+		);
+	});
+
 
 ///	POSITION ACCESS METHODS //////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -240,7 +294,7 @@ define ([
 
 	function m_InitializeDefaults ( piece ) {
 		piece.position = new THREE.Vector3(0,0,0);
-		piece.rotation = 0;
+		piece.rotation = new THREE.Vector3(0,0,0);
 	}
 
 /** RETURN CONSTRUCTOR *******************************************************/
