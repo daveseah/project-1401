@@ -53,7 +53,7 @@ define ([
 ///////////////////////////////////////////////////////////////////////////////
 /** PRIVATE VARS *************************************************************/
 
-	var shipSprite;
+	var crixa;
 	var starfields = [];
 
 
@@ -82,13 +82,13 @@ define ([
 				var sf = VISUALFACTORY.MakeStarField( spec );
 				sf.scale.set(1000,1000,1);
 				sf.position.set(0,0,-100-i);
-				RENDERER.AddBackgroundVisual(sf);
+				RENDERER.AddWorldVisual(sf);
 				starfields.push(sf);
 			}
 
 
 			/* make crixa ship */
-			shipSprite = VISUALFACTORY.MakeDefaultSprite();
+			var shipSprite = VISUALFACTORY.MakeDefaultSprite();
 			RENDERER.AddWorldVisual(shipSprite);
 			var seq = {
 	            grid: { columns:2, rows:1, stacked:true },
@@ -98,7 +98,7 @@ define ([
 	        };
 	        shipSprite.DefineSequences(SETTINGS.GamePath('resources/crixa.png'),seq);
 	        shipSprite.PlaySequence("flicker");
-	        var crixa = PIECEFACTORY.NewPiece("crixa");
+	        crixa = PIECEFACTORY.NewPiece("crixa");
 	        crixa.SetVisual(shipSprite);
 	        crixa.SetPositionXY(0,0);
 
@@ -120,14 +120,29 @@ define ([
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	var counter = 0;
+	var dx = 3;
 	function m_Update ( interval_ms ) {
-		// sprite rotate by rotating the material
-		var mat = shipSprite.material;
-			mat.rotation -= 0.01;
 
+		var vp = RENDERER.Viewport();
+		var dim = vp.Dimensions();
+		var width = dim.width/2;
+		/* move ship */
+		var x = crixa.position.x + dx;
+		if ((x > width)||(x < -width)) {
+			dx = dx * -1;
+			var rot = (dx>0) ? 0 : Math.PI;
+			crixa.SetRotationZ(rot);
+		}
+		crixa.SetPositionX(x);
+
+		vp.Track(crixa.Position());
+
+		/* rotate stars */	
+		var layers = starfields.length;
 		for (var i=0;i<starfields.length;i++){
-			var layer = starfields.length-i-1;
-			starfields[i].rotation.z += (layer*0.0005)+0.001;
+			var mult = i/layers;
+			var sf = starfields[i];
+			sf.position.x = x*mult;
 		}
 
 		counter += interval_ms;
