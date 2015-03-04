@@ -3,12 +3,14 @@ define ([
 	'three',
 	'1401/objects/viewport',
 	'1401/settings',
-	'1401/objects/visuals/sprite'
+	'1401/objects/visuals/sprite',
+	'1401/objects/visuals/starfield'
 ], function ( 
 	THREE,
 	VIEWPORT,
 	SETTINGS,
-	InqSprite
+	InqSprite,
+	StarField
 ) {
 
 	var DBGOUT = true;
@@ -278,6 +280,17 @@ define ([
 		var line = new THREE.Line(geo,mat);
 		return line;
 	};
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Produces a packed cube of width x height points. 
+/*/	API.MakeStarField = function ( spec ) {
+		spec = spec || {};
+		spec.color = (spec.color===undefined) ? new THREE.Color(1,1,1) : spec.color;
+		spec.width = spec.width || 5;
+		spec.height = spec.height || 5;
+		var stars = new StarField(spec.color, spec.width, spec.height);
+		return stars;
+	};
+
 
 
 /** PRIVATE SUPPORT FUNCTIONS ************************************************/
