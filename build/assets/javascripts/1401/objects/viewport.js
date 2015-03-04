@@ -197,15 +197,15 @@ define ([
 		this.camSCREEN.updateProjectionMatrix();
 	});
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Viewport.method('GetAspectRatio', function () {
+	Viewport.method('AspectRatio', function () {
 		return this.aspect;
 	});
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Viewport.method('GetBackgroundCam', function () { return this.camBG; });
+	Viewport.method('BackgroundCam', function () { return this.camBG; });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Viewport.method('GetWorldCam', function () { return this.camWORLD; });
+	Viewport.method('WorldCam', function () { return this.camWORLD; });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Viewport.method('GetScreenCam', function () { return this.camSCREEN; });
+	Viewport.method('ScreenCam', function () { return this.camSCREEN; });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('Clear', function () { this.webGL.clear(); });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

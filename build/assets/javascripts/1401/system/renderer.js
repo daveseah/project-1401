@@ -50,11 +50,11 @@ define ([
 		VIEWPORT.InitializeCameras();
 
 		// assign default cameras to renderpasses
-		RP_BG.camera = VIEWPORT.GetBackgroundCam();
-		RP_WORLD.camera = VIEWPORT.GetWorldCam();
-		RP_WORLD2.camera = VIEWPORT.GetWorldCam();
-		RP_UI.camera = VIEWPORT.GetScreenCam();
-		RP_OVER.camera = VIEWPORT.GetScreenCam();
+		RP_BG.camera = VIEWPORT.BackgroundCam();
+		RP_WORLD.camera = VIEWPORT.WorldCam();
+		RP_WORLD2.camera = VIEWPORT.WorldCam();
+		RP_UI.camera = VIEWPORT.ScreenCam();
+		RP_OVER.camera = VIEWPORT.ScreenCam();
 
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,21 +144,23 @@ define ([
 		RP_OVER.remove(visual);
 		if (DBGOUT) console.log("RP_OVER >>>",visual.id.toString(),"removed");
 	};
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.GetViewport = function ( index ) {
-		return VIEWPORT;
-	};
+
+
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.SelectWorld2D = function ( index ) {
 		VIEWPORT.SelectWorld2D();
-		RP_WORLD.camera = VIEWPORT.GetWorldCam();
-		RP_WORLD2.camera = VIEWPORT.GetWorldCam();
+		RP_WORLD.camera = VIEWPORT.WorldCam();
+		RP_WORLD2.camera = VIEWPORT.WorldCam();
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.SelectWorld3D = function ( index ) {
 		VIEWPORT.SelectWorld3D();
-		RP_WORLD.camera = VIEWPORT.GetWorldCam();
-		RP_WORLD2.camera = VIEWPORT.GetWorldCam();
+		RP_WORLD.camera = VIEWPORT.WorldCam();
+		RP_WORLD2.camera = VIEWPORT.WorldCam();
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.Viewport = function ( index ) {
+		return VIEWPORT;
 	};
 
 
@@ -180,7 +182,6 @@ define ([
 		}
 
 	};
-
 
 
  

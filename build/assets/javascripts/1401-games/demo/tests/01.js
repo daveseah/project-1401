@@ -173,8 +173,8 @@ define ([
 
 		obj01.rotation.x += 0.1;
 
-		var vp = RENDERER.GetViewport();
-		var cam = vp.GetWorldCam();
+		var vp = RENDERER.Viewport();
+		var cam = vp.WorldCam();
 		obj02.rotation.y += 0.01;
 
 		counter += interval_ms;
