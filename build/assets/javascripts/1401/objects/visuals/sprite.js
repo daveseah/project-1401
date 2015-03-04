@@ -29,7 +29,7 @@ define ([
 		THREE.Sprite.call(this,spriteMaterial);
 
 		// make this testable
-		this.inqsprite=true;
+		this.inqsprite = true;
 
 		// spritesheet support
 		this.frames = null;		// frame objects (deprecated)
@@ -186,6 +186,11 @@ define ([
 	});
 
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/ to rotate a sprite, you need to rotate its material, not its visual
+	rotation property.
+/*/	InqSprite.method('Rotate', function ( rot ) {
+		this.material.rotation = rot;
+	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	This is a ThreeJS-specific non-uniform scale setter. It's used to size
 	a sprite exactly to the size it should be
