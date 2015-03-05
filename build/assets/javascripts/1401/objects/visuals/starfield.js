@@ -9,7 +9,12 @@ define ([
 
 /**	STARFIELD ****************************************************************\
 
-	Code based on example:
+	A starfield object is drawn on the background layer. To pan the starfield,
+	call TrackXYZ(), and the stars will be redrawn. There are 400 stars drawn
+	in a 2x2 grid, which is tiled across the entire world space by 
+	repositioning it. For parallax, set the speed parameter.
+
+	buffer rendering code based on example:
 	http://threejs.org/examples/webgl_interactive_raycasting_pointcloud.html
 
 
@@ -20,6 +25,7 @@ define ([
 	var STARSCALE = 2048;
 	var STARWRAP = STARSCALE / 2;
 	var STARBOUND = STARWRAP / 2;
+	var STARDENSITY = 10;
 	
 /** OBJECT DECLARATION *******************************************************/
 
@@ -51,8 +57,8 @@ define ([
 ///	POSITION ACCESS METHODS //////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	StarField.method('TrackXYZ', function ( x, y, z ) {
-		var xx = m_WrapCoordinates (-x * this.speed);
-		var yy = m_WrapCoordinates (-y * this.speed);
+		var xx = u_WrapCoordinates (-x * this.speed);
+		var yy = u_WrapCoordinates (-y * this.speed);
 		this.position.x = xx;
 		this.position.y = yy;
 		this.position.z = z * this.speed;
@@ -83,8 +89,8 @@ define ([
 	repeating quadrants.
 /*/	function m_GeneratePointCloudGeometry( color ) {
 
-		var pointsWide = 20; 
-		var pointsHigh = 20;
+		var pointsWide = STARDENSITY*2; 
+		var pointsHigh = STARDENSITY*2;
 		var geometry = new THREE.BufferGeometry();
 		var numPoints = pointsWide*pointsHigh;
 		var off = numPoints/4;
@@ -156,7 +162,10 @@ define ([
 
 	}
 
-	function m_WrapCoordinates ( c ) {
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	utility method to calculate repositioning of the starfield to create
+	illusion of infinite space with just one grid.
+/*/	function u_WrapCoordinates ( c ) {
 		c = c % STARWRAP;
 		if (c > +STARBOUND) c = c - STARWRAP;
 		if (c < -STARBOUND) c = c + STARWRAP;
