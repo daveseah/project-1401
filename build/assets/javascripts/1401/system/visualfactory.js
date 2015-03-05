@@ -285,9 +285,9 @@ define ([
 /*/	API.MakeStarField = function ( spec ) {
 		spec = spec || {};
 		spec.color = (spec.color===undefined) ? new THREE.Color(1,1,1) : spec.color;
-		spec.speed = (spec.speed===undefined) ? 0 : spec.speed;
+		spec.parallax = (spec.parallax===undefined) ? 0 : spec.parallax;
 		var stars = new StarField(spec.color);
-		stars.SetSpeed(spec.speed);
+		stars.SetParallax(spec.parallax);
 		return stars;
 	};
 

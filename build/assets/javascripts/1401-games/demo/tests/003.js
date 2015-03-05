@@ -61,26 +61,20 @@ define ([
 /** MODULE HANDLER FUNCTIONS *************************************************/
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	function m_Start() {
-	}	
-
-
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Construct() {
 
 		console.group("Starfield");
 
 			/* make starfield */
-
-			var spec = {
+			var starSpec = {
 				color: new THREE.Color(1,1,1),
-				speed: 1
+				parallax: 1
 			};		
 			starfields = [];
 			for (var i=0;i<3;i++) {
-				spec.color.multiplyScalar(0.7);
-				var sf = VISUALFACTORY.MakeStarField( spec );
-				spec.speed *= 0.5;
+				starSpec.color.multiplyScalar(0.7);
+				var sf = VISUALFACTORY.MakeStarField( starSpec );
+				starSpec.parallax *= 0.5;
 				sf.position.set(0,0,-100-i);
 				RENDERER.AddBackgroundVisual(sf);
 				starfields.push(sf);
@@ -101,11 +95,9 @@ define ([
 	        crixa.SetVisual(shipSprite);
 	        crixa.SetPositionXY(0,0);
 
-
 	        /* add lights so mesh colors show */
 			var ambientLight = new THREE.AmbientLight(0x222222);
 	      	RENDERER.AddWorldVisual(ambientLight);
-
 
 			var directionalLight = new THREE.DirectionalLight(0xffffff);
 			directionalLight.position.set(1, 1, 1).normalize();
@@ -116,15 +108,15 @@ define ([
 		// console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
 	}
 
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	function m_Start() {
+	}	
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	var counter = 0;
 	var dx = 3;
 	function m_Update ( interval_ms ) {
 
-		var vp = RENDERER.Viewport();
-		var dim = vp.Dimensions();
-		var width = dim.width/2;
 		/* move ship */
 		var x = crixa.position.x + dx;
 		if ((x > 2000)||(x < -2000)) {
@@ -134,6 +126,7 @@ define ([
 		}
 		crixa.SetPositionX(x);
 
+		var vp = RENDERER.Viewport();
 		vp.Track(crixa.Position());
 
 		/* rotate stars */	

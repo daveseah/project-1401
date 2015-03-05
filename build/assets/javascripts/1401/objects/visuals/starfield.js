@@ -9,10 +9,11 @@ define ([
 
 /**	STARFIELD ****************************************************************\
 
-	A starfield object is drawn on the background layer. To pan the starfield,
-	call TrackXYZ(), and the stars will be redrawn. There are 400 stars drawn
-	in a 2x2 grid, which is tiled across the entire world space by 
-	repositioning it. For parallax, set the speed parameter.
+	A starfield object is drawn in the center of the background layer.
+	It accepts a "tracking position" set through TrackXYZ(). 
+	The tracking position pans the layer so it appears to be moving, so it
+	should be set the the location of the camera's look-at point. It is 
+	strictly a 2D grid.
 
 	buffer rendering code based on example:
 	http://threejs.org/examples/webgl_interactive_raycasting_pointcloud.html
@@ -20,12 +21,12 @@ define ([
 
 /** PRIVATE DECLARATIONS *****************************************************/
 
-	var POINTSIZE = 0.0001;
-	var NUMLAYERS = 3;
-	var STARSCALE = 2048;
-	var STARWRAP = STARSCALE / 2;
-	var STARBOUND = STARWRAP / 2;
-	var STARDENSITY = 10;
+	var STAR_SIZE = 1;
+	var STAR_DENSITY = 20;
+	var FIELD_SIZE = 2048;
+	var FIELD_CLAMP = FIELD_SIZE / 2;
+	var FIELD_BOUND = FIELD_CLAMP / 2;
+
 	
 /** OBJECT DECLARATION *******************************************************/
 
@@ -33,35 +34,39 @@ define ([
 	/* extends THREE.PointCloud */
 	function StarField ( threeColor ) {
 
-		this.speed = 1;
+		this.parallax = 1;	// how slow to make this layer
 
 		var geo = m_GeneratePointCloudGeometry( threeColor );
-		var mat = new THREE.PointCloudMaterial( { size: POINTSIZE, vertexColors: THREE.VertexColors } );
+		var mat = new THREE.PointCloudMaterial({ 
+			size: STAR_SIZE, 
+			vertexColors: THREE.VertexColors,
+			sizeAttenuation: false 
+		});
 
 		// pass up constructor
 		THREE.PointCloud.call( this, geo, mat );
 
-		this.scale.set(STARSCALE,STARSCALE,1);
+		this.scale.set(FIELD_SIZE,FIELD_SIZE,1);
 	}
 	/* inheritence */
 	StarField.inheritsFrom(THREE.PointCloud);
 
 
-///	PROPERTIES ///////////////////////////////////////////////////////////////
+///	PROPERTY SETTING METHODS /////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	StarField.method('SetSpeed', function ( val ) {
-		this.speed = val;
+	StarField.method('SetParallax', function ( val ) {
+		this.parallax = val;
 	});	
 
 
 ///	POSITION ACCESS METHODS //////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	StarField.method('TrackXYZ', function ( x, y, z ) {
-		var xx = u_WrapCoordinates (-x * this.speed);
-		var yy = u_WrapCoordinates (-y * this.speed);
+		var xx = u_WrapCoordinates (-x * this.parallax);
+		var yy = u_WrapCoordinates (-y * this.parallax);
 		this.position.x = xx;
 		this.position.y = yy;
-		this.position.z = z * this.speed;
+		this.position.z = z * this.parallax;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	StarField.method('Track', function ( vector3 ) {
@@ -81,16 +86,15 @@ define ([
 	});
 
 
-/** SUPPORT FUNCTIONS ********************************************************/
-
+///	SUPPORT FUNCTIONS /////////////////////////////////////////////////////////
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Returns a THREE.BufferGeometry object, spaced by 1 point per unit.
 	The actual position is randomized. The buffer object has four identical
 	repeating quadrants.
 /*/	function m_GeneratePointCloudGeometry( color ) {
 
-		var pointsWide = STARDENSITY*2; 
-		var pointsHigh = STARDENSITY*2;
+		var pointsWide = STAR_DENSITY*2; 
+		var pointsHigh = STAR_DENSITY*2;
 		var geometry = new THREE.BufferGeometry();
 		var numPoints = pointsWide*pointsHigh;
 		var off = numPoints/4;
@@ -104,7 +108,6 @@ define ([
 		var dy = 1/pointsHigh;
 
 		for( var i = 0; i < pointsWide / 2; i++ ) {
-
 			for( var j = 0; j < pointsHigh / 2; j++ ) {
 
 				var u = i / pointsWide;
@@ -149,9 +152,7 @@ define ([
 				colors[ 3 * (k+off*3) + 2 ] = color.b * intensity;
 
 				k++;
-
 			}
-
 		}
 
 		geometry.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
@@ -159,21 +160,21 @@ define ([
 		geometry.computeBoundingBox();
 
 		return geometry;
-
 	}
-
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	utility method to calculate repositioning of the starfield to create
 	illusion of infinite space with just one grid.
 /*/	function u_WrapCoordinates ( c ) {
-		c = c % STARWRAP;
-		if (c > +STARBOUND) c = c - STARWRAP;
-		if (c < -STARBOUND) c = c + STARWRAP;
+		c = c % FIELD_CLAMP;
+		if (c > +FIELD_BOUND) c = c - FIELD_CLAMP;
+		if (c < -FIELD_BOUND) c = c + FIELD_CLAMP;
 		return c;
 	}
 
 
+///////////////////////////////////////////////////////////////////////////////
 /** RETURN CONSTRUCTOR *******************************************************/
+///////////////////////////////////////////////////////////////////////////////
 
 	return StarField;
 
