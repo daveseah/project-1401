@@ -4,7 +4,7 @@ define ([
 	'1401/settings',
 	'1401/objects/sysloop',
 	'1401/system/renderer',
-	'1401-games/demo/tests/02'
+	'1401-games/demo/tests/003'
 ], function ( 
 	DBG,
 	SETTINGS,

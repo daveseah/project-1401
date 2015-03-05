@@ -1,4 +1,4 @@
-/* demo/test02.js */
+/* demo/test/01.js */
 define ([
 	'1401/objects/sysloop',
 	'1401/settings',
@@ -42,75 +42,111 @@ define ([
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE DECLARATION *******************************************************/
 
-	var MOD = SYSLOOP.New("Test02");
+	var MOD = SYSLOOP.New("Test01");
 	MOD.EnableUpdate( true );
 
 	MOD.SetHandler( 'Start', m_Start );
 	MOD.SetHandler( 'Construct', m_Construct );
 	MOD.SetHandler( 'Update', m_Update);
+	MOD.SetHandler( 'Initialize', m_Initialize );
+	MOD.SetHandler( 'Think', function() { console.log("think!"); } );
 
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PRIVATE VARS *************************************************************/
 
-	var crixa;
-	var starfields = [];
+	var spr01;
+	var spr02;
+	var spr03;
+	var obj01;
+	var obj02;
+
+	var starfield;
 
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE HANDLER FUNCTIONS *************************************************/
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	function m_Start() {
-	}	
+	function m_Initialize() {
+		var bg_png = SETTINGS.GamePath('resources/bg.png');
+		RENDERER.SetBackgroundImage ( bg_png );
+	}
 
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Construct() {
 
-		console.group("Starfield");
+		console.group("constructing test pieces");
 
-			/* make starfield */
-			var spec = {
-				color: new THREE.Color(1,1,1),
-				width: 10,
-				height: 10
-			};
-			starfields = [];
-			for (var i=0;i<3;i++) {
-				spec.color.multiplyScalar(0.7);
-				var sf = VISUALFACTORY.MakeStarField( spec );
-				sf.scale.set(1000,1000,1);
-				sf.position.set(0,0,-100-i);
-				RENDERER.AddWorldVisual(sf);
-				starfields.push(sf);
+			var numpieces = 100000;
+			console.log("creating",numpieces,"pieces without visuals");
+			for (var i=0;i<numpieces;i++) {
+				var p = PIECEFACTORY.NewPiece("test");
 			}
 
+			console.log("creating testSuperPiece");
+			var testSuperPiece = PIECEFACTORY.NewMovingPiece("TestSuper");
+
+		console.groupEnd();
+		
+		console.group("constructing test visuals");
+
+			spr01 = VISUALFACTORY.MakeDefaultSprite();
+			spr02 = VISUALFACTORY.MakeDefaultSprite();
+			spr03 = VISUALFACTORY.MakeDefaultSprite();
+			spr01.position.x = -512;
+			spr02.position.x = 512;
+
+			RENDERER.AddWorldVisual(spr01);
+			RENDERER.AddWorldVisual(spr02);
+			RENDERER.AddWorldVisual(spr03);
 
 			/* make crixa ship */
-			var shipSprite = VISUALFACTORY.MakeDefaultSprite();
-			RENDERER.AddWorldVisual(shipSprite);
 			var seq = {
 	            grid: { columns:2, rows:1, stacked:true },
 	            sequences: [
 	                { name: 'flicker', framecount: 2, fps:4 }
 	            ]
 	        };
-	        shipSprite.DefineSequences(SETTINGS.GamePath('resources/crixa.png'),seq);
-	        shipSprite.PlaySequence("flicker");
-	        crixa = PIECEFACTORY.NewPiece("crixa");
-	        crixa.SetVisual(shipSprite);
-	        crixa.SetPositionXY(0,0);
+	        spr03.DefineSequences(SETTINGS.GamePath('resources/crixa.png'),seq);
+	        spr03.PlaySequence("flicker");
+	        spr03.PulseDown(1000,true);
+	        var crixa = PIECEFACTORY.NewPiece("crixa");
+	        crixa.SetVisual(spr03);
+	        crixa.SetPositionXY(0,192);
 
+	        /* make ground plane */
+	        obj01 = VISUALFACTORY.MakeGroundPlane({
+	        	width: 800,
+	        	depth: 600,
+	        	color: 0xFF0000
+	        });
+	        obj01.position.z = -200;
+	        RENDERER.AddWorldVisual(obj01);
+
+	        /* make sphere */
+	        obj02 = VISUALFACTORY.MakeSphere({
+	        	radius:100,
+	        	color: 0x00FF00
+	        });
+	        obj02.position.z = -250;
+	        RENDERER.AddWorldVisual(obj02);
 
 	        /* add lights so mesh colors show */
 			var ambientLight = new THREE.AmbientLight(0x222222);
 	      	RENDERER.AddWorldVisual(ambientLight);
 
-
 			var directionalLight = new THREE.DirectionalLight(0xffffff);
 			directionalLight.position.set(1, 1, 1).normalize();
 			RENDERER.AddWorldVisual(directionalLight);
+
+		console.groupEnd();
+
+		console.group("Starfield");
+			var starfield = VISUALFACTORY.MakeStarField();
+			// starfield.scale.set(100,100,10);
+			RENDERER.AddWorldVisual(starfield);
 
 		console.groupEnd();
 
@@ -119,33 +155,35 @@ define ([
 
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	function m_Start() {
+	}	
+
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	var counter = 0;
-	var dx = 3;
+	var mode3d = true;
 	function m_Update ( interval_ms ) {
+		// sprite rotate by rotating the material
+		var mat = spr01.material;
+			mat.rotation += 0.05;
+			mat = spr02.material;
+			mat.rotation -= 0.01;
+			mat = spr03.material;
+			mat.rotation -= 0.02;
+
+		obj01.rotation.x += 0.1;
 
 		var vp = RENDERER.Viewport();
-		var dim = vp.Dimensions();
-		var width = dim.width/2;
-		/* move ship */
-		var x = crixa.position.x + dx;
-		if ((x > width)||(x < -width)) {
-			dx = dx * -1;
-			var rot = (dx>0) ? 0 : Math.PI;
-			crixa.SetRotationZ(rot);
-		}
-		crixa.SetPositionX(x);
-
-		vp.Track(crixa.Position());
-
-		/* rotate stars */	
-		var layers = starfields.length;
-		for (var i=0;i<starfields.length;i++){
-			var mult = i/layers;
-			var sf = starfields[i];
-			sf.position.x = x*mult;
-		}
+		var cam = vp.WorldCam();
+		obj02.rotation.y += 0.01;
 
 		counter += interval_ms;
+		if (counter>3000) {
+			counter=0;
+			mode3d = !mode3d;
+		}
+		if (mode3d) RENDERER.SelectWorld3D();
+		else RENDERER.SelectWorld2D();
 	}
 
 
