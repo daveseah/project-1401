@@ -69,7 +69,7 @@ define ([
 		console.log("MAIN: Initializing!");
 		var parm = {
 			attachTo: '#container',		// WebGL attaches to this
-			renderWidth: 1024,			// width of render context
+			renderWidth: 768,			// width of render context
 			renderHeight: 768,			// height of render context
 			worldUnits: 768				// world units to fit in shortest dim
 		};
