@@ -23,6 +23,10 @@ define ([
 
 /** OBJECT DECLARATION ******************************************************/
 
+/// HEAP-SAVING PREALLOCATED VARIABLES ////////////////////////////////////////////
+
+	var dict, keys, num, i, p, pieces;
+
 ///	PROTO ProtoPiece //////////////////////////////////////////////////////////////
 ///	stores common metadata shared with all ProtoPieces
 
@@ -50,14 +54,14 @@ define ([
 /*/	Called by MasterGameLoop to call every piece's Update() loop, where
 	they can update state as necessary.
 /*/	ProtoPiece.UpdateAll = function ( interval_ms ) {
-		var dict = ProtoPiece.PieceDict;
-		var keys = ProtoPiece.KeyArray = Object.keys(dict);
-		var num = keys.length;
+		dict = ProtoPiece.PieceDict;
+		keys = ProtoPiece.KeyArray = Object.keys(dict);
+		num = keys.length;
 		// console.log("calling update on",num,"pieces");
 		if (!num) return;
 		ProtoPiece.PieceList = [];
-		for (var i=0;i<num;i++) {
-			var p = dict[keys[i]];
+		for (i=0;i<num;i++) {
+			p = dict[keys[i]];
 			ProtoPiece.PieceList.push(p);
 			p.Update( interval_ms );
 		}
@@ -69,9 +73,9 @@ define ([
 	out during Execute. Piece manager modules will receive an
 	'OverThink' event that can override these intentions.
 /*/	ProtoPiece.ThinkAll = function ( interval_ms ) {
-		var pieces = ProtoPiece.PieceList;
-		for (var i=0;i<pieces.length;i++) {
-			var p = pieces[i];
+		pieces = ProtoPiece.PieceList;
+		for (i=0;i<pieces.length;i++) {
+			p = pieces[i];
 			p.Think( interval_ms );
 		}
 	};
@@ -81,9 +85,9 @@ define ([
 	to carry-out what it had been thinking during Think(), possibly
 	overriden by a piece manager.
 /*/	ProtoPiece.ExecuteAll = function ( interval_ms ) {
-		var pieces = ProtoPiece.PieceList;
-		for (var i=0;i<pieces.length;i++) {
-			var p = pieces[i];
+		pieces = ProtoPiece.PieceList;
+		for (i=0;i<pieces.length;i++) {
+			p = pieces[i];
 			p.Execute( interval_ms );
 		}
 	};
@@ -102,7 +106,7 @@ define ([
 			console.error("Piece needs an id property");
 			return;
 		}
-		var p = ProtoPiece.PieceDict[piece.id];
+		p = ProtoPiece.PieceDict[piece.id];
 		if (p) {
 			console.error("attempted to save duplicate id. aborting.");
 			return;

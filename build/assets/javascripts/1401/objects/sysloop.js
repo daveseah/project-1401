@@ -311,6 +311,10 @@ define ([
 	var FACTORY = {};	// MGR, FACTORY, or CLASS
 	FACTORY.name = "SysLoop";
 
+/// HEAP-SAVING PRE-ALLOCATED VARIABLES ////////////////////////////////////
+
+	var arr, i;
+
 
 ///	SysLoop CREATION ///////////////////////////////////////////////////////
 
@@ -335,8 +339,8 @@ define ([
 
 ///	STAGE CHANGE EVERYONG ///////////////////////////////////////////////////
 	FACTORY.ChangeStageAll = function ( stage_id ) {
-		var arr = m_LoopsArray();
-		for (var i=0;i<arr.length;i++) {
+		arr = m_LoopsArray();
+		for (i=0;i<arr.length;i++) {
 			m_loops[arr[i]].ChangeStage(stage_id);
 		}
 		m_master_gameloop.ChangeStage(stage_id);
@@ -345,40 +349,40 @@ define ([
 ///	SYSTEM CALL EVERYONE ////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ConnectAll = function ( viewmodel ) {
-		var arr = m_LoopsArray();
-		for (var i=0;i<arr.length;i++) {
+		arr = m_LoopsArray();
+		for (i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Connect(viewmodel);
 		}
 		m_master_gameloop.Connect(viewmodel);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.InitializeAll = function ( ) {
-		var arr = m_LoopsArray();
-		for (var i=0;i<arr.length;i++) {
+		arr = m_LoopsArray();
+		for (i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Initialize();
 		}
 		m_master_gameloop.Initialize();
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.LoadAssetsAll = function ( doneCallback ) {
-		var arr = m_LoopsArray();
-		for (var i=0;i<arr.length;i++) {
+		arr = m_LoopsArray();
+		for (i=0;i<arr.length;i++) {
 			m_loops[arr[i]].LoadAssets(doneCallback);
 		}
 		m_master_gameloop.LoadAssets(doneCallback);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ConstructAll = function ( ) {
-		var arr = m_LoopsArray();
-		for (var i=0;i<arr.length;i++) {
+		arr = m_LoopsArray();
+		for (i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Construct();
 		}
 		m_master_gameloop.Construct();
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.StartAll = function ( start_ms ) {
-		var arr = m_LoopsArray();
-		for (var i=0;i<arr.length;i++) {
+		arr = m_LoopsArray();
+		for (i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Start(start_ms);
 		}
 		m_master_gameloop.Start(start_ms);
@@ -394,40 +398,40 @@ define ([
 ///	STEP SUBCALL EVERYONE ///////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.GetInputAll = function ( ms ) {
-		var arr = m_LoopsArray();
-		for (var i=0;i<arr.length;i++) {
+		arr = m_LoopsArray();
+		for (i=0;i<arr.length;i++) {
 			m_loops[arr[i]].GetInput(ms);
 		}
 		m_master_gameloop.GetInput(ms);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ModulesUpdate = function ( ms ) {
-		var arr = m_LoopsArray();
-		for (var i=0;i<arr.length;i++) {
+		arr = m_LoopsArray();
+		for (i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Update(ms);
 		}
 		m_master_gameloop.Update(ms);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ModulesThink = function ( ms ) {
-		var arr = m_LoopsArray();
-		for (var i=0;i<arr.length;i++) {
+		arr = m_LoopsArray();
+		for (i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Think(ms);
 		}
 		m_master_gameloop.Think(ms);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ModulesOverThink = function ( ms ) {
-		var arr = m_LoopsArray();
-		for (var i=0;i<arr.length;i++) {
+		arr = m_LoopsArray();
+		for (i=0;i<arr.length;i++) {
 			m_loops[arr[i]].OverThink(ms);
 		}
 		m_master_gameloop.OverThink(ms);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ModulesExecute = function ( ms ) {
-		var arr = m_LoopsArray();
-		for (var i=0;i<arr.length;i++) {
+		arr = m_LoopsArray();
+		for (i=0;i<arr.length;i++) {
 			m_loops[arr[i]].Execute(ms);
 		}
 		m_master_gameloop.Execute(ms);
@@ -459,9 +463,13 @@ define ([
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE PRIVATE FUNCTIONS ************************************************/
 
+/// MORE HEAP-SAVING PRE-ALLOCATED VARIABLES //////////////////////////////////
+
+	var loop, doMe, aiDefined;
+
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_AddNewSysLoop ( name ) {
-		var loop = m_loops[name];
+		loop = m_loops[name];
 		if (loop) {
 			console.error("A loop module named",name.bracket(),"already declared");
 			return null;
@@ -477,7 +485,7 @@ define ([
 	}
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_CheckDoInput ( slobj ) {
-		var doMe = slobj.processInput;
+		doMe = slobj.processInput;
 		if (doMe) return true;
 		if ((doMe===false) && (slobj.HandleInput)) {
 			// repurpose process flag from "false" to "0" for output-once
@@ -487,7 +495,7 @@ define ([
 	}
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_CheckDoUpdate ( slobj ) {
-		var doMe = slobj.processUpdate;
+		doMe = slobj.processUpdate;
 		if (doMe) return true;
 		if ((doMe===false) && (slobj.HandleUpdate)) {
 			// repurpose process flag from "false" to "0" for output-once
@@ -497,9 +505,9 @@ define ([
 	}
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_CheckDoAI ( slobj ) {
-		var doMe = slobj.processAI;
+		doMe = slobj.processAI;
 		if (doMe) return true;
-		var aiDefined = slobj.HandleThink!==null;
+		aiDefined = slobj.HandleThink!==null;
 		aiDefined = aiDefined || slobj.HandleOverThink!==null; 
 		aiDefined = aiDefined || slobj.HandleExecute!==null;
 		if ((doMe===false) && (aiDefined)) {

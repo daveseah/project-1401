@@ -108,6 +108,10 @@ define ([
 		// console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
 	}
 
+///	HEAP-SAVING PRE-ALLOCATED VARIABLES /////////////////////////////////////
+
+	var x, rot, vp, layers, i, sf;
+
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Start() {
 	}	
@@ -118,21 +122,21 @@ define ([
 	function m_Update ( interval_ms ) {
 
 		/* move ship */
-		var x = crixa.position.x + dx;
+		x = crixa.position.x + dx;
 		if ((x > 2000)||(x < -2000)) {
 			dx = dx * -1;
-			var rot = (dx>0) ? 0 : Math.PI;
+			rot = (dx>0) ? 0 : Math.PI;
 			crixa.SetRotationZ(rot);
 		}
 		crixa.SetPositionX(x);
 
-		var vp = RENDERER.Viewport();
+		vp = RENDERER.Viewport();
 		vp.Track(crixa.Position());
 
 		/* rotate stars */	
-		var layers = starfields.length;
-		for (var i=0;i<starfields.length;i++){
-			var sf = starfields[i];
+		layers = starfields.length;
+		for (i=0;i<starfields.length;i++){
+			sf = starfields[i];
 			sf.TrackX(x);
 		}
 

@@ -31,6 +31,9 @@ define ([
 	// to be called during HeartBeat()
 	var m_updatable = [];
 
+	// reusable vars for update loops
+	var i;	
+
 /** PUBLIC API ***************************************************************/
 
 	var API = {};
@@ -57,9 +60,8 @@ define ([
 	};
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.HeartBeat = function ( interval_ms ) {
-		for (var i=0;i<m_updatable.length;i++) {
-			var v = m_updatable[i];
-			v.Update (interval_ms);
+		for (i=0;i<m_updatable.length;i++) {
+			m_updatable[i].Update (interval_ms);
 		}
 	};
 

@@ -77,11 +77,16 @@ define ([
 	Piece.inheritsFrom(ProtoPiece);
 
 
+/// PRE-ALLOCATED HEAP-SAVING VARIABLES ///////////////////////////////////////
+
+	var override;
+
+
 ///	BASIC LIFECYCLE METHODS ///////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Piece.method ('Update', function ( interval_ms ) {
 
-		var override = false;
+		override = false;
 		if (this.updateFunc) {
 			override = this.updateFunc.call (this, interval_ms);
 			if (override) return;
@@ -93,7 +98,7 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Piece.method ('Think', function ( interval_ms ) {
 
-		var override = false;
+		override = false;
 		if (this.thinkFunc) {
 			override = this.thinkFunc.call( this, interval_ms );
 			if (override) return;
@@ -104,7 +109,7 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Piece.method ('Execute', function ( interval_ms ) {
 
-		var override = false;
+		override = false;
 		if (this.executeFunc) {
 			override = this.executeFunc.call( this, interval_ms );
 			if (override) return;
@@ -202,58 +207,41 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	SetPosition() - preferred way to set the position of the piece 
 /*/	Piece.method ('SetPosition', function ( vector3 ) {
-
-		// note we are copying values instead of assigning objects
-		// to avoid object reuse bugs in vector operations
-
-		this.position.x = vector3.x;
-		this.position.y = vector3.y;
-		this.position.z = vector3.z;
-
+		this.SetPositionXYZ(vector3.x,vector3.y,vector3.z);
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	Piece.method ('SetPositionXYZ', function ( x, y, z ) {
+		// copy position into current vector
+		this.position.x = x;
+		this.position.y = y;
+		this.position.z = z;
 		// NOTE: visuals are THREE.object3d instances
 		if (this.visual) {
-			this.visual.position.x = vector3.x;
-			this.visual.position.y = vector3.y;
-			this.visual.position.z = vector3.z;
+			this.visual.position.x = x;
+			this.visual.position.y = y;
+			this.visual.position.z = z;
 		}
-
-		// NOTE: MatterJS is a verlet physics engine so this may create
-		// a sudden jump. might be a better way of setting this.
+		// NOTE: physics engine hooks also exist in movingpiece.js
 		if (this.body) {
 			// this.body.position.x = vector3.x;
 			// this.body.position.y = vector3.y;
 		}
-
-		// return the value as clone, not the actual one
-		// again to avoid object reference bugs when vector calcs
-		// are performed
-		return this.position.clone();
-	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Piece.method ('SetPositionXYZ', function ( x, y, z ) {
-		this.SetPosition( new THREE.Vector3( x, y, z ) );
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Piece.method ('SetPositionXY', function ( x, y ) {
-		this.SetPosition( new THREE.Vector3( x, y, this.position.z ) );
+		this.SetPositionXYZ( x, y, this.position.z );
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Piece.method ('SetPositionX', function ( x ) {
-		this.SetPosition(
-			new THREE.Vector3( x, this.position.y, this.position.z)
-		);
+		this.SetPositionXYZ( x, this.position.y, this.position.z );
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Piece.method ('SetPositionY', function ( y ) {
-		this.SetPosition(
-			new THREE.Vector3( this.position.x, y, this.position.z)
-		);
+		this.SetPositionXYZ(this.position.x, y, this.position.z);
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Piece.method ('SetPositionZ', function ( z ) {
-		this.SetPosition(
-			new THREE.Vector3( this.position.x, this.position.y, z )
-		);
+		this.SetPositionXYZ( this.position.x, this.position.y, z );
 	});
 
 

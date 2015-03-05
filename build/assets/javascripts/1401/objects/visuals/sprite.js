@@ -73,11 +73,17 @@ define ([
 	/* inheritance */
 	InqSprite.inheritsFrom(THREE.Sprite);
 
-	/* methods */
+/// PRE-ALLOCATED HEAP-SAVING VARIABLES /////////////////////////////////////
+
+	var override, seq, elapsed, opacity, runs, isPlaying, isSequenceMatch;
+	var cmd, frame, bm;
+
+
+///	METHODS /////////////////////////////////////////////////////////////////
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	InqSprite.method('Update', function ( ms ) {
 		// private updateFunction for certain kinds of animation support
-		var override = false;
+		override = false;
 		if (this.updateFunc) {
 			// updateFunc can override default update methods by returning TRUE
 			override = this.updateFunc.call (this, ms);
@@ -102,7 +108,7 @@ define ([
 			this.seqMode = InqSprite.RUN_COMPLETE;
 		}
 		if (this.seqRuns==InqSprite.MODE_STOPPED) return;
-		var seq = this.seq;
+		seq = this.seq;
 		if (this.seqRateTimer <= 0 ) {
 			this.seqRateTimer = seq.rate;
 			++seq.index;
@@ -130,11 +136,11 @@ define ([
 	pulseStart, pulseEnd, pulseDuration, pulseDirection
 /*/	InqSprite.method('PRI_UpdatePulse', function ( ms ) {
 
-		var elapsed = SETTINGS.MasterTime() - this.pulseStart;
+		elapsed = SETTINGS.MasterTime() - this.pulseStart;
 		if (elapsed>this.pulseDuration) {
 			elapsed=this.pulseDuration;
 		}
-		var opacity =  elapsed / this.pulseDuration;
+		opacity =  elapsed / this.pulseDuration;
 		opacity = (this.pulseDirection>0) ? opacity : 1 - opacity;
 		this.material.opacity = opacity;
 		this.material.needsUpdate = true;
@@ -354,7 +360,7 @@ define ([
 			return;
 		}
 		runs = runs || InqSprite.MODE_FOREVER;
-		var seq = this.sequences[seqName];
+		seq = this.sequences[seqName];
 		if (!seq) {
 			console.error("sequence",seqName,"does not exist");
 			return;
@@ -377,9 +383,9 @@ define ([
 			console.log("Sprite.GoSequence(): deferring",seqName.bracket(),"until texture loaded");
 			return;
 		}
-		var runs = InqSprite.MODE_STOPPED;
+		runs = InqSprite.MODE_STOPPED;
 		offset = offset || 0;
-		var seq = this.sequences[seqName];
+		seq = this.sequences[seqName];
 		if (!seq) {
 			console.error("sequence",seqName,"does not exist");
 			return;
@@ -423,8 +429,8 @@ define ([
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Check to see if Sequence is done playing
 /*/	InqSprite.method('SequenceIsPlaying', function ( seqName ) {
-		var isPlaying = this.seqRuns !== InqSprite.MODE_STOPPED;
-		var isSequenceMatch = true;
+		isPlaying = this.seqRuns !== InqSprite.MODE_STOPPED;
+		isSequenceMatch = true;
 		if (seqName) {
 			isSequenceMatch = (this.seq===this.sequences[seqName]);
 		}
@@ -454,7 +460,7 @@ define ([
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Return Sequence Frame Count
 /*/	InqSprite.method('SequenceFrameCount', function ( seqName ) {
-		var seq = this.PRI_GetSequence(seqName);
+		seq = this.PRI_GetSequence(seqName);
 		return seq.frames.length;
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -476,8 +482,8 @@ define ([
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	PRIVATE: show current frame of the passed sequence object
 /*/	InqSprite.method('PRI_ShowSequenceFrame', function ( seq ) { 
-		var frame = seq.frames[seq.index];
-		var bm = this.material.map;
+		frame = seq.frames[seq.index];
+		bm = this.material.map;
 		bm.repeat.set(frame.fw,frame.fh);
 		bm.offset.set(frame.offx,frame.offy);
 		if (bm.image) {
@@ -498,7 +504,7 @@ define ([
 /*/	If PlaySequence() or GoSequence() is called while DefineSequence() is
 	still loading, it is queued and checked in SetTexture()'s success func
 /*/	InqSprite.method('PRI_CheckSequenceQueue', function () {
-		var cmd = this.sequenceQueue.shift();
+		cmd = this.sequenceQueue.shift();
 		if (!cmd) return;
 		switch (cmd.mode) {
 			case 'go':
