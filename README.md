@@ -56,6 +56,11 @@ There is not a lot of online material that details the birth of a video game arc
 
 ## Updates
 
+March 4, 2015
+* Add rotation for sprites
+* Add infinite starfield
+* Add 2d camera and starfield position tracking
+
 February 28, 2015
 * Completed refactor of main system startup and game step, confirmed operation.
 * Updated documentation...woot!
