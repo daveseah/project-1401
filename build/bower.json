@@ -10,6 +10,8 @@
     "font-awesome": "3.2.1",
     "durandal": "2.0.0",
     "yaml.js": "0.2.1",
-    "es6-promise-polyfill": "~1.0.0"
+    "es6-promise-polyfill": "~1.0.0",
+    "physicsjs": "~0.7.0",
+    "Keypress": "~2.1.0"
   }
 }

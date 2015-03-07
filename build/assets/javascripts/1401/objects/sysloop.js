@@ -235,7 +235,7 @@ define ([
 		if (this!==m_master_gameloop) {
 			console.warn("ERROR in SYSLOOP",this.name.bracket()+': Use Update, not Step');
 			return;
-		};
+		}
 		if (this.HandleGameStep) {
 			this.HandleGameStep.call(this, intervalMs);
 		} else {

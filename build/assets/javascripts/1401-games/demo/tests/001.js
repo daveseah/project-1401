@@ -143,12 +143,6 @@ define ([
 
 		console.groupEnd();
 
-		console.group("Starfield");
-			var starfield = VISUALFACTORY.MakeStarField();
-			// starfield.scale.set(100,100,10);
-			RENDERER.AddWorldVisual(starfield);
-
-		console.groupEnd();
 
 		// console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
 	}

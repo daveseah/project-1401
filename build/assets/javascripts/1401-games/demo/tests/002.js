@@ -16,28 +16,9 @@ define ([
 	var DBGOUT = true;
 
 ///////////////////////////////////////////////////////////////////////////////
-/**	SUBMODULE TEST01 *********************************************************\
+/**	SUBMODULE TEST 002 *******************************************************\
 
-	This submodule of demogame constructs some test shapes. It is hooked-in
-	to the master lifecycle through SYSLOOP, receiving events that it has
-	opted-in to receive.
-
-		Connect
-		LoadAssets
-		Initialize
-		Construct
-		Start
-	
-		GetInput
-		Update
-		Think
-		OverThink
-		Execute
-
-	Note that the handlers for GetInput(), Update(), and the AI methods
-	Think(), OverThink(), and Execute() have to be explicitly enabled. These
-	events are also not passed UNLESS game-main
-
+	Finite Starfield Test
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE DECLARATION *******************************************************/
