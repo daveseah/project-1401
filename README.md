@@ -56,6 +56,11 @@ There is not a lot of online material that details the birth of a video game arc
 
 ## Updates
 
+March 10, 2015
+* Add MovingPiece class
+* Add PhysicsJS-driven sim step
+* Add keyboard controls
+
 March 4, 2015
 * Add rotation for sprites
 * Add infinite starfield
