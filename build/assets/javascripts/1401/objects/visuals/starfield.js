@@ -21,7 +21,7 @@ define ([
 
 /** PRIVATE DECLARATIONS *****************************************************/
 
-	var STAR_SIZE = 1;
+	var STAR_SIZE = 1.5;
 	var STAR_DENSITY = 10;
 	var FIELD_SIZE = 2048;
 	var FIELD_CLAMP = FIELD_SIZE / 2;
