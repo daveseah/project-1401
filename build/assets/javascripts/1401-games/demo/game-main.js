@@ -4,7 +4,7 @@ define ([
 	'1401/settings',
 	'1401/objects/sysloop',
 	'1401/system/renderer',
-	'1401-games/demo/tests/003'
+	'1401-games/demo/tests/004'
 ], function ( 
 	DBG,
 	SETTINGS,
@@ -91,7 +91,7 @@ define ([
 		/* game pause control */
 		/* game logic */
 		SYSLOOP.GetInputAll(ms);
-		/* physics step here */
+		/* physics step in autosys */
 		SYSLOOP.PiecesUpdate (ms);		// all pieces update
 		SYSLOOP.ModulesUpdate (ms);		// modules update (us included)
 		SYSLOOP.ModulesThink (ms);		// modules AI think (us included)

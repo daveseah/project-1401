@@ -22,7 +22,7 @@ define ([
 /** PRIVATE DECLARATIONS *****************************************************/
 
 	var STAR_SIZE = 1;
-	var STAR_DENSITY = 20;
+	var STAR_DENSITY = 10;
 	var FIELD_SIZE = 2048;
 	var FIELD_CLAMP = FIELD_SIZE / 2;
 	var FIELD_BOUND = FIELD_CLAMP / 2;

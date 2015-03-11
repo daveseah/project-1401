@@ -12,7 +12,9 @@ requirejs.config({
 		'1401-games' : '../1401-games',
 // ---- project 1401 extra libs ---------------------------------------------- // 
 		'three' : '../vendor-shimmed/three.min',
-        'yaml':'../vendor/yaml.js/yaml'
+        'yaml':'../vendor/yaml.js/yaml',
+        'physicsjs' : '../vendor/physicsjs/physicsjs-full',
+        'keypress' : '../vendor/Keypress/keypress-2.1.0.min'
 	},
 	shim: {
 		'bootstrap': {

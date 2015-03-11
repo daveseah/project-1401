@@ -1,9 +1,11 @@
 /* movingpiece.js */
 define ([
 	'three',
+	'physicsjs',
 	'1401/objects/pieces/piece'
 ], function ( 
 	THREE,
+	PHYSICS,
 	Piece
 ) {
 
@@ -43,12 +45,23 @@ define ([
 	//	this.position2 - defined in Piece
 
 	//	physics features via physics engine
-	//	this.body = null;
+	this.body = PHYSICS.body('circle', {
+		x: 0, y:0, radius: 15,
+		vx: 0.01, vy: 0
+	});
+	MovingPiece.WORLD.add(this.body);
+	this.body.cof = 0.9;
 
 	//	initialize default values
 		m_InitializeDefaults(this);
 
 	}
+	/* static vars */
+	MovingPiece.WORLD = PHYSICS();	// create master world instance
+	/* static methods */
+	MovingPiece.WorldStep = function ( current_time ) {
+		MovingPiece.WORLD.step( current_time );
+	};
 	/*/ inheritance /*/
 	MovingPiece.inheritsFrom(Piece);
 
@@ -57,11 +70,46 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Override Piece.Update() as necessary
 /*/	MovingPiece.method ('Update', function ( interval_ms ) {
-
+		// handle physics
+		if (this.body) {
+			// update position and orientation
+			this.SetPositionXY( this.body.state.pos.x, this.body.state.pos.y );
+			this.SetRotationZ( this.body.state.angular.pos );
+		}
 		// call overridden Update() method directly
 		Piece.superCall('Update', this, interval_ms);
 
 	});
+
+
+///	PHYSICS METHODS  /////////////////////////////////////////////////////////
+	var v = new PHYSICS.vector();
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	MovingPiece.method('Accelerate', function ( ax, ay ) {
+		v.set(ax,ay);
+		v.rotate(this.rotation.z ,0);
+		this.body.sleep(false);
+		this.body.state.acc = v;
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	MovingPiece.method('Brake', function ( braking ) {
+		if (!braking) return;
+		this.body.sleep(false);
+		this.body.state.vel.mult(1-braking);
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	MovingPiece.method('AccelerateRotation', function ( az ) {
+		this.body.sleep(false);
+		this.body.state.angular.acc = az;
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	MovingPiece.method('BrakeRotation', function ( braking ) {
+		if (!braking) return;
+		this.body.sleep(false);
+		this.body.state.angular.acc = 0;
+		this.body.state.angular.vel *= 1-braking;
+	});
+
 
 
 /** UTILITY FUNCTIONS ********************************************************/

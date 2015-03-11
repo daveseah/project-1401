@@ -19,6 +19,8 @@ define ([
 
 /** MODULE PRIVATE VARIABLES *************************************************/
 
+	var physics_time = 0;
+
 
 /** PUBLIC API ***************************************************************/
 
@@ -31,6 +33,8 @@ define ([
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.HeartBeat = function ( interval_ms ) {
 		// do piece management, garbage collection if necessary
+		physics_time += interval_ms;
+		MovingPiece.WorldStep( physics_time );
 	};
 
 
@@ -57,6 +61,7 @@ define ([
 		var p = new MovingPiece(name);
 		return p;
 	};
+
 
 
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
