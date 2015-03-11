@@ -91,7 +91,7 @@ define ([
 			override = this.updateFunc.call (this, interval_ms);
 			if (override) return;
 		}
-		if (this.State) this.State.Update (interval_ms);
+		if (this.state) this.state.Update (interval_ms);
 		if (this.ai) this.ai.Update (interval_ms);
 
 	});
