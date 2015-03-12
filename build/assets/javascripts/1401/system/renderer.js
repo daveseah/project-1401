@@ -99,6 +99,11 @@ define ([
 		RP_WORLD.add(visual);
 		if (DBGOUT) console.log("added "+visual.id,">>> RP_WORLD");
 	};
+///	---
+	API.SetWorldVisualFog = function ( fog ) {
+		RP_WORLD.fog = fog;
+		if (DBGOUT) console.log("added fog"+fog.name,">>> RP_WORLD");
+	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddWorldOverlayVisual = function ( visual ) {
 		RP_WORLD2.add(visual);

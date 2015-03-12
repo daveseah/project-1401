@@ -19,6 +19,9 @@ define ([
 	var instance;
 	var viewport_count = 0;
 
+	// scratch variables
+	var v = new THREE.Vector3(0,0,0);
+
 ///	OBJECT DECLARATIONS //////////////////////////////////////////////////////
 
 	/* constructor */
@@ -216,6 +219,10 @@ define ([
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('WorldCam', function () { return this.camWORLD; });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	Viewport.method('WorldCam2D', function () { return this.cam2D; });
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	Viewport.method('WorldCam3D', function () { return this.cam3D; });
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('ScreenCam', function () { return this.camSCREEN; });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('Clear', function () { this.webGL.clear(); });
@@ -238,8 +245,14 @@ define ([
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('Track', function ( vector3 ) {
-		this.cam2D.position.x = vector3.x;
-		this.cam2D.position.y = vector3.y;
+		v.x = vector3.x; v.y = vector3.y; v.z = vector3.z;
+		this.cam2D.position.x = v.x;
+		this.cam2D.position.y = v.y;
+		this.cam3D.position.x = v.x;
+		this.cam3D.position.y = v.y;
+		this.cam3D.lookAt.x = v.x;
+		this.cam3D.lookAt.y = v.y;
+		this.cam3D.lookAt.z = v.z;
 	});
 
 
@@ -247,7 +260,7 @@ define ([
 
 	function m_GetFramingDistance ( cam3D, fWidth, fHeight ) {
 
-		var safety = 0.2;
+		var safety = 0.5;
 		var buffer = fWidth * safety;
 
 		fWidth += buffer;

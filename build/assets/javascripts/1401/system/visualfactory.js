@@ -103,12 +103,12 @@ define ([
 		var bm = THREE.ImageUtils.loadTexture( texturePath, THREE.UVMAPPING, mss_onload, mss_onerr );
 		console.assert (bm, "could not retrieve bitmap from loader");
 
-		var mat = new THREE.SpriteMaterial( {map:bm, color:0xffffff} );
+		var mat = new THREE.SpriteMaterial( {map:bm, color:0xffffff, fog:true} );
 		console.assert(mat, "could not create THREE.SpriteMaterial");
 
 		var threeSprite = new InqSprite (mat);
 		// save in update array
-		m_updatable.push(spr);
+		m_updatable.push(threeSprite);
 
 		console.assert(threeSprite, "could not create THREE.Sprite");
 
