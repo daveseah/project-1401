@@ -1,11 +1,13 @@
 define ([
 	'1401/settings',
 	'1401/objects/sysloop',
-	'1401/system/autosystem'
+	'1401/system/autosystem',
+	'1401-games/demo/game-main'
 ], function (
 	SETTINGS,
 	SYSLOOP,
-	AUTOSYS
+	AUTOSYS,
+	GAME_MODULE
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -67,8 +69,12 @@ define ([
 		m_game = null;
 
 		/* load game module asynchronously */
-		require ( [module_path], m_GameInstantiate );
+		// removing this 'require' because it breaks r.js somehow
+		// and I am too lazy to debug the configuration in mimosa
+		// require ( [module_path], m_GameInstantiate );
 		// ...execution continues in m_GameInstantiate()
+
+		m_GameInstantiate(GAME_MODULE);
 		
 		console.groupEnd();
 	}
