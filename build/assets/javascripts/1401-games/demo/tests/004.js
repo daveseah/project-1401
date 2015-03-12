@@ -54,7 +54,28 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Construct() {
 
-		console.group("Starfield");
+		console.group("Enabling Fog");
+
+			var cam = RENDERER.Viewport().WorldCam3D();
+			console.log(cam.position.z);
+			var z = cam.position.z;
+			var fog = new THREE.Fog(0x000000,z-100,z+50);
+			RENDERER.SetWorldVisualFog(fog);
+
+		console.groupEnd();
+
+		console.group("Add Global Lights");
+
+	        /* add lights so mesh colors show */
+			var ambientLight = new THREE.AmbientLight(0x222222);
+	      	RENDERER.AddWorldVisual(ambientLight);
+
+			var directionalLight = new THREE.DirectionalLight(0xffffff);
+			directionalLight.position.set(1, 1, 1).normalize();
+			RENDERER.AddWorldVisual(directionalLight);
+
+		console.groupEnd();
+		console.group("Add Starfield");
 
 			/* make starfield */
 			var starBright = [ 
@@ -75,6 +96,9 @@ define ([
 				starfields.push(sf);
 			}
 
+		console.groupEnd();
+		console.group("Add Ship");
+
 			/* make crixa ship */
 			var shipSprite = VISUALFACTORY.MakeDefaultSprite();
 			RENDERER.AddWorldVisual(shipSprite);
@@ -88,17 +112,31 @@ define ([
 	       	// shipSprite.PlaySequence("flicker");
 	        crixa = PIECEFACTORY.NewMovingPiece("crixa");
 	        crixa.SetVisual(shipSprite);
-	        crixa.SetPositionXY(0,0);
-
-	        /* add lights so mesh colors show */
-			var ambientLight = new THREE.AmbientLight(0x222222);
-	      	RENDERER.AddWorldVisual(ambientLight);
-
-			var directionalLight = new THREE.DirectionalLight(0xffffff);
-			directionalLight.position.set(1, 1, 1).normalize();
-			RENDERER.AddWorldVisual(directionalLight);
+	        crixa.SetPositionXYZ(0,0,0);
 
 		console.groupEnd();
+		console.group("Add Platforms");
+
+			for (var i=0;i<3;i++) {
+				var platform = VISUALFACTORY.MakeStaticSprite(
+					SETTINGS.GamePath('resources/teleport.png'),
+					function(){}
+				);
+				platform.position.set(0,100,100-(i*50));
+				RENDERER.AddWorldVisual(platform);
+			}
+
+			for (var i=0;i<3;i++) {
+				var platform = VISUALFACTORY.MakeStaticSprite(
+					SETTINGS.GamePath('resources/teleport.png'),
+					function(){}
+				);
+				platform.position.set(0,-100,100-(i*50));
+				RENDERER.AddWorldVisual(platform);
+			}
+
+		console.groupEnd();
+
 
 		// console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
 	}
@@ -110,6 +148,7 @@ define ([
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Start() {
+		RENDERER.SelectWorld3D();
 		SHIPCONTROLS.BindKeys();
 	}	
 
