@@ -7,7 +7,7 @@ define ([
 	SETTINGS,
 	SYSLOOP,
 	AUTOSYS,
-	GAME_MODULE
+	DEFAULT_GAME
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,6 +53,8 @@ define ([
 	var m_current_time_ms = 0;	// global timer
 	var m_interval_ms = SETTINGS('TIMESTEP');
 
+	var USE_DYNAMIC_LOADING = false;
+
 
 ///////////////////////////////////////////////////////////////////////////////
 /** SUPPORTING PRIVATE FUNCTIONS *********************************************/
@@ -69,12 +71,14 @@ define ([
 		m_game = null;
 
 		/* load game module asynchronously */
-		// removing this 'require' because it breaks r.js somehow
-		// and I am too lazy to debug the configuration in mimosa
-		// require ( [module_path], m_GameInstantiate );
+		if (USE_DYNAMIC_LOADING) {
+			// this breaks with mimosa build -omp
+			// require ( [module_path], m_GameInstantiate );
+		} else {
+			m_GameInstantiate ( DEFAULT_GAME );
+		}
 		// ...execution continues in m_GameInstantiate()
 
-		m_GameInstantiate(GAME_MODULE);
 		
 		console.groupEnd();
 	}

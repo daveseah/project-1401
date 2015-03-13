@@ -42,7 +42,7 @@ define ([
 			out += objName+'\n';
 			if (str!==base) {
 				out+= "-----\n";
-				var mod = require(objName);
+				var mod = rm[objName];
 				out += m_DumpObj(mod);
 				out += '\n';
 			}
