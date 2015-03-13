@@ -32,7 +32,10 @@ exports.config =
   bower:
     copy:
       mainOverrides:
-        "knockout.js":["knockout.js","knockout-2.3.0.debug.js"]
+        "knockout.js":[
+          "knockout.js"
+          "knockout-2.3.0.debug.js"
+        ]
         "bootstrap": [
           "docs/assets/js/bootstrap.js"
           "docs/assets/css/bootstrap.css"
@@ -80,3 +83,20 @@ exports.config =
         stubModules: ['text']
         pragmas:
           build: true
+
+  webPackage:
+    archiveName: null
+    exclude: [
+      "README.md"
+      "node_modules"
+      "mimosa-config.coffee"
+      "mimosa-config.js"
+      "assets"
+      ".git"
+      ".gitignore"
+      "mimosa-config-documented.coffee"
+      ".mimosa"
+      "bower.json"
+      "make.bat"
+      "makefile"
+    ]
