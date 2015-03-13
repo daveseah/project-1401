@@ -1,14 +1,17 @@
 ## Project 1401 - Javascript Video Game Shell
 
-I'm an interactive designer and reluctant programmer that, on my [10-year blogging anniversary][10year], remembered my old dream of making my own video game had never been fulfilled. Thanks to some recent project work, I've started to pick up some modern web application skills, so I'm using Javascript to build a base of exploration.
+On my [10-year blogging anniversary][10year], I vowed to fulfill my dream of making a video game just for me and my friends. I've started to pick up modern web dev skills thanks to recent project work, so I've decided to use Javascript as my plaform. It's universal and quite powerful these days, and deployment is instantaneous.
 
-There is an educational goal as well. There are many powerful game engines available, but they don't often explain their founding architectural concepts. Although there are a lot of tutorials on the Internet, they often do not teach you how to build an actual working system from scratch. I want this project to help me and others understand how to build a working framework from scratch, mistakes and all. I figure this will be helpful to someone of an intermediate programming level who is curious how to build web applications. 
+I have an educational goal as well. I've seen quite a lot of powerful game engines available, but the supporting documentation doesn't often go into the architecture behind their design and use. I want this project to help me and others understand how to build a working framework from scratch, mistakes and all. I figure this will be helpful to someone of an intermediate programming level who is curious how to build web applications. 
 
-For project documentation, the [Project 1401 Wiki][wiki] here on Github. For background information, see my [Project 1401][project1401] home page. 
+* For project documentation, the [Project 1401 Wiki][wiki] here on Github. 
+* For background information, see my [Project 1401][project1401] home page. 
+* For the current public demo build, go to [http://1401.davidseah.com][heroku].
 
 [project1401]:http://davidseah.com/about/make-video-game/
 [10year]:http://davidseah.com/2014/09/my-next-10-years-of-blogging/
 [wiki]:http://github.com/daveseah/project-1401/wiki
+[heroku]:http://1401.davidseah.com/
 
 ## Platform Information
 
@@ -55,6 +58,10 @@ The [Project 1401 Wiki](https://github.com/daveseah/project-1401/wiki) on GitHub
 There is not a lot of online material that details the birth of a video game architecture from the ground-up, so I've decided to share it. If you find anything unclear, let me know!
 
 ## Updates
+
+March 12, 2015
+* Add platform graphics tests
+* Package and deploy to Heroku
 
 March 10, 2015
 * Add MovingPiece class
