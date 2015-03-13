@@ -55,15 +55,14 @@ define ([
 	function m_Construct() {
 
 		console.group("Enabling Fog");
+			// for has to be added first before rendering occurs
 
 			var cam = RENDERER.Viewport().WorldCam3D();
-			console.log(cam.position.z);
 			var z = cam.position.z;
 			var fog = new THREE.Fog(0x000000,z-100,z+50);
 			RENDERER.SetWorldVisualFog(fog);
 
 		console.groupEnd();
-
 		console.group("Add Global Lights");
 
 	        /* add lights so mesh colors show */

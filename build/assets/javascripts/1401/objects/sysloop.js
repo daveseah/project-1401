@@ -328,11 +328,12 @@ define ([
 /*/	The Main Loop is executed first!
 /*/	FACTORY.InitializeGame = function ( name ) {
 		if (m_master_gameloop) {
-			console.error('Game already initialized; did you mean to call "New" instead?');
-			return;
+			// this happens because we load a "default game" in master.js
+			// that could be overriden by a dynamic module load.
+			console.warn('Deleting old MASTER SYSLOOP',m_master_gameloop.name);
 		}
 		m_master_gameloop = new SysLoop(name);
-		console.info("MASTER SYSLOOP",m_master_gameloop.name.bracket(),"SET");
+		console.info("MASTER SYSLOOP",m_master_gameloop.name.bracket(),"CREATED & SET");
 		return m_master_gameloop;
 	};
 
