@@ -47,7 +47,7 @@ define ([
 	//	physics features via physics engine
 	this.body = PHYSICS.body('circle', {
 		x: 0, y:0, radius: 15,
-		vx: 0.01, vy: 0
+		vx: 0, vy: 0
 	});
 	MovingPiece.WORLD.add(this.body);
 	this.body.cof = 0.9;

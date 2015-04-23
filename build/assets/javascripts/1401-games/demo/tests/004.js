@@ -54,16 +54,12 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Construct() {
 
-		console.group("Enabling Fog");
-			// for has to be added first before rendering occurs
+	        var i, platform;
 
 			var cam = RENDERER.Viewport().WorldCam3D();
 			var z = cam.position.z;
 			var fog = new THREE.Fog(0x000000,z-100,z+50);
 			RENDERER.SetWorldVisualFog(fog);
-
-		console.groupEnd();
-		console.group("Add Global Lights");
 
 	        /* add lights so mesh colors show */
 			var ambientLight = new THREE.AmbientLight(0x222222);
@@ -72,9 +68,6 @@ define ([
 			var directionalLight = new THREE.DirectionalLight(0xffffff);
 			directionalLight.position.set(1, 1, 1).normalize();
 			RENDERER.AddWorldVisual(directionalLight);
-
-		console.groupEnd();
-		console.group("Add Starfield");
 
 			/* make starfield */
 			var starBright = [ 
@@ -86,7 +79,7 @@ define ([
 				parallax: 1
 			};		
 			starfields = [];
-			for (var i=0;i<3;i++) {
+			for (i=0;i<3;i++) {
 				starSpec.color=starBright[i];
 				var sf = VISUALFACTORY.MakeStarField( starSpec );
 				starSpec.parallax *= 0.5;
@@ -94,9 +87,6 @@ define ([
 				RENDERER.AddBackgroundVisual(sf);
 				starfields.push(sf);
 			}
-
-		console.groupEnd();
-		console.group("Add Ship");
 
 			/* make crixa ship */
 			var shipSprite = VISUALFACTORY.MakeDefaultSprite();
@@ -113,31 +103,26 @@ define ([
 	        crixa.SetVisual(shipSprite);
 	        crixa.SetPositionXYZ(0,0,0);
 
-		console.groupEnd();
-		console.group("Add Platforms");
-
-			for (var i=0;i<3;i++) {
-				var platform = VISUALFACTORY.MakeStaticSprite(
+			for (i=0;i<3;i++) {
+				platform = VISUALFACTORY.MakeStaticSprite(
 					SETTINGS.GamePath('resources/teleport.png'),
-					function(){}
+					do_nothing
 				);
 				platform.position.set(0,100,100-(i*50));
 				RENDERER.AddWorldVisual(platform);
 			}
 
-			for (var i=0;i<3;i++) {
-				var platform = VISUALFACTORY.MakeStaticSprite(
+			for (i=0;i<3;i++) {
+				platform = VISUALFACTORY.MakeStaticSprite(
 					SETTINGS.GamePath('resources/teleport.png'),
-					function(){}
+					do_nothing
 				);
 				platform.position.set(0,-100,100-(i*50));
 				RENDERER.AddWorldVisual(platform);
 			}
 
-		console.groupEnd();
+			function do_nothing () {}
 
-
-		// console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
 	}
 
 ///	HEAP-SAVING PRE-ALLOCATED VARIABLES /////////////////////////////////////
