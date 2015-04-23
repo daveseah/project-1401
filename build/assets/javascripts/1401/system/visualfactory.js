@@ -13,7 +13,7 @@ define ([
 	StarField
 ) {
 
-	var DBGOUT = true;
+	var DBGOUT = false;
 
 /**	VISUALFACTORY ************************************************************\
 
@@ -116,7 +116,7 @@ define ([
 			var ww = texture.image.width;
 			var hh = texture.image.height;
 			threeSprite.SetScaleXYZ(ww,hh,1);
-			console.log("MakeStaticSprite","setting scale",ww+'x'+hh);
+			if (DBGOUT) console.log("MakeStaticSprite","setting scale",ww+'x'+hh);
 			if (onValid) onValid(texture);
 		}
 		function mss_onerr ( err ) {

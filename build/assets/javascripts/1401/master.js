@@ -10,6 +10,8 @@ define ([
 	DEFAULT_GAME
 ) {
 
+	var DBGOUT = false;
+
 ///////////////////////////////////////////////////////////////////////////////
 /**	GAME MASTER *************************************************************\
 
@@ -64,7 +66,7 @@ define ([
 	activities directory, and load asyncronously.
 	TODO: Make re-entrant proof
 /*/	function m_GameLoad ( gameId, viewModel ) {
-		console.log('!!! LOADING GAME', gameId.bracket());
+		if (DBGOUT) console.log('!!! LOADING GAME', gameId.bracket());
 
 		SETTINGS._Initialize( gameId, viewModel );
 		var module_path = SETTINGS.GameMainModulePath();
@@ -92,14 +94,14 @@ define ([
 
 		SYSLOOP.ConnectAll ( m_viewmodel );
 
+		AUTOSYS.Initialize();
 		SYSLOOP.InitializeAll();
 
 		/* NOTE */
 		/* the async assets loading is not yet working */
 
-		SYSLOOP.LoadAssetsAll ( function () {} );
-
 		AUTOSYS.LoadAssets ( m_GameConstructAndStart );
+		SYSLOOP.LoadAssetsAll ( function () {} );
 
 		// ...execution continues in m_gameConstructAndStart()
 
@@ -111,17 +113,18 @@ define ([
 
 		SYSLOOP.ConstructAll ();
 
-		SYSLOOP.StartAll ( m_current_time_ms );
-
-		// initialize globals
+		// initialize time!
 		m_current_time_ms = 0;
 		SETTINGS._SetMasterTime(m_current_time_ms);
+
+		SYSLOOP.StartAll ( m_current_time_ms );
+
 
 		// game will get called on every Step() from here on out
 		setInterval( m_TimeStep, m_interval_ms );
 		
 		console.groupEnd();
-		console.log("*** BEGIN RUN LOOP ***");
+		if (DBGOUT) console.log("*** BEGIN RUN LOOP ***");
 	}
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

@@ -7,7 +7,7 @@ define ([
 	SETTINGS
 ) {
 
-	var DBGOUT = true;
+	var DBGOUT = false;
 
 /**	SPRITE *******************************************************************\
 
@@ -356,7 +356,7 @@ define ([
 /*/	InqSprite.method('PlaySequence', function ( seqName, runs ) {
 		if (this.textureQueue.length) {
 			this.sequenceQueue.push({name:seqName, runs: runs, mode:'play'});
-			console.log("Sprite.PlaySequence(): deferring",seqName.bracket(),"until texture loaded");
+			if (DBGOUT) console.log("Sprite.PlaySequence(): deferring",seqName.bracket(),"until texture loaded");
 			return;
 		}
 		runs = runs || InqSprite.MODE_FOREVER;

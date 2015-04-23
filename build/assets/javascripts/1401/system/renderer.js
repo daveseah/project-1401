@@ -9,7 +9,7 @@ define ([
 	SETTINGS
 ) {
 
-	var DBGOUT = true;
+	var DBGOUT = false;
 
 /**	RENDERER *****************************************************************\
 
