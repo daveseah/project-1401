@@ -91,8 +91,7 @@ define ([
 			override = this.updateFunc.call (this, interval_ms);
 			if (override) return;
 		}
-		if (this.state) this.state.Update (interval_ms);
-		if (this.ai) this.ai.Update (interval_ms);
+		if (this.state) this.state.Update( interval_ms );
 
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -103,7 +102,7 @@ define ([
 			override = this.thinkFunc.call( this, interval_ms );
 			if (override) return;
 		}
-		if (this.ai) this.ai.Think(interval_ms);
+		if (this.ai) this.ai.behavior.Tick( this, interval_ms );
 
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -114,7 +113,6 @@ define ([
 			override = this.executeFunc.call( this, interval_ms );
 			if (override) return;
 		}
-		if (this.ai) this.ai.Execute(interval_ms);
 
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

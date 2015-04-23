@@ -3,12 +3,14 @@ define ([
 	'1401/settings',
 	'1401/system/renderer',
 	'1401/system/visualfactory',
-	'1401/system/piecefactory'
+	'1401/system/piecefactory',
+	'1401/system/logicfactory'
 ], function ( 
 	SETTINGS,
 	RENDERER,
 	VISUALFACTORY,
-	PIECEFACTORY
+	PIECEFACTORY,
+	LOGICFACTORY
 ) {
 
 	var DBGOUT = true;
@@ -42,6 +44,11 @@ define ([
 
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/ Called by Master
+/*/	API.Initialize = function () {
+		LOGICFACTORY.Initialize();
+	};
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/ Called by Master
 /*/	API.LoadAssets = function ( callback ) {
 		VISUALFACTORY.LoadAssets (callback);
 	};
@@ -51,6 +58,7 @@ define ([
 		VISUALFACTORY.HeartBeat( interval_ms );
 		PIECEFACTORY.HeartBeat( interval_ms );
 		RENDERER.HeartBeat( interval_ms );
+		LOGICFACTORY.HeartBeat( interval_ms );
 	};
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.PiecesUpdate = PIECEFACTORY.PiecesUpdate;
