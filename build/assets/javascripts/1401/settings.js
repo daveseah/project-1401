@@ -25,19 +25,18 @@ define ([
 /** PUBLIC API **************************************************************/
 //////////////////////////////////////////////////////////////////////////////
 
-	var SETTINGS = {};
-	SETTINGS.name = "1401.settings";
-
 
 ///	BASIC PROPERTY SETTING/GETTING
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Retrieve value of associated property
-/*/	SETTINGS = function ( key ) {
+/*/	var SETTINGS = function ( key ) {
 		var value = S[key];
 		if (!value)
 			console.error("Requested key",key.bracket(),"doesn't exist!");
 		return value;
 	};
+	SETTINGS.name = "1401.settings";
+	
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Set the value of a key
 /*/	SETTINGS.Set = function ( key, value ) { 

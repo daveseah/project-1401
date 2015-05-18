@@ -51,8 +51,8 @@ define ([
 			BF.Action(),
 			BF.Action()
 		]);
-		BF.DefineBehaviorTree('testMe',b);
-		BF.AssignBehavior( piece, 'testme');
+		BF.DefineBehavior('testMe',b);
+		BF.AssignBehavior( 'testme', piece);
 	};
 
 	AI.BehaviorTick = function ( interval_ms ) {

@@ -1,8 +1,10 @@
 /* sysloop.js */
 define ([
-	'1401/system/autosystem'
+	'1401/system/autosystem',
+	'1401/system/piecefactory'
 ], function ( 
-	AUTOSYS
+	AUTOSYS,
+	PIECEFACTORY
 ) {
 
 	var DBGOUT = false;
@@ -442,15 +444,15 @@ define ([
 ///	PIECE AI UPDATES /////////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.PiecesUpdate = function ( ms ) {
-		AUTOSYS.PiecesUpdate(ms);
+		PIECEFACTORY.PiecesUpdate ( ms );
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.PiecesThink = function ( ms ) {
-		AUTOSYS.PiecesThink(ms);
+		PIECEFACTORY.PiecesThink ( ms );
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.PiecesExecute = function ( ms ) {
-		AUTOSYS.PiecesExecute(ms);
+		PIECEFACTORY.PiecesExecute ( ms );
 	};
 
 

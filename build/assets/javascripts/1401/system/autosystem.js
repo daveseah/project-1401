@@ -32,6 +32,11 @@ define ([
 	Semaphores - signaling systems need to be set/reset per frame
 	Oscillators - need to produce an updated value
 
+	Autosystem is the main interface to managing autonomous 1401 systems,
+	and is included selectively. You probably will not need to use it.
+	SysLoop includes it so it can call PieceFactory.PiecesUpdate() without
+	including it directly to avoid creating interdepencies.
+
 
 /** MODULE PRIVATE VARIABLES *************************************************/
 
@@ -60,12 +65,7 @@ define ([
 		RENDERER.HeartBeat( interval_ms );
 		LOGICFACTORY.HeartBeat( interval_ms );
 	};
-/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.PiecesUpdate = PIECEFACTORY.PiecesUpdate;
-/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.PiecesThink = PIECEFACTORY.PiecesThink;
-/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.PiecesExecute = PIECEFACTORY.PiecesExecute;
+
 
 
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/

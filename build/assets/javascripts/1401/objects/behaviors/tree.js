@@ -15,15 +15,15 @@ define ([
 	can READ a tree
 	can WRITE a tree
 
+	The code that iterates through the nodes is in BaseNode, not here
+
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function BehaviorTree ( name ) {
+	function BehaviorTree ( name, rootNode ) {
 		this.id = BehaviorTree.idCounter++;
-		this.name = name || 'betree'+this.id.ZeroPad(3);
-
-		this.root = null;
-
+		this.name = name || 'behavior'+this.id.zeroPad(3);
+		this.root = rootNode || null;
 	}
 
 ///	'static' properties //////////////////////////////////////////////////////
@@ -31,13 +31,18 @@ define ([
 
 ///	'enums' //////////////////////////////////////////////////////////////////
 
+///	'methods' ///////////////////////////////////////////////////////////////
 
+	BehaviorTree.method('RootNode', function () {
+		return this.root;
+	});
+	BehaviorTree.method('Load', function ( benode ) {
+	});
+	BehaviorTree.method('Save', function ( benode ) {
+	});
 
-
-/** PRIVATE SUPPORT METHODS **************************************************/
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
 /** RETURN CONSTRUCTOR *******************************************************/
 
 	return BehaviorTree;

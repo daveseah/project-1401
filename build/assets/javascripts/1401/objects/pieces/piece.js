@@ -102,7 +102,8 @@ define ([
 			override = this.thinkFunc.call( this, interval_ms );
 			if (override) return;
 		}
-		if (this.ai) this.ai.behavior.Tick( this, interval_ms );
+		// behavior tree
+		if (this.ai) this.ai.behavior.root.Execute( this, interval_ms );
 
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
