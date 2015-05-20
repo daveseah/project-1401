@@ -6,6 +6,7 @@ define ([
 ) {
 
 	var DBGOUT = true;
+	var DBGAI = true;
 
 /**	Behavior Tree ***********************************************************\
 
@@ -60,6 +61,7 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	convenient way to do the Execute tick on the root node
 /*/	BehaviorTree.method('Execute', function ( pish, interval_ms ){
+		if (SETTINGS.DEBUG_AI && (!SETTINGS.DEBUG_AI_STEP)) return;
 		this.rootNode.Execute ( pish, interval_ms );
 	});
 

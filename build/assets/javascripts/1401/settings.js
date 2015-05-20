@@ -64,6 +64,14 @@ define ([
 		}
 		return CURRENT_TIME_MS;
 	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	called from master step every frame to update frame count
+/*/	SETTINGS._SetMasterFrame = function ( current_frame_num ) {
+		if (current_frame_num!==undefined) {
+			CURRENT_FRAME_NUM = current_frame_num;
+		}
+		return CURRENT_FRAME_NUM;
+	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Return the master time, in milliseconds. Used by system-related services;
 	Games should use the Timer class instead.
@@ -73,6 +81,13 @@ define ([
 			return 0;
 		}
 		return CURRENT_TIME_MS;
+	};
+	SETTINGS.MasterFrame = function () {
+		if (CURRENT_FRAME_NUM===undefined) {
+			console.log("*** WARN *** MasterFrame() was called before system startup. Returning 0ms.");
+			return 0;
+		}
+		return CURRENT_FRAME_NUM;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Return current game directory path, with <extra> added.
@@ -110,6 +125,7 @@ define ([
 	// speed (though it's probably not important at all to do this)
 
 	var CURRENT_TIME_MS;	// current time in milliseconds
+	var CURRENT_FRAME_NUM;	// current frame number (for debugging)
 	var PATH_GAME;			// specific game path
 	var PATH_SYSTEM;		// 1401 system path
 
@@ -124,7 +140,6 @@ define ([
 	/* master timimg */
 	S.FPS = 30;
 	S.TIMESTEP = Math.floor(1000 / S.FPS);
-
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -147,6 +162,59 @@ define ([
 		PATH_GAME = PATH_GAMESDIR + GAME_ID + '/';
 	}
 
+
+//////////////////////////////////////////////////////////////////////////////
+/** SNEAKY DEBUG STUFF *******************************************************/
+//////////////////////////////////////////////////////////////////////////////
+	
+	SETTINGS.DEBUG_TRACE_BY_KEY 	= true;
+	SETTINGS.KEY_DEBUG 				= false;
+	SETTINGS.DEBUG_AI 				= true;
+	SETTINGS.DEBUG_AI_STEP			= false;
+	SETTINGS.DEBUG_INTERVAL			= 0;
+	window.DBGKEY = false;
+
+	window.onkeydown = function (e) {
+		if (!SETTINGS.DEBUG_TRACE_BY_KEY) return;
+		if (!e) e = window.event;
+		if (!e.altKey) return;
+
+		if (!SETTINGS.KEY_DEBUG) {
+			SETTINGS.KEY_DEBUG = true;
+			window.DBGKEY = SETTINGS.KEY_DEBUG;
+			console.log("DBGKEY ON ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
+			e.preventDefault();
+		}
+	}
+
+	window.onkeyup = function (e) {
+		if (!SETTINGS.DEBUG_TRACE_BY_KEY) return;
+		if (!e) e = window.event;
+		if (SETTINGS.KEY_DEBUG) {
+			if (SETTINGS.KEY_DEBUG) {
+				switch (e.keyCode) {
+					case 49: // '1'
+						SETTINGS.DEBUG_AI_STEP = true;
+						console.log("\tAI STEP:",SETTINGS.MasterTime()+'ms');
+						break;
+					case 189: // '-'
+						SETTINGS.DEBUG_INTERVAL = S.TIMESTEP * 10;
+						console.log("\t20X SLOW TIMESTEP");
+						break;
+					case 187: // '='
+						SETTINGS.DEBUG_INTERVAL = S.TIMESTEP;
+						console.log("\tNORMAL TIMESTEP");
+						break;
+					}
+			}
+			if (!e.altKey) {
+				SETTINGS.KEY_DEBUG = false;
+				window.DBGKEY = SETTINGS.KEY_DEBUG;
+			console.log("DBGKEY -- ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
+				e.preventDefault();
+			}
+		}
+	}
 
 //////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE DEFINITION FOR REQUIREJS **********************************/

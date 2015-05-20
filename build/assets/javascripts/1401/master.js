@@ -34,6 +34,17 @@ define ([
 /*/	MASTER.Start = function ( viewModel, gameSpec ) {
 		console.group('Master Startup');
 
+		// emit warnings
+		if (SETTINGS.DEBUG_AI) {
+			var msg = "\n";
+			msg += "********************************\n";
+			msg += " AI STEP DEBUG MODE IS ENABLED!\n";
+			msg += " USE AI STEP KEY (ALT-1)\n";
+			msg += "********************************\n";
+			msg += "\n";
+			console.log(msg);
+		}
+
 		// save viewmodel to talk to later
 		console.assert(viewModel,"Master.Start: ViewModel required");
 		m_viewmodel = viewModel || {};
@@ -52,8 +63,10 @@ define ([
 	var m_game = null;			// current game
 	var m_viewmodel = null;		// parent viewmodel
 
+	var m_timer_id;
 	var m_current_time_ms = 0;	// global timer
 	var m_interval_ms = SETTINGS('TIMESTEP');
+	var m_current_frame_num = 0;	
 
 	var USE_DYNAMIC_LOADING = false;
 
@@ -116,12 +129,13 @@ define ([
 		// initialize time!
 		m_current_time_ms = 0;
 		SETTINGS._SetMasterTime(m_current_time_ms);
+		SETTINGS._SetMasterFrame(m_current_frame_num);
 
 		SYSLOOP.StartAll ( m_current_time_ms );
 
 
 		// game will get called on every Step() from here on out
-		setInterval( m_TimeStep, m_interval_ms );
+		m_timer_id = setInterval( m_TimeStep, m_interval_ms );
 		
 		console.groupEnd();
 		if (DBGOUT) console.log("*** BEGIN RUN LOOP ***");
@@ -134,6 +148,7 @@ define ([
 
 		// update mastertime
 		SETTINGS._SetMasterTime ( m_current_time_ms );
+		SETTINGS._SetMasterFrame ( m_current_frame_num );
 
 		// step the game
 		if (m_game.IsRunning()) {
@@ -146,6 +161,18 @@ define ([
 		
 		// update mastertime counter
 		m_current_time_ms += m_interval_ms;
+		m_current_frame_num++;
+
+		// unset debug step
+		if (SETTINGS.DEBUG_TRACE_BY_KEY) {
+			SETTINGS.DEBUG_AI_STEP = false;		
+		}
+		if (SETTINGS.DEBUG_INTERVAL>0) {
+			clearInterval(m_timer_id);
+			m_timer_id = setInterval( m_TimeStep, SETTINGS.DEBUG_INTERVAL );
+			SETTINGS.DEBUG_INTERVAL = 0;
+		}
+
 	}
 
 

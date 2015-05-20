@@ -103,7 +103,7 @@ define ([
 			if (override) return;
 		}
 		// behavior tree
-		if (this.ai) this.ai.behavior.RootNode().Execute( this, interval_ms );
+		if (this.ai) this.ai.behavior.Execute( this, interval_ms );
 
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -283,6 +283,7 @@ define ([
 		piece.position = new THREE.Vector3(0,0,0);
 		piece.rotation = new THREE.Vector3(0,0,0);
 	}
+
 
 /** RETURN CONSTRUCTOR *******************************************************/
 
