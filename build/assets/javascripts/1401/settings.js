@@ -123,7 +123,7 @@ define ([
 
 	/* master timimg */
 	S.FPS = 30;
-	S.TIMESTEP = 1000 / S.FPS;
+	S.TIMESTEP = Math.floor(1000 / S.FPS);
 
 
 
