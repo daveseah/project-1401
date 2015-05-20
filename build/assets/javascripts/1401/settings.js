@@ -182,7 +182,7 @@ define ([
 		if (!SETTINGS.KEY_DEBUG) {
 			SETTINGS.KEY_DEBUG = true;
 			window.DBGKEY = SETTINGS.KEY_DEBUG;
-			console.log("DBGKEY ON ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
+			console.log("DBGKEY ++++ ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
 			e.preventDefault();
 		}
 	}
@@ -198,7 +198,7 @@ define ([
 						break;
 					case 189: // '-'
 						SETTINGS.DEBUG_INTERVAL = S.TIMESTEP * 10;
-						console.log("\t20X SLOW TIMESTEP");
+						console.log("\t20X SLOW TIMESTEP (ALT= to restore)");
 						break;
 					case 187: // '='
 						SETTINGS.DEBUG_INTERVAL = S.TIMESTEP;
@@ -209,7 +209,7 @@ define ([
 			if (!e.altKey) {
 				SETTINGS.KEY_DEBUG = false;
 				window.DBGKEY = SETTINGS.KEY_DEBUG;
-			console.log("DBGKEY -- ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
+			console.log("DBGKEY ---- ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
 				e.preventDefault();
 			}
 		}

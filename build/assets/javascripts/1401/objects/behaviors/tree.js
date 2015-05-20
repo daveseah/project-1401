@@ -84,7 +84,7 @@ define ([
 		m_temp += "..";
 		for (var i=0;i<children.length;i++) {
 			var child = children[i];
-			console.log(m_temp,child.SetTreeID(treeID));
+			console.log(m_temp, child.SetTreeID(treeID));
 			if (child.HasChildren()) m_RecursiveSetTreeID(treeID, child);
 		}
 	}

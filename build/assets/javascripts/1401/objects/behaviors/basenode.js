@@ -80,7 +80,7 @@ define ([
 	key for indexing into the blackboard (necessary for subtree support)
 /*/	BaseNode.method('SetTreeID', function ( treeID ) {
 		this.tree_id = treeID;
-		return "TREE["+treeID+"] -->"+this.name.bracket();
+		return "TREE["+treeID+"] --> "+this.name.bracket();
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Return the children node array for this basenode. It may be empty.
