@@ -61,7 +61,10 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	convenient way to do the Execute tick on the root node
 /*/	BehaviorTree.method('Execute', function ( pish, interval_ms ){
-		if (SETTINGS.DEBUG_AI && (!SETTINGS.DEBUG_AI_STEP)) return;
+		if (SETTINGS.DEBUG_AI) {
+			if (!SETTINGS.DEBUG_AI_STEP) return;
+			console.log("\tAI STEP ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
+		}
 		this.rootNode.Execute ( pish, interval_ms );
 	});
 

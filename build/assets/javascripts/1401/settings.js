@@ -195,7 +195,6 @@ define ([
 				switch (e.keyCode) {
 					case 49: // '1'
 						SETTINGS.DEBUG_AI_STEP = true;
-						console.log("\tAI STEP:",SETTINGS.MasterTime()+'ms');
 						break;
 					case 189: // '-'
 						SETTINGS.DEBUG_INTERVAL = S.TIMESTEP * 10;
