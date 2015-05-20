@@ -9,21 +9,36 @@ define ([
 
 	var DBGOUT = true;
 
-/**	BehaviorTree Sequence ***************************************************\
+/**	ActionNode **************************************************************\
 
+	This is an example implementation of an Action node, which performs
+	its useful action.
+
+	To access blackboard:
 
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function ActionNode () {
+	function ActionNode ( testflag ) {
 
 		//	call the parent constructor		
 		BaseNode.call (this);
 
 		// each node has a name
-		this.name = 'action'+this.id.zeroPad(3);
+		this.name = 'act'+this.id.zeroPad(3);
 		this.description = 'action node';
 
+		// make a "succeeder" or "failurer" or "runner"
+		switch (testflag) {
+			case BaseNode.SUCCESS:
+			case BaseNode.FAILURE:
+			case BaseNode.RUNNING:
+				this.testReturn = testflag;
+				break;
+			default:
+				this.testReturn = BaseNode.SUCCESS;
+				break;
+		}
 	}
 	/*/ inheritance /*/
 	ActionNode.inheritsFrom(BaseNode);
@@ -31,22 +46,26 @@ define ([
 ///	'methods' ///////////////////////////////////////////////////////////////
 
 	/* avoid heap-allocation with reusable variables */
-	var pishMem;		// AIMem of piece-ish
-	var pishNodeMem;	// AIMem for this node_id for this piece
-	var pishState;		// AIMem state of piece-ish
+	/* values are not persistent; must refresh every tick! */
+	var blackboard;		// scratch memory for AI in piece
+	var status, i;		// running state of piece-ish
 
-/*** overrideable methods ***/
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	ActionNode.method('Open', function ( pish, intervalMs ) {
-	});
+/*** see basenode.js for overrideable methods ***/
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	ActionNode.method('Tick', function ( pish, intervalMs ) {
-		// if (DBGOUT) console.log('action BT<'+this.id+"> on",pish.name.bracket());
+		return this.testReturn;	
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	ActionNode.method('Close', function ( pish, intervalMs ) {
-	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+///////////////////////////////////////////////////////////////////////////////
+/** BEHAVIOR PRIVATE FUNCTIONS ***********************************************/
+
+	// Functions should receive entire state in parameters, as stored values
+	// in the object instances are not persistent because the same behavior
+	// tree's nodes can be used across multiple agents. The blackboard is
+	// what provides persistent memory
+
 
 /** RETURN CONSTRUCTOR *******************************************************/
 

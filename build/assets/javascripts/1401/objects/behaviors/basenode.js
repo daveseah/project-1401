@@ -13,161 +13,172 @@ define ([
 	style node. Each node is like a mini program, and it needs a reference
 	to the parent behavior tree, the piece instance, and the time. 
 
-	note: piece contains aibehavior (the tree) and aimemory for tree.
+	BaseNode is not created directly, but is subclassed into the Action,
+	Sequence, Priority, Decorator, and Condition node types.
 
-	Every basenode is initialized at game starts by calling it Initialize()
-	state.
+	There are 5 types of events that are propagated through a BehaviorTree
+	for every "tick" of the AI clock through a call to Execute()
+		Enter - called first
+		Open - called once when node is first entered
+		Tick - returns RUNNING, SUCCESS, or FAIL
+		Close - called when SUCCESS or FAIL condition met
+		Exit - called last
+	The piece and interval_ms since the last call are passed to each event.
 
-	All behavior node instances are reusable across behavior trees, so it's
-	important not to store state as properties in the class or its inheriting
-	classes. Store them in the piece's aimem.
+	All behavior node instances are REUSABLE across behavior trees, so it's
+	important NOT to store state as instance properties inheriting classes.
+	Use the blackboard! 
+		this.BBGet (pish, key) 
+		this.Set (pish, key, value)
+	The Get/Set methods in BaseNode use the tree and node ids to create a unique
+	key hash within the blackboard. See blackboard.js for more information.
+
+	To avoid growing the heap, avoid declaring var in any of the events.
+
+	Project 1401's behavior tree implementation and terminology is inspired
+	by Renato Pereira's behavior3js library, adapted to use 1401's piece
+	and class hierarchy. See https://github.com/renatopp/behavior3js
 
 
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function BaseNode () {
-		// each node has a unique id for piece.aimemory
+	function BaseNode ( tree_id ) {
+		// each node has a unique id and an associated tree
 		this.id = BaseNode.idCounter++;
-		// each node has a name
-		this.name = 'basenode'+this.id.zeroPad(3);
-		this.description = 'basenode';
-		
-		/* initial state */
-		// store state in piece.aimemory
-		// see m_GetNodeMemory
+		this.tree_id = tree_id || 0;
+		// each node potentially has children
+		this.children = [];
 
+		// each node has a name and description
+		this.name = 'bsn'+this.id.zeroPad(3);
+		this.description = 'basenode';
 	}
 
 ///	'static' properties /////////////////////////////////////////////////////
 	BaseNode.idCounter = 1;
 
 ///	'enums' /////////////////////////////////////////////////////////////////
-	BaseNode.INIT_ME 	= 0;
 	BaseNode.RUNNING 	= 1;
 	BaseNode.SUCCESS 	= 2;
 	BaseNode.FAILURE 	= 3;
+///	'flags' /////////////////////////////////////////////////////////////////
+	BaseNode.IS_OPEN	= '_isopen';
 
 
 ///	'methods' ///////////////////////////////////////////////////////////////
 
 	/* avoid heap-allocation with reusable variables */
-	var pishTreeMem;	// AIMem of piece-ish
-	var pishNodeMem;	// AIMem for this node_id for this piece
-	var pishState;		// running state of piece-ish
+	/* values are not persistent; must refresh every tick! */
+	var x_blackboard;		// scratch memory for AI in piece
+	var x_tree_id;			// scratch variable for tree id
+	var x_state;			// running state of piece-ish
 
-/*** master execute method ***/
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Set the TreeID that owns this basenode, which is used to create a hash
+	key for indexing into the blackboard (necessary for subtree support)
+/*/	BaseNode.method('SetTreeID', function ( treeID ) {
+		this.tree_id = treeID;
+		return "TREE["+treeID+"] -->"+this.name.bracket();
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Return the children node array for this basenode. It may be empty.
+/*/	BaseNode.method('Children', function () {
+		return this.children;
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Utility to return length of the children node array
+/*/	BaseNode.method('HasChildren', function () {
+		return (this.children.length > 0);
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Utility to return the master time from SETTINGS
+/*/	BaseNode.method('MasterTime', function () {
+		return SETTINGS.MasterTime();
+	});
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	wrapper for blackboard.GetLocal to simplify access during authoring
+/*/	BaseNode.method('BBGet', function ( pish, key ) {
+		return pish.ai.blackboard.GetLocal(pish.ai.behavior.id, this.id, key);
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	wrapper for blackboard.SetLocal to simplify access during authoring
+/*/	BaseNode.method('BBSet', function ( pish, key, value ) {
+		pish.ai.blackboard.SetLocal(pish.ai.behavior.id, this.id, key, value);
+	});
+
+
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Main method for handling "ticks" to the AI. There are five events:
 	enter, open, tick, close, and exit.
-	Note that pish.ai has .treeMemory and .nodeMemory stores.
-	Execute is propagated to every child node.
-	Tick is the method that does work and returns status, but tick does
-	not propagate the signal. 	
+	Note: 
+	.. pish.ai has .blackboard store unique to the piece-ish.
+	.. Execute is propagated to every child BT node
+	.. Tick does work and returns status, but does not propagate the signal
+	.. node state is stored in pish.ai.blackboard[tree_id+node_id] 	
 /*/ BaseNode.method('Execute', function ( pish, interval_ms ) {
-		
-		pishTreeMem = pish.ai.treeMemory;
-		pishNodeMem = pish.ai.nodeMemory;
 
-		if ( pishTreeMem && pishNodeMem ) {
+		// always call "enter"
+		this.Enter(pish);
 
-			// always call "enter" for sys maintenance
-			this.Enter(pish);
-
-			// if first-time running, call "open"
-			if (!pishNodeMem.OpenFlag()) {
-				this.Open(pish);
-				pishNodeMem.OpenFlagSet(false);
-			}
-
-			// execute the behavior code and check if it succeeded
-			pishState = this.Tick(pish);
-
-			// if the node isn't still running, then call "close"
-			if (pishState !== BaseNode.RUNNING) this.Close(pish);
-
-			// always call "exit" to do sys maintenance
-			this.Exit(pish);
-
-			// return state to whoever called Execute.
-			return pishState; 
-
-		} else {
-
-			console.error(pish.name.bracket(),"does not have ai memory");
-
+		// if first-time running, call "open"
+		if (!this.BBGet(pish, BaseNode.IS_OPEN)) {
+			this.BBSet(pish, BaseNode.IS_OPEN, true);
+			this.Open(pish);
 		}
 
+		// execute the behavior code and check if it succeeded
+		state = this.Tick(pish);
+
+		// if the node isn't still running, then call "close"
+		if (state !== BaseNode.RUNNING) {
+			this.BBSet(pish, BaseNode.IS_OPEN, false);
+			this.Close(pish);
+		}
+
+		// always call "exit"
+		this.Exit(pish);
+
+		// return state to whoever called Execute.
+		return state; 
+
 	});
-/*** overrideable methods ***/
+
+
+/// OVERRIDEABLE METHODS /////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	do execution management on entry of this node
 /*/	BaseNode.method('Enter', function ( pish ) {
-		// if (DBGOUT) console.log('enter BT<'+this.id+'> on',pish.name.bracket());
+		// code that happens before every tick
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	initialize the node data structures in prep for running
 /*/	BaseNode.method('Open', function ( pish ) {
-		if (DBGOUT) console.log('open BT<'+this.id+'> on',pish.name.bracket());
+		// setup that happens just once
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	call periodically if RUNNING until return SUCCESS, FAILURE
 /*/	BaseNode.method('Tick', function ( pish ) {
-		if (DBGOUT) console.log('tick BT<'+this.id+'> on',pish.name.bracket());
+		// execute every tick, must return status
+		return BaseNode.RUNNING;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	clean up node data structures when run has completed SUCCESS or FAIL
 /*/	BaseNode.method('Close', function ( pish ) {
-		if (DBGOUT) console.log('close BT<'+this.id+'> on',pish.name.bracket());
+		// cleanup that happens once success/failure occurs
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	do execution management on exit of this node
 /*/	BaseNode.method('Exit', function ( pish ) {
-		// if (DBGOUT) console.log('exit BT<'+this.id+'> on',pish.name.bracket());
+		// code that happens after every tick
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-/*** runtime status helpers ***/
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	BaseNode.method('NeedsInit', function ( pish ) { 
-		pishState = pish.AI.NodeMemory.state;
-		if (pishState) {
-			return pishState===BaseNode.INIT_ME;
-		} else {
-			if (DBGOUT) console.error("undefined piece-ish AIMem state");
-		}
-	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	BaseNode.method('IsRunning', function ( pish ) {
-		pishState = pish.AI.NodeMemory.state;
-		if (pishState) {
-			return pishState===BaseNode.RUNNING;
-		} else {
-			if (DBGOUT) console.error("undefined piece-ish AIMem state");
-		}
-	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	BaseNode.method('IsSucceed', function ( pish ) {
-		pishState = pish.AI.NodeMemory.state;
-		if (pishState) {
-			return pishState===BaseNode.SUCCESS;
-		} else {
-			if (DBGOUT) console.error("undefined piece-ish AIMem state");
-		}
-	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	BaseNode.method('IsFail', function ( pish ) {
-		pishState = pish.AI.NodeMemory.state;
-		if (pishState) {
-			return pishState===BaseNode.FAILURE;
-		} else {
-			if (DBGOUT) console.error("undefined piece-ish AIMem state");
-		}
-	});
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/** MODULE PRIVATE FUNCTIONS ************************************************/
+/** BEHAVIOR PRIVATE FUNCTIONS ***********************************************/
 
 
 

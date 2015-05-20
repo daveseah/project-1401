@@ -171,8 +171,6 @@ define ([
 		}
 
 		counter += interval_ms;
-
-		AITEST.BehaviorTick(crixa);
 	}
 
 

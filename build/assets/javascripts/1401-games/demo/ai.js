@@ -27,11 +27,6 @@ define ([
 	AI.name = "demo/aitest";
 
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	var tree;
-	var blackboard;
-	var target;
-/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 	AI.PieceTest = function (p) {
 
 		console.group("AI PieceTest");
@@ -45,19 +40,23 @@ define ([
 
 	};
 
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	AI.BehaviorInitialize = function ( piece ) {
-		console.log("\n\n*** creating behavior tree ***");
-		var b = BF.Sequence([
-			BF.Action(),
-			BF.Action()
+		console.log("\n\n*** TESTING BEHAVIOR TREE CREATION ***\n");
+		
+		var b = BF.Priority([
+			BF.Action(BF.FAILURE),
+			BF.Action(BF.FAILURE),
+			BF.Action(BF.FAILURE),
+			BF.Action(BF.SUCCESS),
+			BF.Action(BF.FAILURE)
 		]);
-		BF.DefineBehavior('testMe',b);
-		BF.AssignBehavior( 'testme', piece);
+
+		// behavior names are case insensitive
+		BF.DefineBehavior('testMe', b);
+		BF.AssignBehavior('testme', piece);
 	};
 
-	AI.BehaviorTick = function ( interval_ms ) {
-
-	};
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE HANDLER FUNCTIONS *************************************************/

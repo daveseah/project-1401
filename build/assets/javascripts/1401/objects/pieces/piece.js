@@ -103,7 +103,7 @@ define ([
 			if (override) return;
 		}
 		// behavior tree
-		if (this.ai) this.ai.behavior.root.Execute( this, interval_ms );
+		if (this.ai) this.ai.behavior.RootNode().Execute( this, interval_ms );
 
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

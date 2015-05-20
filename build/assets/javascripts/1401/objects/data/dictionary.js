@@ -1,11 +1,11 @@
-/* objects.logic.memory */
+/* objects.data.dictionary */
 define ([
 ], function ( 
 ) {
 
 	var DBGOUT = true;
 
-/**	Memory ******************************************************************\
+/**	Dictionary **************************************************************\
 
 	Implementation of a dictionary, useful baseclass for Behavior NodeMemory,
 	but possibly useful in other situations.
@@ -14,20 +14,25 @@ define ([
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function Memory () {
+	function Dictionary () {
 		this.S = {};
 	}
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Set the value of a key
-/*/	Memory.method('Set', function ( key, value ) { 
+/*/	Dictionary.method('Set', function ( key, value ) { 
 		this.S[key] = value;
 	});
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Get the value of a key
-/*/	Memory.method('Get', function ( key ) {
+/*/	Dictionary.method('Get', function ( key ) {
 		return this.S[key];
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Erase the dictionary
+/*/	Dictionary.method('Erase', function () {
+		this.S = {};
 	});
 
 
@@ -38,6 +43,6 @@ define ([
 
 /** RETURN CONSTRUCTOR *******************************************************/
 
-	return Memory;
+	return Dictionary;
 
 });
