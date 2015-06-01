@@ -51,6 +51,10 @@ The project-1401 directory has a folder called `build` that has all the source f
 * Install local Javascript packages with `mimosa build`. This grabs the Javascript client libraries using Mimosa-Bower, as specified by the `bower.json` config file.
 * If everything seemed to work, type `mimosa watch -s` and then open Chrome to **http://localhost:3000**, on the same machine you installed Project 1401.
 
+#### Forking the Project
+
+If you want to build something on top of 1401, fork the project. If you add new code modules, I suggest putting them in a new subdirectory under 1401 so you can do a clean upstream fetch by [following these instructions](https://help.github.com/articles/syncing-a-fork/). 
+
 #### Additional Documentation
 
 The [Project 1401 Wiki](https://github.com/daveseah/project-1401/wiki) on GitHub contains my working documentation. My goal is to make this very clear to the intermediate-level programmer who wants to understand the concepts that drive the system design. 
