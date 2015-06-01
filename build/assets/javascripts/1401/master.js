@@ -2,7 +2,7 @@ define ([
 	'1401/settings',
 	'1401/objects/sysloop',
 	'1401/system/autosystem',
-	'1401-games/demo/game-main'
+	'1401-games/_empty/game-main'
 ], function (
 	SETTINGS,
 	SYSLOOP,
@@ -10,7 +10,11 @@ define ([
 	DEFAULT_GAME
 ) {
 
-	var DBGOUT = false;
+	var DBGOUT = true;
+
+	// Set this to TRUE if not setting a DEFAULT_GAME
+	// Dynamic loading breaks code optimization if you are trying to use it
+	var USE_DYNAMIC_LOADING = true;
 
 ///////////////////////////////////////////////////////////////////////////////
 /**	GAME MASTER *************************************************************\
@@ -52,7 +56,6 @@ define ([
 		// select game to load
 		m_GameLoad ( gameSpec.game, viewModel );
 
-		console.groupEnd();
 	};
 
 
@@ -68,8 +71,6 @@ define ([
 	var m_interval_ms = SETTINGS('TIMESTEP');
 	var m_current_frame_num = 0;	
 
-	var USE_DYNAMIC_LOADING = false;
-
 
 ///////////////////////////////////////////////////////////////////////////////
 /** SUPPORTING PRIVATE FUNCTIONS *********************************************/
@@ -79,8 +80,6 @@ define ([
 	activities directory, and load asyncronously.
 	TODO: Make re-entrant proof
 /*/	function m_GameLoad ( gameId, viewModel ) {
-		if (DBGOUT) console.log('!!! LOADING GAME', gameId.bracket());
-
 		SETTINGS._Initialize( gameId, viewModel );
 		var module_path = SETTINGS.GameMainModulePath();
 		m_game = null;
@@ -88,19 +87,21 @@ define ([
 		/* load game module asynchronously */
 		if (USE_DYNAMIC_LOADING) {
 			// this breaks with mimosa build -omp
-			// require ( [module_path], m_GameInstantiate );
+			console.info ("!!! DYNAMIC LOAD", module_path);
+			require ( [module_path], m_GameInstantiate );
 		} else {
+			console.info("!!! STATIC LOAD", DEFAULT_GAME.name.bracket());
 			m_GameInstantiate ( DEFAULT_GAME );
 		}
 		// ...execution continues in m_GameInstantiate()
 
 		
-		console.groupEnd();
 	}
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Called after m_GameLoad's require has loaded the module.
 /*/	function m_GameInstantiate ( loadedGame ) {
+		console.groupEnd();
 		console.group('Game Startup');
 
 		m_game = loadedGame;

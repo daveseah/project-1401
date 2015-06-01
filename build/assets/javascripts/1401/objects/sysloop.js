@@ -294,6 +294,16 @@ define ([
 
 
 //////////////////////////////////////////////////////////////////////////////
+/**	CLEANUP FUNCTIONS *******************************************************/
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Release any data structures
+/*/	SysLoop.method('Release', function () {
+		console.log('releasing allocated data, if any');
+	});
+
+
+//////////////////////////////////////////////////////////////////////////////
 /**	EVENT FUNCTIONS *********************************************************/
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -332,15 +342,15 @@ define ([
 		if (m_master_gameloop) {
 			// this happens because we load a "default game" in master.js
 			// that could be overriden by a dynamic module load.
-			console.warn('Deleting old MASTER SYSLOOP',m_master_gameloop.name);
+			m_master_gameloop.Release();
 		}
 		m_master_gameloop = new SysLoop(name);
 		console.info("MASTER SYSLOOP",m_master_gameloop.name.bracket(),"CREATED & SET");
 		return m_master_gameloop;
 	};
 
-
-///	STAGE CHANGE EVERYONG ///////////////////////////////////////////////////
+///	STAGE CHANGE EVERYONE ///////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ChangeStageAll = function ( stage_id ) {
 		arr = m_LoopsArray();
 		for (i=0;i<arr.length;i++) {
