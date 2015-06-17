@@ -51,13 +51,15 @@ define ([
 		OBJ.SetHandler('Connect', function_object );
 		etc...
 
+	IMPORTANT:
+
 	SYSLOOP keeps track of all loop objects that have been created, and MASTER
 	calls module's ConnectAll(), InitializeAll(), etc so game-main.js doesn't
 	have to. If you use SYSLOOP to create your own modules, you also don't
-	have to worry about it either. You do have to be mindful, though, that
-	the order of phases (e.g. input, update, think) is not guaranteed.
-	If you need to be sure, don't use SYSLOOP for your module, and implement 
-	the calls yourself.
+	have to worry about it either. You do have to be mindful, though, that the
+	order of modules called during a phase is not guaranteed. If you need to
+	be sure, don't use SYSLOOP for your module, and implement  the calls
+	yourself.
 
 	IMPORTANT:
 
@@ -299,7 +301,7 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Release any data structures
 /*/	SysLoop.method('Release', function () {
-		console.log('releasing allocated data, if any');
+		// console.log('releasing allocated data, if any');
 	});
 
 
@@ -345,7 +347,7 @@ define ([
 			m_master_gameloop.Release();
 		}
 		m_master_gameloop = new SysLoop(name);
-		console.info("MASTER SYSLOOP",m_master_gameloop.name.bracket(),"CREATED & SET");
+		console.info("MASTER SYSLOOP INSTANCE CREATED",m_master_gameloop.name.bracket());
 		return m_master_gameloop;
 	};
 

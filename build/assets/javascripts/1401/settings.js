@@ -2,7 +2,7 @@
 define ([
 	'yaml'
 ], function ( 
-	yaml
+	YAML
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -49,12 +49,23 @@ define ([
 /// SYSTEM INITIALIZATION ////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SETTINGS._Initialize = function ( gameId, viewModel ) {
+		if (VIEW_MODEL) {
+			// if VIEW_MODEL is defined, then we need to reload
+			// this application because a new tab was clicked
+			location.reload();
+		}
 		m_InitializeMeta ( gameId, viewModel );
-		m_InitializePaths();
+		m_InitializeGamePaths();
+
 	};
 
 
 /// SYSTEM PROPERTIES ////////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	for use only by extending classes of settings!
+/*/	SETTINGS._RawStorage = function () {
+		return S;
+	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	called from master step every frame to update master time. 
 /*/	SETTINGS._SetMasterTime = function ( current_time_ms ) {
@@ -90,50 +101,108 @@ define ([
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Return current game's viewmodel for KnockOut, etc purposes
-/*/	SETTINGS.AppViewModel = function () { 
-		return VIEW_MODEL; 
+/*/	SETTINGS.AppViewModel = function () { return VIEW_MODEL; };
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Return current 1401 settings path.
+/*/	SETTINGS.SettingsPath = function () {
+		return PATH_SYSTEM+PATH_SYS_SETTINGS;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Return current game directory path, with <extra> added.
 	Useful for loading assets in the game directory.
 /*/	SETTINGS.GamePath = function ( extra ) {
 		extra = extra || '';
-		if (PATH_GAME===undefined) 
+		if (PATH_GAME_DIR===undefined) 
 			console.error("GamePath is invalid before MasterGameLoad");
-		return PATH_GAME+extra;
+		return PATH_GAME_DIR+extra;
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Return current 1401 settings path.
+/*/	SETTINGS.GameSettingsPath = function () {
+		if (PATH_GAME_DIR===undefined) 
+			console.error("GamePath is invalid before MasterGameLoad");
+		return PATH_GAME_DIR+FILE_GAME_SET;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Return current 1401 system path, with <extra> added.
 	Useful for loading assets in the 1401 system directory.
 /*/	SETTINGS.SystemPath = function ( extra ) {
 		extra = extra || '';
-		if (PATH_SYSTEM===undefined) 
-			console.error("SystemPath is invalid before MasterGameLoad");
 		return PATH_SYSTEM+extra;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Return path to game module "main" file.
 /*/	SETTINGS.GameMainModulePath = function () {
-		if (PATH_GAME===undefined) 
+		if (PATH_GAME_DIR===undefined) 
 			console.error("GameMainModule is invalid before MasterGameLoad");
-		return PATH_GAME+PATH_RUNFILE;
+		return PATH_GAME_DIR+FILE_GAME_RUN;
 	};
 
+
+/// Loading YAML Settings Files /////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Load YAML configuration file asynchronously. Caller should provide
+	a callback function to resume execution after the file is parsed,
+	otherwise values will not be valid.
+/*/	SETTINGS.Load = function ( yamlFilePath, that, callback, failureIsOK ) {
+
+		// console.warn("Settings.Load() can not be called after LoadLocalStorage(). Aborting load:",'<'+yamlFilePath+'>');
+
+		YAML.load( yamlFilePath, function(yobj) {
+
+			// if there's a problem, bail
+			if (yobj===null) {
+				if (failureIsOK) {
+					console.info("SETTINGS: ignoring missing settings file");
+					console.info(",        ",yamlFilePath);
+					callback.call(that,false);
+				} else {
+					console.error("Could not load 1401 master settings file:",yamlFilePath);
+				}
+				return;
+			}
+	
+			// otherwise use jquery to recursive copy properties
+			$.extend(true, S, yobj);
+
+			// check for mistakes and gotchyas
+			m_Validate();
+
+			// print notice on asynch load
+			var filename = yamlFilePath.replace(/^.*[\\\/]/, '');
+			console.info("!!! DYNAMIC LOAD",yamlFilePath);
+			// let caller know we're done!
+			callback.call(that, true);
+
+		});
+
+	};
 
 
 //////////////////////////////////////////////////////////////////////////////
 /** MODULE PRIVATE VARIABLES ************************************************/
 //////////////////////////////////////////////////////////////////////////////
 
+	var VIEW_MODEL;			// durandal viewmodel reference
+
 	// these variables are dereferenced from S object for
 	// speed (though it's probably not important at all to do this)
 
 	var CURRENT_TIME_MS;	// current time in milliseconds
 	var CURRENT_FRAME_NUM;	// current frame number (for debugging)
-	var PATH_GAME;			// specific game path
+	var PATH_GAME_DIR;		// specific game path
 	var PATH_SYSTEM;		// 1401 system path
+	var PATH_SETTINGSFULE;	// 1401 system settings
 
-	var VIEW_MODEL;			// durandal viewmodel reference
+	// set constant paths
+	PATH_SYSTEM = '/javascripts/1401/';				// default system dir
+	PATH_SYS_SETTINGS = 'settings.yaml';
+	PATH_GAME_DIR = '/javascripts/1401-games/';		// default games dir
+	FILE_GAME_RUN = 'game-main.js';					// default entry point
+	FILE_GAME_SET = 'game-settings.yaml';
+
+	// game-specific paths are loaded via m_InitializeGamePaths()
+	// and rely on GAME_ID being set
 	var GAME_ID;			// game id string (e.g. "demo")
 
 
@@ -155,16 +224,14 @@ define ([
 		VIEW_MODEL = viewModel;
 	}
 
-	function m_InitializePaths() {
-
-		/* system paths and main file */
-		PATH_SYSTEM = '/javascripts/1401/';				// default system dir
-		PATH_GAMESDIR = '/javascripts/1401-games/';		// default games dir
-		PATH_RUNFILE = 'game-main.js';					// default entry point
-
+	function m_InitializeGamePaths() {
 		// game path (inside gamesdir)
-		PATH_GAME = PATH_GAMESDIR + GAME_ID + '/';
+		PATH_GAME_DIR = PATH_GAME_DIR + GAME_ID + '/';
 	}
+
+	function m_Validate () {
+	}
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -189,7 +256,7 @@ define ([
 			console.log("DBGKEY ++++ ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
 			e.preventDefault();
 		}
-	}
+	};
 
 	window.onkeyup = function (e) {
 		if (!SETTINGS.DEBUG_TRACE_BY_KEY) return;
@@ -217,7 +284,7 @@ define ([
 				e.preventDefault();
 			}
 		}
-	}
+	};
 
 //////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE DEFINITION FOR REQUIREJS **********************************/

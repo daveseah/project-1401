@@ -29,7 +29,8 @@ define ([
 ///////////////////////////////////////////////////////////////////////////////
 /** PUBLIC API **************************************************************/
 
-	var MASTER = {};			// module
+	var MASTER = {};			// module API object
+	var _master = this;			// reference to 'this'
 
 
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,6 +40,9 @@ define ([
 		console.group('Master Startup');
 
 		// emit warnings
+		console.assert(gameSpec, "Must pass gameSpec object");
+		console.assert(gameSpec.game, "Must specify gameSpec.game property");
+
 		if (SETTINGS.DEBUG_AI) {
 			var msg = "\n";
 			msg += "********************************\n";
@@ -53,8 +57,13 @@ define ([
 		console.assert(viewModel,"Master.Start: ViewModel required");
 		m_viewmodel = viewModel || {};
 
-		// select game to load
-		m_GameLoad ( gameSpec.game, viewModel );
+		// load master settings asynchronously then load game module
+		SETTINGS.Load (SETTINGS.SettingsPath(), _master, function () {
+			// select game to load
+			m_GameLoad ( gameSpec.game, viewModel );
+		});
+
+		// ...execution continues in m_GameLoad()
 
 	};
 
@@ -88,10 +97,10 @@ define ([
 		if (USE_DYNAMIC_LOADING) {
 			// this breaks with mimosa build -omp
 			console.info ("!!! DYNAMIC LOAD", module_path);
-			require ( [module_path], m_GameInstantiate );
+			require ( [module_path], m_GameInstantiated );
 		} else {
 			console.info("!!! STATIC LOAD", DEFAULT_GAME.name.bracket());
-			m_GameInstantiate ( DEFAULT_GAME );
+			m_GameInstantiated ( DEFAULT_GAME );
 		}
 		// ...execution continues in m_GameInstantiate()
 
@@ -100,11 +109,21 @@ define ([
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Called after m_GameLoad's require has loaded the module.
-/*/	function m_GameInstantiate ( loadedGame ) {
+	Load game settings file first...
+/*/	function m_GameInstantiated ( loadedGame ) {
 		console.groupEnd();
 		console.group('Game Startup');
 
 		m_game = loadedGame;
+		var gameSettings = SETTINGS.GameSettingsPath();
+		SETTINGS.Load(gameSettings, _master, m_GameInitialize);
+
+		// ...execution continues in m_GameInitialize()
+	}
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Initialize game data structures now that settings are loaded
+/*/	function m_GameInitialize () {
 
 		SYSLOOP.ConnectAll ( m_viewmodel );
 

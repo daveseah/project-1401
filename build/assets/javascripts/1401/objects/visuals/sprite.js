@@ -155,7 +155,9 @@ define ([
 		}
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	InqSprite.method('SetTexture', function ( texturePath, onValid ) {
+/*/ texturePath is relative to root of public directory, which contains /javascript
+	folder.
+/*/	InqSprite.method('SetTexture', function ( texturePath, onValid ) {
 		if (!onValid) console.warn("InqSprite.SetTexture() should use callback");
 		var that = this;
 		this.textureQueue.push('['+(this.textureQCount++)+']'+texturePath);

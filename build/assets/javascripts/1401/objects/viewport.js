@@ -31,8 +31,8 @@ define ([
 		this.width 			= null;		// pixels
 		this.height 		= null;		// pixels
 		this.aspect 		= null;
-		this.containerId 	= null;
-		this.webGL 			= null;
+		this.containerId 	= null;		// #container
+		this.webGL 			= null;		// WebGL renderer object
 		// world
 		this.worldOrigin 	= null;		// where world cams are looking
 		this.worldUnits		= null;		// number of visible world units in frame
@@ -45,6 +45,8 @@ define ([
 		this.cam2D			= null;		// ...2d orthographic (world coords)
 		this.cam3D			= null;		// ...3d perspective (world coords)
 		this.camSCREEN 		= null;		// screen (pixel coords)
+		// mouseraycasting
+		this.pickers 		= null;		// subscribes to mouse click events
 	}
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Step 1. Initialize the WebGL surface and size containers exactly
@@ -225,6 +227,8 @@ define ([
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('ScreenCam', function () { return this.camSCREEN; });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	Viewport.method('WebGL', function () { return this.WebGL; });
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('Clear', function () { this.webGL.clear(); });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('ClearDepth', function () { this.webGL.clearDepth(); });
@@ -256,6 +260,7 @@ define ([
 	});
 
 
+
 /**	SUPPORT FUNCTIONS *******************************************************/
 
 	function m_GetFramingDistance ( cam3D, fWidth, fHeight ) {
@@ -277,8 +282,6 @@ define ([
 		return d;
 
 	}
-
-
 
 
 ///	RETURN SINGLETON /////////////////////////////////////////////////////////
