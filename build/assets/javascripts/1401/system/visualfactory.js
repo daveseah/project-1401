@@ -266,6 +266,30 @@ define ([
 		var mesh = new THREE.Mesh( geo, mat );
 		return mesh;
 	};
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Make Area Effect Circle, which is translucent
+/*/	API.MakeAreaCircle = function ( spec ) {
+		spec = spec || {};
+		spec.opacity = spec.opacity || 0.1;
+
+		var mesh = API.MakeCircle ( spec );
+		var mat = mesh.material;
+		mat.opacity = spec.opacity;
+		mat.transparent = true;
+		mat.depthTest = false;
+		mat.depthWrite = false;
+
+		// the version of threejs we're using may be different
+		mat.blendEquation = THREE.SubtractEquation;
+		mat.blendSrc = THREE.OneMinusDstColorFactor;
+		mat.blendDst = THREE.OneFactor;
+
+		needsUpdate = true;
+
+		return mesh;
+	}
+
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.MakeLine = function ( spec ) {
 	//	spec.color, spec.linewidth (does not work >1 on windows client)
