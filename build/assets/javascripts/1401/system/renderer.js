@@ -9,7 +9,7 @@ define ([
 	SETTINGS
 ) {
 
-	var DBGOUT = false;
+	var DBGOUT = true;
 
 /**	RENDERER *****************************************************************\
 
@@ -26,6 +26,8 @@ define ([
 	var RP_OVER 	= new THREE.Scene();	// drawn with camSCREEN
 
 	var BG_SPRITE 	= null;
+
+	var PICK_SUBSCRIBERS = null;			// API.SubscribeToMousePicks()
 
 
 /** PUBLIC API ***************************************************************/
@@ -176,7 +178,7 @@ define ([
 
 		var bgMap = THREE.ImageUtils.loadTexture(textureName,THREE.UVMAPPING, mi_SaveHeight);
 		var bgMat = new THREE.SpriteMaterial( {map:bgMap} );
-		if (BG_SPRITE) rpass.remove(BG_SPRITE);
+		if (BG_SPRITE) RP_BG.remove(BG_SPRITE);
 		BG_SPRITE = new THREE.Sprite(bgMat);
 		BG_SPRITE.position.set(0,0,-1000); // clip for 2D is 1000
 		this.AddBackgroundVisual(BG_SPRITE);
@@ -189,7 +191,97 @@ define ([
 	};
 
 
- 
+/// RAYCASTING CLICK SUPPORT///////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+	API.EnableMousePicks = function () {
+		if (!PICK_SUBSCRIBERS) {
+			PICK_SUBSCRIBERS = [];
+			$(VIEWPORT.WebGL().domElement).click(m_CastRay);
+		} else {
+			console.error("MousePicking already enabled");
+		}
+	};
+
+	API.SubscribeToMousePicks = function ( func ) {
+
+		// make sure a function is provided
+		if (!(func instanceof Function)) return; 
+		// fail if EnableMousePicks() wasn't called first
+		if (!PICK_SUBSCRIBERS) {
+			console.error("Renderer.EnableMousePicks() must be called before subscribing");
+			return;
+		}
+
+		// add function to subscribers if it's not already one
+		if (PICK_SUBSCRIBERS.indexOf(func) < 0) {
+			PICK_SUBSCRIBERS.push(func);
+		} else {
+			console.log("SubscribeToMousePicks:","duplicate subscription ignored",func.toString());
+			return;
+		}
+	};
+
+
+
+
+/**	SUPPORT FUNCTIONS *******************************************************/
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	m_CastRay ( event ) handles clicks on objects in the world
+/*/	function m_CastRay ( event ) {
+		event.preventDefault();
+
+		// requires ThreeJS R69 or greater
+
+		// mouse->world position
+		var offset = $(event.currentTarget).offset();
+		// normalize to -1 to 1
+		// this appears to be threejs convention, though our coordinates in the world
+		var dim = VIEWPORT.Dimensions();
+		var x = ( (event.pageX-offset.left) / dim.width ) * 2 - 1;
+		var y = -(( (event.pageY-offset.top) / dim.height ) * 2 - 1);
+		var vector = new THREE.Vector3(x, y, -1);
+
+		// current camera, objects
+		var camera = VIEWPORT.WorldCam();
+
+		/*/	NOTE:
+			we are using an orthographic camera setup that differs from most
+			orthographic example setups (not using screen coordinates), 
+			so the typical raycasting algorithms aren't working out of the box. Plus
+			our version of threeJS is R67, and raycasting changed in R69.
+			So I'm doing a 2D-only walk of our pieces 
+		/*/
+
+		var raycaster, dir;
+
+		if (camera instanceof THREE.OrthographicCamera) {
+
+			dir = new THREE.Vector3();
+			raycaster = new THREE.Raycaster();
+
+			vector.unproject(camera);
+			dir.set(0,0,-1).transformDirection(camera.matrixWorld);
+			raycaster.set(vector,dir);
+
+		} else {
+			console.error("perspective camera raypicking is not yet implemented");
+		}
+
+		var objects = RP.pieces.children;
+		var intersections = raycaster.intersectObjects(objects);
+
+		var type = (camera instanceof THREE.PerspectiveCamera) ? 'PerspectiveCam' : 'OrthoCam';
+		if (intersections.length) {
+			// console.log(type,'('+x.toFixed(2)+', '+y.toFixed(2)+')',intersections);
+			for (var i=0;i<PICK_SUBSCRIBERS.length;i++) {
+				var func = PICK_SUBSCRIBERS[i];
+				func.call(null,intersections);
+			}
+		}
+
+	}
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
 
 	return API;
