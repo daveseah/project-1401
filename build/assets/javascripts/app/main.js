@@ -3,6 +3,7 @@ requirejs.config({
 		'text': '../vendor/requirejs-text/text',
 		'knockout': '../vendor/knockout.js/knockout',
 		'jquery': '../vendor/jquery/jquery',
+        'jquery-ui': '../vendor/jquery-ui/jquery-ui',
 		'bootstrap': '../vendor/bootstrap/bootstrap',
 		'durandal':'../vendor/durandal',
 		'plugins' : '../vendor/durandal/plugins',
@@ -36,11 +37,16 @@ define(function(require) {
 		viewLocator = require('durandal/viewLocator'),
 		system = require('durandal/system');
 
+   // make sure bootstrap.js is included
+   // otherwise some HTML ui elements won't work (e.g. toggles)
+    var bootstrap = require('bootstrap');
+
+	console.log(system);
 	//>>excludeStart("build", true);
 	system.debug(true);
 	//>>excludeEnd("build");
 
-	app.title = '1401 Game Project';
+	app.title = '1401 Game Shell';
 
 	app.configurePlugins({
 		router:true,
