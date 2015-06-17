@@ -67,7 +67,6 @@ define ([
 	};
 
 
-
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
 
 	return API;

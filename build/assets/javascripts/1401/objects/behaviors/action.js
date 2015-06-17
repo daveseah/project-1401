@@ -12,9 +12,34 @@ define ([
 /**	ActionNode **************************************************************\
 
 	This is an example implementation of an Action node, which performs
-	its useful action.
+	its useful action. This version of ActionNode isn't very useful; you
+	should extend it with code like this:
 
-	To access blackboard:
+		function MyActionNode () {
+			// call parent constructor
+			BehaviorFactory.ActionNode.call(this);
+			...
+		}
+		// set up inheritance
+		MyActionNode.inheritsFrom(BehaviorFactory.ActionNode);
+		// define or override new methods
+		MyActionNode.method('Open',function(){...});
+
+	You can create a SUCCEEDER and FAILURE node for testing by passing
+	BaseNode.SUCCESS, etc to the constructor.	
+
+	Each node instance has a blackboard scratch dictionary that can be
+	accessed using the BaseNode.BBGet(pish,key) and
+	BaseNode.BBSet(pish,key,value) methods. Pish (a piece-ish object that has
+	the ai property at minimum) is passed during BaseNode.Execute() and
+	distributed to Open, Close, Enter, Exit, and Tick event methods. Override
+	those to implement your own code.
+
+	Remember that every instance of a behavior tree and behavior node is
+	possible used across multiple agents. That is why pish has to be passed-
+	in during Execute, so you can access the unique blackboard scratch memory
+	through the piece itself.
+
 
 /** OBJECT DECLARATION ******************************************************/
 

@@ -42,7 +42,7 @@ define ([
 
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	AI.BehaviorInitialize = function ( piece ) {
-		console.log("\n\n*** TESTING BEHAVIOR TREE CREATION ***\n");
+		console.log("\n\n*** TESTING BEHAVIOR TREE ***\n");
 		
 		var b = BF.Priority([
 			BF.Action(BF.FAILURE),

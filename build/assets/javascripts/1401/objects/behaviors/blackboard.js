@@ -23,6 +23,11 @@ define ([
 	utility versions of Get/Set, invisibly passing these parameters so
 	BT authors can assume its local memory. 
 
+	Project 1401's behavior tree implementation and terminology is inspired
+	by Renato Pereira's behavior3js library, adapted to use 1401's piece
+	and class hierarchy. See https://github.com/renatopp/behavior3js
+	
+
 /** OBJECT DECLARATION ******************************************************/
 
 	/*/ constructor /*/

@@ -51,7 +51,6 @@ define ([
 	SETTINGS._Initialize = function ( gameId, viewModel ) {
 		m_InitializeMeta ( gameId, viewModel );
 		m_InitializePaths();
-
 	};
 
 
@@ -88,6 +87,11 @@ define ([
 			return 0;
 		}
 		return CURRENT_FRAME_NUM;
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Return current game's viewmodel for KnockOut, etc purposes
+/*/	SETTINGS.AppViewModel = function () { 
+		return VIEW_MODEL; 
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Return current game directory path, with <extra> added.

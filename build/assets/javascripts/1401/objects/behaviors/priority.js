@@ -23,8 +23,9 @@ define ([
 		]);
 
 	node.Tick() would return SUCCESS because one of its children
-	reports success. By comparisoin, the SequenceNode is far less forgiving,
-	running SUCCESS only if ALL its children report success.
+	reports success. By comparison, the SequenceNode is far less forgiving,
+	running SUCCESS only if ALL its children report success, one after
+	the other.
 
 
 /** OBJECT DECLARATION ******************************************************/
