@@ -178,7 +178,7 @@ define ([
 
 		var bgMap = THREE.ImageUtils.loadTexture(textureName,THREE.UVMAPPING, mi_SaveHeight);
 		var bgMat = new THREE.SpriteMaterial( {map:bgMap} );
-		if (BG_SPRITE) RP_BG.remove(BG_SPRITE);
+		if (BG_SPRITE) this.RemoveBackgroundVisual(BG_SPRITE);
 		BG_SPRITE = new THREE.Sprite(bgMat);
 		BG_SPRITE.position.set(0,0,-1000); // clip for 2D is 1000
 		this.AddBackgroundVisual(BG_SPRITE);
