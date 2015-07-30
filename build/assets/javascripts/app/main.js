@@ -41,7 +41,6 @@ define(function(require) {
    // otherwise some HTML ui elements won't work (e.g. toggles)
     var bootstrap = require('bootstrap');
 
-	console.log(system);
 	//>>excludeStart("build", true);
 	system.debug(true);
 	//>>excludeEnd("build");
