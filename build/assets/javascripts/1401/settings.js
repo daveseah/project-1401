@@ -15,8 +15,16 @@ define ([
 	S. 
 
 	Note that this module returns a FUNCTION, which also has additional
-	functions attached to it. To retrieve/set a property:
+	functions attached to it. 
+
+	To retrieve a property:
+
 		var val = SETTINGS('propname');
+		or
+		var val = SETTINGS.Get('propname');
+
+	TO set a property:
+
 		SETTINGS.Set('propname', value);
 
 
@@ -28,7 +36,7 @@ define ([
 
 ///	BASIC PROPERTY SETTING/GETTING
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-/*/	Retrieve value of associated property
+/*/	Retrieve value of associated property. Module is a function object.
 /*/	var SETTINGS = function ( key ) {
 		var value = S[key];
 		if (!value)
@@ -36,6 +44,9 @@ define ([
 		return value;
 	};
 	SETTINGS.name = "1401.settings";
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Explicit Get method for use by subclassers or fans of symmetry
+/*/	SETTINGS.Get = SETTINGS;
 	
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Set the value of a key
@@ -145,8 +156,6 @@ define ([
 	a callback function to resume execution after the file is parsed,
 	otherwise values will not be valid.
 /*/	SETTINGS.Load = function ( yamlFilePath, that, callback, failureIsOK ) {
-
-		// console.warn("Settings.Load() can not be called after LoadLocalStorage(). Aborting load:",'<'+yamlFilePath+'>');
 
 		YAML.load( yamlFilePath, function(yobj) {
 
