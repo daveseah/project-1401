@@ -15,16 +15,8 @@ define ([
 	S. 
 
 	Note that this module returns a FUNCTION, which also has additional
-	functions attached to it. 
-
-	To retrieve a property:
-
+	functions attached to it. To retrieve/set a property:
 		var val = SETTINGS('propname');
-		or
-		var val = SETTINGS.Get('propname');
-
-	TO set a property:
-
 		SETTINGS.Set('propname', value);
 
 
@@ -36,7 +28,7 @@ define ([
 
 ///	BASIC PROPERTY SETTING/GETTING
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-/*/	Retrieve value of associated property. Module is a function object.
+/*/	Retrieve value of associated property
 /*/	var SETTINGS = function ( key ) {
 		var value = S[key];
 		if (!value)
