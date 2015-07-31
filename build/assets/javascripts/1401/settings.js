@@ -127,6 +127,14 @@ define ([
 		return PATH_GAME_DIR+FILE_GAME_SET;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Return current 1401 GameID
+/*/	SETTINGS.GameID = function () {
+		if (GAME_ID) return GAME_ID;
+		else {
+			console.log('GameID is invalid before Master.Start()');
+		}
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Return current 1401 system path, with <extra> added.
 	Useful for loading assets in the 1401 system directory.
 /*/	SETTINGS.SystemPath = function ( extra ) {
@@ -148,6 +156,8 @@ define ([
 	a callback function to resume execution after the file is parsed,
 	otherwise values will not be valid.
 /*/	SETTINGS.Load = function ( yamlFilePath, that, callback, failureIsOK ) {
+
+		// console.warn("Settings.Load() can not be called after LoadLocalStorage(). Aborting load:",'<'+yamlFilePath+'>');
 
 		YAML.load( yamlFilePath, function(yobj) {
 
