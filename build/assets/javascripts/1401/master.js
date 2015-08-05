@@ -36,12 +36,8 @@ define ([
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	This is called by the associated viewmodel on composition.Complete
 	The viewModel and gameId are passed for safekeeping
-/*/	MASTER.Start = function ( viewModel, gameSpec ) {
+/*/	MASTER.Start = function ( viewModel ) {
 		console.group('Master Startup');
-
-		// emit warnings
-		console.assert(gameSpec, "Must pass gameSpec object");
-		console.assert(gameSpec.game, "Must specify gameSpec.game property");
 
 		if (SETTINGS.DEBUG_AI) {
 			var msg = "\n";
@@ -53,14 +49,21 @@ define ([
 			console.log(msg);
 		}
 
-		// save viewmodel to talk to later
-		console.assert(viewModel,"Master.Start: ViewModel required");
-		m_viewmodel = viewModel || {};
+		if (!viewModel) {
+			console.error("Master.Start: A Durandal viewmodel must be provided");
+			return;
+		}
+		m_viewmodel = viewModel;
+
+		if (!viewModel.gameId) {
+			console.error('Master.Start: ViewModel is missing gameId parameter.');
+			return;
+		}
 
 		// load master settings asynchronously then load game module
 		SETTINGS.Load (SETTINGS.SettingsPath(), _master, function () {
 			// select game to load
-			m_GameLoad ( gameSpec.game, viewModel );
+			m_GameLoad ( viewModel.gameId, viewModel );
 		});
 
 		// ...execution continues in m_GameLoad()

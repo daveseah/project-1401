@@ -19,11 +19,9 @@ define ([
 	var MOD = {};
 	MOD.displayName = 'GameShell';
 	MOD.description = 'Game system testing code';
+	MOD.gameId 		= 'demo';
 	MOD.compositionComplete = function () {
-		var spec = {
-			game: 'demo'
-		};
-		MASTER.Start( this, spec );
+		MASTER.Start( this );
 	};
 
 ///////////////////////////////////////////////////////////////////////////////
