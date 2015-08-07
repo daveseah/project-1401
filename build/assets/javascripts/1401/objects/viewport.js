@@ -1,8 +1,10 @@
 /* viewport.js */
 define ([
 	'three',
+	'1401/system/debug'
 ], function ( 
-	THREE
+	THREE,
+	DEBUG
 ) {
 
 /****************************************************************************\
@@ -284,9 +286,15 @@ define ([
 	}
 
 
+
+
 ///	RETURN SINGLETON /////////////////////////////////////////////////////////
 
-	if (instance===undefined) instance = new Viewport();
+	if (instance===undefined) {
+		instance = new Viewport();
+		DEBUG.GlobalizeObject('ViewPort',instance);
+	}
+
 	return instance;
 
 });
