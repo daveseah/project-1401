@@ -292,7 +292,7 @@ define ([
 
 	if (instance===undefined) {
 		instance = new Viewport();
-		DEBUG.GlobalizeObject('ViewPort',instance);
+		DEBUG.AddWatch('viewport',instance);
 	}
 
 	return instance;

@@ -110,15 +110,15 @@ define ([
 	console InspectObject(). Useful for gaining access to certain objects
 	that are buried inside a module, such as singleton instances like
 	1401/objects/viewport
-/*/	API.GlobalizeObject = function ( key, obj ) {
+/*/	API.AddWatch = function ( key, obj ) {
 		if (typeof key!=='string') {
 			return "key must be a string";
 		}
 		key = key.toLowerCase();
 		var exists = m_watching[key];
-		if (exists) console.warn ("GlobalizeObject:",key,"redefined");
+		if (exists) console.warn ("AddWatch:",key,"redefined");
 		m_watching[key]=obj;
-		console.info("GlobalizeObject: defined new debug object key",key.bracket(),obj);
+		console.info("AddWatch: defined new debug object key",key.bracket(),obj);
 	};
 
 /** SUPPORTING FUNCTIONS ****************************************************/
