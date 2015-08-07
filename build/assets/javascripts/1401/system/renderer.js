@@ -132,7 +132,7 @@ define ([
 		if (DBGOUT) console.log("RP_WORLD >>>",visual.id.toString(),"removed");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.RemoveWorldVisual = function ( visual ) {
+	API.RemoveWorldOverlayVisual = function ( visual ) {
 		RP_WORLD2.remove(visual);
 		if (DBGOUT) console.log("RP_WORLD2 >>>",visual.id.toString(),"removed");
 	};
