@@ -127,6 +127,11 @@ define ([
 		if (DBGOUT) console.log("added "+visual.id,">>> RP_OVER");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.RemoveBackgroundVisual = function ( visual ) {
+		RP_BG.remove(visual);
+		if (DBGOUT) console.log("RP_BG >>>",visual.id.toString(),"removed");
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveWorldVisual = function ( visual ) {
 		RP_WORLD.remove(visual);
 		if (DBGOUT) console.log("RP_WORLD >>>",visual.id.toString(),"removed");
@@ -135,11 +140,6 @@ define ([
 	API.RemoveWorldOverlayVisual = function ( visual ) {
 		RP_WORLD2.remove(visual);
 		if (DBGOUT) console.log("RP_WORLD2 >>>",visual.id.toString(),"removed");
-	};
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.RemoveBackgroundVisual = function ( visual ) {
-		RP_BG.remove(visual);
-		if (DBGOUT) console.log("RP_BG >>>",visual.id.toString(),"removed");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveUIVisual = function ( visual ) {
@@ -154,19 +154,19 @@ define ([
 
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.SelectWorld2D = function ( index ) {
+	API.SelectWorld2D = function () {
 		VIEWPORT.SelectWorld2D();
 		RP_WORLD.camera = VIEWPORT.WorldCam();
 		RP_WORLD2.camera = VIEWPORT.WorldCam();
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.SelectWorld3D = function ( index ) {
+	API.SelectWorld3D = function () {
 		VIEWPORT.SelectWorld3D();
 		RP_WORLD.camera = VIEWPORT.WorldCam();
 		RP_WORLD2.camera = VIEWPORT.WorldCam();
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.Viewport = function ( index ) {
+	API.Viewport = function () {
 		return VIEWPORT;
 	};
 
