@@ -1,14 +1,16 @@
-<section>
 <style scoped>
-	#container { margin-top: 20px; min-height:0; background-color:#c00 }
+	#display {
+		position: absolute;
+		top: 60px;
+		left: 20px;
+	}
 </style>
 
-<div class="container-fluid">
-	<div class="row-fluid">
-		<div id="container" class="span12"></div>
+<div id="display">
+	<div id="container">
+		<div id="overlay"></div>
 	</div>
-	<div class="row-fluid">
-		<div id="debug" class="span12">Use WASDQE to move. SPACE brakes. Open javascript console to see debug messages.</div>
+	<div id="debug">
+		Use WASDQE to move. SPACE brakes. Open javascript console to see debug messages.</div>
 	</div>
 </div>
-</section>
