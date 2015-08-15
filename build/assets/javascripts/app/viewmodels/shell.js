@@ -4,7 +4,7 @@ define(['plugins/router', 'durandal/app'], function (router, app) {
         activate: function () {
             router.map([
                 { route: '', title:'Welcome', moduleId: 'viewmodels/welcome', nav: true },
-                { route: 'gameshell', title:'GameShell', moduleId: 'viewmodels/gameshell', nav: true }
+                { route: 'demo', title:'GameDemo', moduleId: 'viewmodels/demo', nav: true }
             ]).buildNavigationModel();
             
             return router.activate();
