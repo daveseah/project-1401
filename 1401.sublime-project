@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+			"path": "build/assets/javascripts/1401-games"
+		},
+		{
+			"path": "build/assets/javascripts/1401"
+		},
+		{
+			"path": "build/assets/javascripts/app"
+		},
+		{
+			"path": "build"
+		}
+	]
+}
