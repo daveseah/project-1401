@@ -149,22 +149,31 @@ define ([
 		return this.rotation.clone();
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	Piece.method('RotationX', function () { return this.rotation.x; });
+	Piece.method('RotationY', function () { return this.rotation.y; });
+	Piece.method('RotationZ', function () { return this.rotation.z; });
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	
 /*/	Piece.method('SetRotation', function ( vector3 ) {	
 		if (vector3===undefined) console.error("rotation vector is undefined");
 		if (typeof vector3!=='object') console.error('SetRotation requires Vector3, not',typeof vector3);
+		SetRotationXYZ(vector3.x,vector3.y,vectory3.z);
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	
+/*/	Piece.method('SetRotationXYZ', function ( x, y, z ) {	
 
-		this.rotation.x = vector3.x;
-		this.rotation.y = vector3.y;
-		this.rotation.z = vector3.z;
+		this.rotation.x = x;
+		this.rotation.y = y;
+		this.rotation.z = z;
 
 		// NOTE: visuals are THREE.object3d instances
 		if (this.visual) {
-			this.visual.rotation.x = vector3.x;
-			this.visual.rotation.y = vector3.y;
-			this.visual.rotation.z = vector3.z;
+			this.visual.rotation.x = x;
+			this.visual.rotation.y = y;
+			this.visual.rotation.z = z;
 			if (this.visual.inqsprite) {
-				this.visual.Rotate(vector3.z);
+				this.visual.Rotate(z);
 			}
 		}
 
@@ -173,25 +182,19 @@ define ([
 /*/	
 /*/	Piece.method('SetRotationX', function ( rot ) {	
 		if (rot===undefined) console.error("rotationX is undefined");
-		this.SetRotation(
-			new THREE.Vector3( rot, this.position.y, this.position.x )
-		);
+		this.SetRotationXYZ( rot, this.rotation.y, this.rotation.x );
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	
 /*/	Piece.method('SetRotationY', function ( rot ) {	
 		if (rot===undefined) console.error("rotationY is undefined");
-		this.SetRotation(
-			new THREE.Vector3( this.position.x, rot, this.position.z )
-		);
+		this.SetRotationXYZ ( this.rotation.x, rot, this.rotation.z );
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	
 /*/	Piece.method('SetRotationZ', function ( rot ) {
 		if (rot===undefined) console.error("rotationZ is undefined");
-		this.SetRotation(
-			new THREE.Vector3( this.position.x, this.position.y, rot )
-		);
+		this.SetRotationXYZ ( this.rotation.x, this.rotation.y, rot );
 	});
 
 
