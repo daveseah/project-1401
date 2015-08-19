@@ -43,9 +43,12 @@ define ([
 	//	call the parent constructor		
 		ProtoPiece.call (this, name);
 
-	//	position and orientationS
-		this.position = null;	// initialized later
-		this.rotation = null;
+	//	position and orientation
+		this.position = new THREE.Vector3(0,0,0);
+		this.rotation = new THREE.Vector3(0,0,0);
+
+	//	direction (unit vector);
+		this.heading = new THREE.Vector3(1,0,0);
 
 	//	utility position data
 		this.position0 = null;	// last posiiton
@@ -68,9 +71,6 @@ define ([
 		this.updateFunc = null;
 		this.thinkFunc = null;
 		this.executeFunc = null;
-
-	//	initialize default values
-		m_InitializeDefaults(this);
 
 	}
 	/*/ inheritance /*/
@@ -157,7 +157,7 @@ define ([
 /*/	Piece.method('SetRotation', function ( vector3 ) {	
 		if (vector3===undefined) console.error("rotation vector is undefined");
 		if (typeof vector3!=='object') console.error('SetRotation requires Vector3, not',typeof vector3);
-		SetRotationXYZ(vector3.x,vector3.y,vectory3.z);
+		SetRotatxionXYZ(vector3.x,vector3.y,vectory3.z);
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	
@@ -167,6 +167,7 @@ define ([
 		this.rotation.y = y;
 		this.rotation.z = z;
 
+		// update visual
 		// NOTE: visuals are THREE.object3d instances
 		if (this.visual) {
 			this.visual.rotation.x = x;
@@ -200,23 +201,37 @@ define ([
 
 ///	POSITION ACCESS METHODS //////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-/*/	Position() - preferred way to read position of piece 
+/*/	Preferred way to read position of piece 
 /*/	Piece.method ('Position', function () {
 		// return a copy, so callee can manipulate it without borking
 		// the piece's actual position.
 		return this.position.clone();
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-/*/	SetPosition() - preferred way to set the position of the piece 
+/*/	Preferred way to set the position of the piece 
 /*/	Piece.method ('SetPosition', function ( vector3 ) {
 		this.SetPositionXYZ(vector3.x,vector3.y,vector3.z);
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Piece.method ('SetPositionXYZ', function ( x, y, z ) {
+
+		// calculate heading based on old positions
+		var hx = x - this.position.x;
+		var hy = y - this.position.y;
+		var hz = z - this.position.z;
+		// update if the change exceeds threashold
+		if ( (hx*hx+hy*hy+hz*hz)>.00001 ) {
+			this.heading.x = hx;
+			this.heading.y = hy;
+			this.heading.z = hz;
+			this.heading.normalize();
+		}
+
 		// copy position into current vector
 		this.position.x = x;
 		this.position.y = y;
 		this.position.z = z;
+
 		// NOTE: visuals are THREE.object3d instances
 		if (this.visual) {
 			this.visual.position.x = x;
@@ -244,6 +259,23 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Piece.method ('SetPositionZ', function ( z ) {
 		this.SetPositionXYZ( this.position.x, this.position.y, z );
+	});
+
+
+///	DIRECTION ACCESSORS //////////////////////////////////////////////////////
+/// The Heading is the direction of movement of a piece, which is not the
+///	same as the way a piece of pointing. Calculated by SetPositionXYZ.
+///	If physics engine is in use.
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Get the angle of the heading vector. 
+/*/	Piece.method ('HeadingAngle', function () {
+		// NOTE: physics engine hooks also exist in movingpiece.js
+		if (this.body) {
+			/* TODO: return physics-based heading */
+		} else {
+			// otherwise calculate based on stored positions
+			return Math.atan2(this.heading.y, this.heading.x);
+		}
 	});
 
 
@@ -278,14 +310,6 @@ define ([
 			this.visual.pieceId = this.id;
 		}
 	});
-
-
-/** UTILITY FUNCTIONS ********************************************************/
-
-	function m_InitializeDefaults ( piece ) {
-		piece.position = new THREE.Vector3(0,0,0);
-		piece.rotation = new THREE.Vector3(0,0,0);
-	}
 
 
 /** RETURN CONSTRUCTOR *******************************************************/
