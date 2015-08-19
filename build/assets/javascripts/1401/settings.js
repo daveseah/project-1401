@@ -112,12 +112,24 @@ define ([
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Return current game directory path, with <extra> added.
-	Useful for loading assets in the game directory.
 /*/	SETTINGS.GamePath = function ( extra ) {
 		extra = extra || '';
 		if (PATH_GAME_DIR===undefined) 
 			console.error("GamePath is invalid before MasterGameLoad");
 		return PATH_GAME_DIR+extra;
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/	Return current game directory path, with <extra> added.
+	Useful for loading assets in the game directory. Checks if extra is
+	a URL and returns that so remote assets can be fetched; make sure
+	to initialize Renderer with crossOrigin:true to use URLs
+/*/	SETTINGS.AssetPath = function ( extra ) {
+		extra = extra || '';
+		if ((extra.length>0) && (m_IsURL(extra))) return extra;
+		if (PATH_GAME_DIR===undefined) 
+			console.error("AssetPath for local resources is invalid before MasterGameLoad");
+		if (extra.length>0) return PATH_GAME_DIR+extra;
+		console.error("AssetPath requires a string path argument");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	Return current 1401 settings path.
@@ -241,6 +253,10 @@ define ([
 	}
 
 	function m_Validate () {
+	}
+
+	function m_IsURL ( str ) {
+		return (str.indexOf('http://')===0) || (str.indexOf('https://')===0);
 	}
 
 
