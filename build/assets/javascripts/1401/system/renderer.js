@@ -58,6 +58,10 @@ define ([
 		RP_UI.camera = VIEWPORT.ScreenCam();
 		RP_OVER.camera = VIEWPORT.ScreenCam();
 
+		// enable cross-origin
+		if (parm.crossOrigin===true)
+			THREE.ImageUtils.crossOrigin='';
+
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/ for manually rendering on every update with explicit call
