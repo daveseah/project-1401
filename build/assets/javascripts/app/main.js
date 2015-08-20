@@ -15,7 +15,9 @@ requirejs.config({
 		'three' : '../vendor-shimmed/three.min',
         'yaml':'../vendor/yaml.js/yaml',
         'physicsjs' : '../vendor/physicsjs/physicsjs-full',
-        'keypress' : '../vendor/Keypress/keypress-2.1.0.min'
+        'keypress' : '../vendor/Keypress/keypress-2.1.0.min',
+        'webrtc-shim' : '../vendor/webrtc-adapter/adapter',
+        'socket-io': '../vendor-shimmed/socket.io'
 	},
 	shim: {
 		'bootstrap': {
@@ -48,7 +50,7 @@ define(function(require) {
 	app.title = '1401 Game Shell';
 
 	app.configurePlugins({
-		router:true,
+		router: true,
 		dialog: true,
 		widget: true
 	});

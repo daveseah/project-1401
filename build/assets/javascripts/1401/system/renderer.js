@@ -29,6 +29,11 @@ define ([
 
 	var PICK_SUBSCRIBERS = null;			// API.SubscribeToMousePicks()
 
+	var _prerender = [];					// registered render
+	var _heartbeat = [];					// registered renderer heartbeat
+
+	var i,j;								// pre-allocated indexers
+
 
 /** PUBLIC API ***************************************************************/
 
@@ -64,8 +69,33 @@ define ([
 
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Heartbeat Tasks execute during before GameStep every frame. This is used
+	by extenders of RENDERER to insert custom processing routines
+/*/	API.RegisterHeartbeatTask = function ( funcObj ) {
+		if (typeof funcObj !== 'function') {
+			console.error("RegisterHeartBeat requires a function");
+			return;
+		} 
+		_heartbeat.push(funcObj);
+	};	
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Heartbeat Tasks execute during before GameStep every frame. This is used
+	by extenders of RENDERER to insert custom processing routines
+/*/	API.RegisterPrerenderTask = function ( funcObj ) {
+		if (typeof funcObj !== 'function') {
+			console.error("RegisterPrerenderTask requires a function");
+			return;
+		} 
+		_prerender.push(funcObj);
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/ for manually rendering on every update with explicit call
 /*/	API.Render = function () {
+
+		// issue any prerendering function objects
+		for(i=0;i<_prerender.length;i++) {
+			_prerender[i]();
+		}
 
 		VIEWPORT.Clear();
 		VIEWPORT.Render ( RP_BG );
@@ -93,6 +123,9 @@ define ([
 /*/ called by Master.Step() prior to Game.MasterStep()
 /*/	API.HeartBeat = function ( interval_ms ) {
 		// do system-related cleanup and processing
+		for(i=0;i<_heartbeat.length;i++) {
+			_heartbeat[i]();
+		}
 	};
 
 
@@ -157,6 +190,8 @@ define ([
 	};
 
 
+
+///	CAMERA and VIEWPORT //////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.SelectWorld2D = function () {
 		VIEWPORT.SelectWorld2D();
@@ -195,9 +230,9 @@ define ([
 	};
 
 
+
 /// RAYCASTING CLICK SUPPORT///////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 	API.EnableMousePicks = function () {
 		if (!PICK_SUBSCRIBERS) {
 			PICK_SUBSCRIBERS = [];
@@ -206,7 +241,7 @@ define ([
 			console.error("MousePicking already enabled");
 		}
 	};
-
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.SubscribeToMousePicks = function ( func ) {
 
 		// make sure a function is provided
@@ -228,11 +263,9 @@ define ([
 
 
 
-
-/**	SUPPORT FUNCTIONS *******************************************************/
-
+/// SUPPORT FUNCTIONS ///////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*/	m_CastRay ( event ) handles clicks on objects in the world
+/*/	Handles clicks on objects in the world
 /*/	function m_CastRay ( event ) {
 		event.preventDefault();
 
@@ -286,8 +319,10 @@ define ([
 		}
 
 	}
-/** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
 
+
+///////////////////////////////////////////////////////////////////////////////
+/** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
 	return API;
 
 });
