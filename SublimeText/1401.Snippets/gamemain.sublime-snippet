@@ -1,0 +1,42 @@
+<snippet>
+	<content><![CDATA[
+
+	// create a main game loop handler object with all necessary functions
+	// there is only one main loop per game
+	var MAIN = SYSLOOP.InitializeGame('Game-Main');
+
+	// add handlers as needed
+	MAIN.SetHandler( 'Connect', function (view_model){} );
+	MAIN.SetHandler( 'GameStep', API_GameStep );
+
+	// NOTE: modules that implement SYSLOOP generally will handle:
+	// Construct, Start, GetInput, Update, etc events, not the main loop
+
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	MasterStep is a method reserved for the 'master game loop'.
+	SYSLOOP is 1401/objects/sysloop module
+/*/	function API_GameStep ( ms ) {
+
+		/* game pause control */
+		/* game logic */
+		SYSLOOP.GetInputAll(ms);
+		/* physics step in autosys */
+		SYSLOOP.PiecesUpdate (ms);		// all pieces update
+		SYSLOOP.ModulesUpdate (ms);		// modules update (us included)
+		SYSLOOP.ModulesThink (ms);		// modules AI think (us included)
+		SYSLOOP.PiecesThink (ms);		// all pieces think
+		SYSLOOP.ModulesOverThink (ms);	// modules AI override (us included)
+		SYSLOOP.PiecesExecute (ms);		// all pieces execute
+		SYSLOOP.ModulesExecute (ms);	// modules AI execute (us included)
+		/* ui updates */
+		/* game level management */
+
+	}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>/1401gamemain</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<scope>source.js</scope>
+	<description>1401 main game loop</description>
+</snippet>
