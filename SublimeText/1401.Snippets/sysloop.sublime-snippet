@@ -13,19 +13,17 @@
 		MOD.SetHandler( 'Start', function(start_ms){} );
 
 		// runtime events
-		MOD.SetHandler('Update', function(int_ms){} );
-
-		// special runtime events
+		// MOD.SetHandler('Update', function(int_ms){} );
 		// MOD.SetHandler('GetInput', function(int_ms){} );
 		// MOD.SetHandler('Think', function(int_ms){} );
 		// MOD.SetHandler('OverThink', function(int_ms){} );
 		// MOD.SetHandler('Execute', function(int_ms){} );
 
-		// enable special runtime events
-		// call these in 'Start' handler
-		// MOD.EnableInput();
+		// enable runtime events - enable in Start handler
 		// MOD.EnableUpdate();
+		// MOD.EnableInput();
 		// MOD.EnableAI();
+		
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>/1401sysloop</tabTrigger>
