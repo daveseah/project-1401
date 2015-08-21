@@ -1,13 +1,14 @@
 <snippet>
 	<content><![CDATA[
-	// create a new game module that listens to the following
-	// game events
+	// create game module that listens to 1401 game events
+	// remember to include '1401/objects/sysloop' as SYSLOOP
+	// in requireJS declaration!
 	var MOD = SYSLOOP.New('Game Module');
 
 		// startup events
 		MOD.SetHandler( 'Connect', function(viewmodel){} );
 		MOD.SetHandler( 'Initialize', function(){} );
-		MOD.SetHandler( 'LoadAssets', function(cb_func) );
+		MOD.SetHandler( 'LoadAssets', function(cb_func){} );
 		MOD.SetHandler( 'Construct', function(){} );
 		MOD.SetHandler( 'Start', function(start_ms){} );
 
@@ -15,16 +16,16 @@
 		MOD.SetHandler('Update', function(int_ms){} );
 
 		// special runtime events
-		MOD.SetHandler('GetInput', function(int_ms){} );
-		MOD.SetHandler('Think', function(int_ms){} );
-		MOD.SetHandler('OverThink', function(int_ms){} );
-		MOD.SetHandler('Execute', function(int_ms){} );
+		// MOD.SetHandler('GetInput', function(int_ms){} );
+		// MOD.SetHandler('Think', function(int_ms){} );
+		// MOD.SetHandler('OverThink', function(int_ms){} );
+		// MOD.SetHandler('Execute', function(int_ms){} );
 
-		// enable runtime events - enable in Start handler
+		// enable special runtime events
+		// call these in 'Start' handler
 		// MOD.EnableInput();
 		// MOD.EnableUpdate();
 		// MOD.EnableAI();
-
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>/1401sysloop</tabTrigger>
