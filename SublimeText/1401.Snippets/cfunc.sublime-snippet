@@ -5,8 +5,8 @@
 /*/	
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
-	<tabTrigger>/1401mfunc</tabTrigger>
+	<tabTrigger>/1401cfunc</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
 	<scope>source.js</scope>
-	<description>1401 methods</description>
+	<description>1401 method comment header</description>
 </snippet>

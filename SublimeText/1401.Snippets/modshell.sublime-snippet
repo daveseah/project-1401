@@ -26,8 +26,8 @@ define ( [
 });
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
-	<tabTrigger>/1401mdef</tabTrigger>
+	<tabTrigger>/1401modshell</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
 	<scope>source.js</scope>
-	<description>1401 module</description>
+	<description>1401 module shell</description>
 </snippet>
