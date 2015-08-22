@@ -1,0 +1,13 @@
+<snippet>
+	<content><![CDATA[
+for (${1:var }${2:i}=0;$2<${3:m_pieces}.length;$2++) {
+	var p = $3[$2];
+	$0
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>/1401ploop</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<scope>source.js</scope>
+	<description>1401 piece loop</description>
+</snippet>

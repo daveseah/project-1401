@@ -1,0 +1,25 @@
+<snippet>
+	<content><![CDATA[
+var ${1:actor}Piece = PIECEFACTORY.NewPiece("$1");
+var $1Sprite = VISUALFACTORY.MakeDefaultSprite();
+var $1Path = SETTINGS.AssetPath("${2:spritedir}/$1.png");
+$1Piece.SetVisual($1Sprite);
+RENDERER.AddWorldVisual( $1Piece.Visual() );
+// optional spritesheet declaration
+var $1SequenceSpec = {
+	grid: { columns:1, rows:1, stacked:true },
+	sequences: [
+		{ name: 'idle', framecount: 1, fps:4 }
+	]
+};
+$1Sprite.DefineSequences($1Path,$1SequenceSpec, function() {
+	$1Piece.Visual().PlaySequence('idle');
+	$1Piece.SetPositionXY(0,0); 		
+});
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>/1401pmake</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<scope>source.js</scope>
+	<description>1401 make piece</description>
+</snippet>

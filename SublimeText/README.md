@@ -22,7 +22,10 @@ Additionally, the `1401.Snippets` folder can be copied to your SublimeText user 
 
 If you want to maintain my weird code formatting conventions, here's a few snippets to help with that:
 ~~~
-/1401cfunc     - insert a 1401-style function definition
+/1401mfunc     - insert a 1401-style function definition
+                 with parameters
 /1401csep      - insert a set of 1401-style comment line 
                  separators
+/1401cind      - insert a set of 1401-style indented comment
+                 lead-in
 ~~~

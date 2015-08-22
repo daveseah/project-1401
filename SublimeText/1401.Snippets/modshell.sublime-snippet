@@ -1,33 +1,60 @@
 <snippet>
 	<content><![CDATA[
-/* name of module */
+/* ${1:filepath} */
 define ( [
-	'1401/settings'
+	'1401/settings',
+	'1401/objects/sysloop',
+	'1401/system/renderer',
+	'1401/system/visualfactory',
+	'1401/system/piecefactory'
 ], function (
-	SETTINGS 
+	SETTINGS,
+	SYSLOOP,
+	RENDERER,
+	VISUALFACTORY,
+	PIECEFACTORY
 ){
-///////////////////////////////////////////////////////////////////////////////
-/**	MODULE NAME **************************************************************\
-
-	description
 
 ///////////////////////////////////////////////////////////////////////////////
-/** PRIVATE MODULE VARIABLES *************************************************/
+/**	${2:MODULE} *******************************************************************\
+
+	Description of $2
+	
+	$0Save this file as a .js file to enable the following snippets:
+	
+	/1401pmake     create a piece-making code snippet
+	/1401ploop     make a piece-iterating loop snippet
+	/1401csep      generate comment separator lines
+	/1401cind      create a lead-in function comment wrapper
+	/1401sysloop   generate systemloop
+	/1401mfunc     generate module function
+
+///////////////////////////////////////////////////////////////////////////////
+/** PRIVATE $2 VARIABLES *************************************************/
+
+	var m_pieces = [];
+
 /** PUBLIC API ***************************************************************/
 
-	var MOD = {};
+	var ${3:MOD} = {};
+	/1401sysloop
+	/1401mfunc
 
 ///////////////////////////////////////////////////////////////////////////////
-/** PRIVATE MODULE FUNCTIONS *************************************************/
+/** PRIVATE $2 FUNCTIONS *************************************************/
+
+	function m_PrivateFunction () {
+	};	
 
 ///////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE ************************************************************/
-	return MOD;
+	return $3;
 });
+
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>/1401modshell</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
-	<scope>source.js</scope>
+	<scope></scope>
 	<description>1401 module shell</description>
 </snippet>

@@ -1,29 +1,49 @@
 <snippet>
 	<content><![CDATA[
-	// create game module that listens to 1401 game events
+
+/** SYSLOOP API **************************************************************/
+
 	// remember to include '1401/objects/sysloop' as SYSLOOP
 	// in requireJS declaration!
-	var MOD = SYSLOOP.New('Game Module');
+	var ${1:MOD} = SYSLOOP.New('${2:Game Module}');
 
-	// startup events
-	MOD.SetHandler( 'Connect', function(viewmodel){} );
-	MOD.SetHandler( 'Initialize', function(){} );
-	MOD.SetHandler( 'LoadAssets', function(cb_func){} );
-	MOD.SetHandler( 'Construct', function(){} );
-	MOD.SetHandler( 'Start', function(start_ms){} );
+///	STARTUP EVENTS //////////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	save viewmodel for app communication, or use SETTINGS.ViewModel()
+/*/	$1.SetHandler('Connect', function( viewmodel ) {
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	initialize but don't populate data structures
+/*/	$1.SetHandler('Initialize', function() {
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	load external assets, call callback_done() when done loading
+/*/	$1.SetHandler('LoadAssets', function( callback_done ) {
+		// callback on complete
+		callback_done();
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	build data and datastructures for this module
+/*/	$1.SetHandler('Construct', function(){
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	setup for runtime before regular Update starts
+/*/	$1.SetHandler('Start', function( start_ms ) {
+		// enable runtime events
+		// $1.EnableUpdate();
+		// $1.EnableInput();
+		// $1.EnableAI();
+	});
 
-	// runtime events
-	// MOD.SetHandler('Update', function(int_ms){} );
-	// MOD.SetHandler('GetInput', function(int_ms){} );
-	// MOD.SetHandler('Think', function(int_ms){} );
-	// MOD.SetHandler('OverThink', function(int_ms){} );
-	// MOD.SetHandler('Execute', function(int_ms){} );
-
-	// enable runtime events - enable in Start handler
-	// MOD.EnableUpdate();
-	// MOD.EnableInput();
-	// MOD.EnableAI();
-		
+///	OPTIONAL RUNTIME EVENTS /////////////////////////////////////////////////
+/// These are disabled by default
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/// $1.SetHandler('Update', function( int_ms ) {}); 
+/// $1.SetHandler('GetInput', function( int_ms ) {});
+/// $1.SetHandler('Think', function( int_ms ) {});
+/// $1.SetHandler('OverThink', function( int_ms ) {});
+/// $1.SetHandler('Execute', function( int_ms ) {});
+$0		
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>/1401sysloop</tabTrigger>

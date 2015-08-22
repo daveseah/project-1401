@@ -1,23 +1,91 @@
 <snippet>
 	<content><![CDATA[
+/* game-main */
+define ([
+	'1401/system/debug',
+	'1401/settings',
+	'1401/system/renderer',
+	'1401/objects/sysloop'
+], function (
+	DBG,
+	SETTINGS,
+	RENDERER,
+	SYSLOOP
+) {
 
-	// create a main game loop handler object with all necessary functions
-	// there is only one main loop per game
-	var MAIN = SYSLOOP.InitializeGame('Game-Main');
+	var DEBUG = false;
 
-	// add handlers as needed
-	MAIN.SetHandler( 'Connect', function (view_model){} );
-	MAIN.SetHandler( 'GameStep', API_GameStep );
+//////////////////////////////////////////////////////////////////////////////
+/****************************************************************************\
 
-	// NOTE: modules that implement SYSLOOP generally will handle:
-	// Construct, Start, GetInput, Update, etc events, not the main loop
+	MASTER GAME INSTANCE (MGI)
 
 
+//////////////////////////////////////////////////////////////////////////////
+/** MODULE PRIVATE VARIABLES ************************************************/
+
+	var m_viewmodel;	// durandal viewmodel for databinding, system props
+	var _is_running = false;
+
+
+//////////////////////////////////////////////////////////////////////////////
+/** SYSLOOP API *************************************************************/
+
+	// create a game loop handler object with all necessary functions
+	var ${2:GAME} = SYSLOOP.InitializeGame('$2-Main');
+
+
+///	CONSTRUCTION EVENTS ///////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*/	MasterStep is a method reserved for the 'master game loop'.
-	SYSLOOP is 1401/objects/sysloop module
-/*/	function API_GameStep ( ms ) {
+/*/	MGI.Connect is fired AFTER all other SYSLOOP instances complete
+/*/	$2.SetHandler( 'Connect', function ( VM ) {
+		console.group("$2: Connecting!");
+		m_viewmodel = VM;
+		console.groupEnd();
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	MGI.Initialize is fired AFTER all other SYSLOOP instances complete
+/*/	$2.SetHandler( 'Initialize', function () {
+		console.group('$2: Initializing!');
+		var parm = {
+			attachTo: '#container',		// WebGL attaches to this
+			renderWidth: 1000,			// width of render context
+			renderHeight: 1000,			// height of render context
+			worldUnits: 1000			// world units to fit in shortest dim
+		};
+		RENDERER.Initialize ( parm );
+		// XRENDERER.SetShellContainerPadding(10);
+		// XSETTINGS.AppViewModel().screen_autosize(2);
+		console.groupEnd();
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	MGI.Construct is fired AFTER all other SYSLOOP instances complete
+/*/	$2.SetHandler( 'Construct', function () {
+		console.group('$2: Constructing!');
+		// Initialize values specific to overall gameloop, such
+		// as zone or level management
+		console.groupEnd();
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	MGI.Start is fired AFTER all other SYSLOOP instances complete
+/*/	$2.SetHandler( 'Start', function ( int_ms ) {
+		console.group('$2: Starting!');
+		console.log(this.name,'Start @ '+int_ms.zeroPad(8));
+		if (SETTINGS("renderer").autorender) {
+			console.log("* Using simulation-independent auto-rendering");
+			RENDERER.AutoRender();
+		}
+		_is_running = true;
+		console.groupEnd();
+	});
 
+
+/// MASTER GAME LOOP ////////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	This is the top-level system update loop. There is only one in the entire
+	game (note: 'GameStep' is not used anywhere else). This GameStep handler
+	is allowed only when SYSLOOP.InitializeGame() is created. 
+/*/	$2.SetHandler( 'GameStep', function ( int_ms ) {
 		/* game pause control */
 		/* game logic */
 		SYSLOOP.GetInputAll(ms);
@@ -29,14 +97,35 @@
 		SYSLOOP.ModulesOverThink (ms);	// modules AI override (us included)
 		SYSLOOP.PiecesExecute (ms);		// all pieces execute
 		SYSLOOP.ModulesExecute (ms);	// modules AI execute (us included)
-		/* ui updates */
+		/* other ui updates */
 		/* game level management */
-
 	}
+
+
+///////////////////////////////////////////////////////////////////////////////
+/** PUBLIC API ***************************************************************/
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Report the run status of the game to master
+/*/	$2.IsRunning = function () { return _is_running; };
+
+
+///////////////////////////////////////////////////////////////////////////////
+/** PRIVATE MODULE FUNCTIONS *************************************************/
+
+	function m_PrivateFunction () {
+	};	
+	
+
+///////////////////////////////////////////////////////////////////////////////
+/** RETURN MODULE ************************************************************/
+	return $2;
+
+});
+
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>/1401gamemain</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
-	<scope>source.js</scope>
-	<description>1401 main game loop</description>
+	<scope></scope>
+	<description>1401 main game</description>
 </snippet>
