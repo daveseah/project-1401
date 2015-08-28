@@ -15,7 +15,7 @@ requirejs.config({
 		'three' : '../vendor-shimmed/three.min',
         'yaml':'../vendor/yaml.js/yaml',
         'physicsjs' : '../vendor/physicsjs/physicsjs-full',
-        'keypress' : '../vendor/Keypress/keypress-2.1.0.min',
+        'keypress' : '../vendor/Keypress/keypress-2.1.3.min',
         'webrtc-shim' : '../vendor/webrtc-adapter/adapter',
         'socket-io': '../vendor-shimmed/socket.io'
 	},
