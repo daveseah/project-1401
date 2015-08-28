@@ -29,3 +29,9 @@ If you want to maintain my weird code formatting conventions, here's a few snipp
 /1401cind      - insert a set of 1401-style indented comment
                  lead-in
 ~~~
+
+For convenience in creating pieces
+~~~
+/1401pmake     - make piece creation code block (multitab)
+/1401ploop     - make piece looper (multitab)
+~~~

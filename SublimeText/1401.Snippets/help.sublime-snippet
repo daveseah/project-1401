@@ -1,0 +1,21 @@
+<snippet>
+	<content><![CDATA[
+/*/	1401 Snippets Help
+
+/1401modshell    make new requireJS 1401-style shell
+/1401gamemain    make game-main.js essential sysloop
+/1401sysloop     make general purpose sysloop
+/1401mfunc       make 1401-style method declaration
+/1401csep        insert 1401-style comment separators to pick
+/1401cind        make 1401-style comment leader (for functions)
+/1401pmake       make a new piece and give it a spritesheet
+/1401ploop       make a piece iterator for loop       
+
+/*/	
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>/1401</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<scope></scope>
+	<description>1401 method comment header</description>
+</snippet>
