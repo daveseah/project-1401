@@ -98,7 +98,7 @@ define ([
 	                { name: 'flicker', framecount: 2, fps:4 }
 	            ]
 	        };
-	        shipSprite.DefineSequences(SETTINGS.GamePath('resources/crixa.png'),seq);
+	        shipSprite.DefineSequences(SETTINGS.AssetPath('resources/crixa.png'),seq);
 	       	// shipSprite.PlaySequence("flicker");
 	        crixa = PIECEFACTORY.NewMovingPiece("crixa");
 	        crixa.SetVisual(shipSprite);
@@ -106,7 +106,7 @@ define ([
 
 			for (i=0;i<3;i++) {
 				platform = VISUALFACTORY.MakeStaticSprite(
-					SETTINGS.GamePath('resources/teleport.png'),
+					SETTINGS.AssetPath('resources/teleport.png'),
 					do_nothing
 				);
 				platform.position.set(0,100,100-(i*50));
@@ -115,7 +115,7 @@ define ([
 
 			for (i=0;i<3;i++) {
 				platform = VISUALFACTORY.MakeStaticSprite(
-					SETTINGS.GamePath('resources/teleport.png'),
+					SETTINGS.AssetPath('resources/teleport.png'),
 					do_nothing
 				);
 				platform.position.set(0,-100,100-(i*50));

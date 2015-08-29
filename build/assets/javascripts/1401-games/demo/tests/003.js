@@ -70,7 +70,7 @@ define ([
 	                { name: 'flicker', framecount: 2, fps:4 }
 	            ]
 	        };
-	        shipSprite.DefineSequences(SETTINGS.GamePath('resources/crixa.png'),seq);
+	        shipSprite.DefineSequences(SETTINGS.AssetPath('resources/crixa.png'),seq);
 	        shipSprite.PlaySequence("flicker");
 	        crixa = PIECEFACTORY.NewPiece("crixa");
 	        crixa.SetVisual(shipSprite);

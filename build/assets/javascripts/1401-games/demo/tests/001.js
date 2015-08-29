@@ -69,7 +69,7 @@ define ([
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Initialize() {
-		var bg_png = SETTINGS.GamePath('resources/bg.png');
+		var bg_png = SETTINGS.AssetPath('resources/bg.png');
 		RENDERER.SetBackgroundImage ( bg_png );
 	}
 
@@ -109,7 +109,7 @@ define ([
 	                { name: 'flicker', framecount: 2, fps:4 }
 	            ]
 	        };
-	        spr03.DefineSequences(SETTINGS.GamePath('resources/crixa.png'),seq);
+	        spr03.DefineSequences(SETTINGS.AssetPath('resources/crixa.png'),seq);
 	        spr03.PlaySequence("flicker");
 	        spr03.PulseDown(1000,true);
 	        var crixa = PIECEFACTORY.NewPiece("crixa");
