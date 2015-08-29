@@ -1,8 +1,10 @@
 /* 1401.settings */
 define ([
-	'yaml'
+	'yaml',
+	'three'
 ], function ( 
-	YAML
+	YAML,
+	THREE
 ) {
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -159,6 +161,19 @@ define ([
 		if (PATH_GAME_DIR===undefined) 
 			console.error("GameMainModule is invalid before MasterGameLoad");
 		return PATH_GAME_DIR+FILE_GAME_RUN;
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Return TRUE if str begins with http:// or https://
+/*/	SETTINGS.IsURL = function ( str ) {
+		return m_IsURL(str);
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	SETTINGS.XSSTextureCheck = function ( path ) {
+		var isURL = SETTINGS.IsURL( path );
+		if (!isURL) return false;
+		if (THREE.ImageUtils.crossOrigin) return false;
+		throw new Error ("Renderer.Initialize() needs crossOrigin:true to load: "+path);
+		return true;
 	};
 
 

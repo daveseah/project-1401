@@ -47,6 +47,7 @@ define ([
 	its assets have been completely loaded.
 /*/	API.LoadAssets = function ( callback ) {
 		var path = SETTINGS.SystemPath('common/default-visual.png');
+
 		DEFAULT_SPR_TEXTURE = THREE.ImageUtils.loadTexture (path,THREE.UVMAPPING,
 			la_onload, la_onerr);
 		function la_onload ( texture ) {
@@ -57,6 +58,7 @@ define ([
 		function la_onerr ( err ) {
 			console.log("LoadAssets",err);
 		}
+
 	};
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.HeartBeat = function ( interval_ms ) {
@@ -99,6 +101,8 @@ define ([
 		if (typeof texturePath != 'string') throw "texturePath must be string";
 		if (!texturePath) throw "texturePath can not be empty";
 		if (!onValid) console.warn("MakeSprite: onValid callback for notification recommended!");
+
+		SETTINGS.XSSTextureCheck (texturePath);
 
 		var bm = THREE.ImageUtils.loadTexture( texturePath, THREE.UVMAPPING, mss_onload, mss_onerr );
 		console.assert (bm, "could not retrieve bitmap from loader");
@@ -288,7 +292,7 @@ define ([
 		needsUpdate = true;
 
 		return mesh;
-	}
+	};
 
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.MakeLine = function ( spec ) {

@@ -161,6 +161,9 @@ define ([
 		if (!onValid) console.warn("InqSprite.SetTexture() should use callback");
 		var that = this;
 		this.textureQueue.push('['+(this.textureQCount++)+']'+texturePath);
+
+		SETTINGS.XSSTextureCheck (texturePath);
+
 		var texture = THREE.ImageUtils.loadTexture ( texturePath, THREE.UVMAPPING, st_onload, st_onerr );
 		console.assert(texture,"Can't find texture",texturePath);
 		this.material.map = texture;

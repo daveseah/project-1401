@@ -213,9 +213,11 @@ define ([
 
 ///	BACKGROUND IMAGE /////////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.SetBackgroundImage = function ( textureName, callback, callee ) {
+	API.SetBackgroundImage = function ( texturePath, callback, callee ) {
 
-		var bgMap = THREE.ImageUtils.loadTexture(textureName,THREE.UVMAPPING, mi_SaveHeight);
+		SETTINGS.XSSTextureCheck (texturePath);
+
+		var bgMap = THREE.ImageUtils.loadTexture(texturePath,THREE.UVMAPPING, mi_SaveHeight);
 		var bgMat = new THREE.SpriteMaterial( {map:bgMap} );
 		if (BG_SPRITE) this.RemoveBackgroundVisual(BG_SPRITE);
 		BG_SPRITE = new THREE.Sprite(bgMat);
@@ -317,7 +319,6 @@ define ([
 				func.call(null,intersections);
 			}
 		}
-
 	}
 
 
