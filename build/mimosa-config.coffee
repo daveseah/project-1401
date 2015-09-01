@@ -100,3 +100,9 @@ exports.config =
       "make.bat"
       "makefile"
     ]
+
+  csslint:
+    rules: 
+      'ids': false
+      'box-sizing': false
+      'adjoining-classes': false
