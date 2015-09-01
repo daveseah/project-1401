@@ -170,10 +170,10 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SETTINGS.XSSTextureCheck = function ( path ) {
 		var isURL = SETTINGS.IsURL( path );
-		if (!isURL) return false;
-		if (THREE.ImageUtils.crossOrigin) return false;
+		if (!isURL) return;  // not a URL? no problem
+		if (THREE.ImageUtils.crossOrigin!==undefined) return;
+		/* WE HAVE A PROBLEM...ABORT WITH UNHANDLED ERROR */
 		throw new Error ("Renderer.Initialize() needs crossOrigin:true to load: "+path);
-		return true;
 	};
 
 
