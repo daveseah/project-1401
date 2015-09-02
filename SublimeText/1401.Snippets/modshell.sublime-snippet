@@ -28,6 +28,9 @@ define ( [
 	/1401cind      create a lead-in function comment wrapper
 	/1401sysloop   generate systemloop
 	/1401mfunc     generate module function
+	
+	Try using tab completion multiple times to fill in variable for the
+	pmake, ploop, sysloop, and mfunc shortcuts
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PRIVATE $2 VARIABLES *************************************************/
@@ -37,8 +40,9 @@ define ( [
 /** PUBLIC API ***************************************************************/
 
 	var ${3:MOD} = {};
-	/1401sysloop
-	/1401mfunc
+	
+/1401sysloop
+/1401mfunc
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PRIVATE $2 FUNCTIONS *************************************************/
