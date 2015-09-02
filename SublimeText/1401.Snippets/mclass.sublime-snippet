@@ -1,0 +1,101 @@
+<snippet>
+	<content><![CDATA[
+/* ${1:class}.js */
+define ([
+//	'objects/parentclass'				// uncomment to inherit
+], function ( 
+//	PARENT 								// uncomment to inherit
+) {
+
+	var DBGOUT = true;
+
+/**	${2:CLASS} ********************************************************************\
+
+	DESCRIPTION OF $2
+	What does this class do?
+	$0
+
+	NOTES ON CLASS IMPLEMENTATION
+	To use this class, import it into a module and then invoke the new
+	operator on it. Classes should not import each other. 
+
+
+/** CLASS DECLARATION ********************************************************/
+
+///	CONSTRUCTOR & INHERITANCE /////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	function $2 ( parameter ) {
+		// call the parent constructor
+		// PARENT.call (this, parameter);	// uncomment to inherit
+
+		// define incrementing instance property
+		this.id = m_id_prefix + (m_id_counter++);
+		// initialize instance property to "enum"
+		this.mode = $2.MODE_1;
+	}
+	/* inheritance */
+	// $2.inheritsFrom(PARENT);		// uncomment to inherit
+
+///	"ENUMERATION" /////////////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	$2.MODE_1 = "mode1";
+	$2.MODE_2 = "mode2";
+	$2.MODE_3 = "mode3";
+
+///	"PUBLIC STATIC $2 METHODS" /////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	$2.MyStaticFunction = function () {};
+
+///	"PRIVATE CLASS VARIABLES" /////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	var m_id_counter = 0;
+	var m_id_prefix  = 'id';
+
+///	PUBLIC CLASS METHODS //////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Description
+/*/	$2.method('MyId', function () {
+		// access instance properties with this
+		return "My ID is"+this.id;
+	});
+
+///	PRIVATE CLASS METHODS /////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	function PRI_PrintObjId ( instance ) {
+		// access passed instance method
+		console.log("id of passed instance is",instance.MyId());
+		// access "private class variables"
+		console.log("next created id will be",m_id_counter);
+	}
+
+///	OPTIONAL: IMPLEMENT SINGLETON /////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	var m_singleton;
+/*/	Call this at the appropriate time, or uncomment the auto-initialization 
+	line just before returning the constructor at the bottom of the module.
+/*/	$2.InitializeSingleton = function ( parameter ) {
+		if (!m_singleton) m_singleton = new $2( parameter );
+		return m_singleton; 
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Return the singleton
+/*/	$2.GetSingleton = function () { 
+		if (m_singleton!==undefined) return m_singleton; 
+		throw new Error ("Must call $2.InitializeSingleton() first");
+	};
+
+
+///////////////////////////////////////////////////////////////////////////////
+/** RETURN CONSTRUCTOR *******************************************************/
+	// $2.InitializeSingleton();		// optional early singleton init
+	return $2;
+
+});
+
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>/1401mclass</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<scope></scope>
+	<description>1401 module class</description>
+</snippet>
