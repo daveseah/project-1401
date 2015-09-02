@@ -18,6 +18,7 @@ Additionally, the `1401.Snippets` folder can be copied to your SublimeText user 
 /1401gamemain  - insert a 1401 main game loop for your 
                  game-main.js file
 /1401sysloop   - insert a 1401 sysloop for game modules
+/1401mclass    - insert a 1401-style "class" template
 ~~~
 
 If you want to maintain my weird code formatting conventions, here's a few snippets to help with that:
