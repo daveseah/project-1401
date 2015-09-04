@@ -4,20 +4,28 @@
 define ([
 //	'objects/parentclass'				// uncomment to inherit
 ], function ( 
-//	PARENT 								// uncomment to inherit
+//	${3:PARENT}							// uncomment to inherit
 ) {
 
 	var DBGOUT = true;
 
-/**	${2:CLASS} ********************************************************************\
+/*****************************************************************************\
 
-	DESCRIPTION OF $2
+	DESCRIPTION OF ${2:CLASS}
 	What does this class do?
 	$0
 
+	---
 	NOTES ON CLASS IMPLEMENTATION
+
 	To use this class, import it into a module and then invoke the new
-	operator on it. Classes should not import each other. 
+	operator on it. Classes should not import each other. The nomenclature is
+	based on C++ style conventions (e.g. static, private, public) but is only
+	an approximation using Javascript objects prototypes and closures. There
+	is no type checking or symbol validation...it's Javascript, so beware!
+
+	The 'inheritsFrom' and 'method' declarations are syntactic sugard defined
+	in 1401/js-extend/oop.js.
 
 
 /** CLASS DECLARATION ********************************************************/
@@ -26,7 +34,7 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function $2 ( parameter ) {
 		// call the parent constructor
-		// PARENT.call (this, parameter);	// uncomment to inherit
+		// $3.call (this, parameter);	// uncomment to inherit
 
 		// define incrementing instance property
 		this.id = m_id_prefix + (m_id_counter++);
@@ -34,7 +42,7 @@ define ([
 		this.mode = $2.MODE_1;
 	}
 	/* inheritance */
-	// $2.inheritsFrom(PARENT);		// uncomment to inherit
+	// $2.inheritsFrom($3);		// uncomment to inherit
 
 ///	"ENUMERATION" /////////////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -42,33 +50,53 @@ define ([
 	$2.MODE_2 = "mode2";
 	$2.MODE_3 = "mode3";
 
-///	"PUBLIC STATIC $2 METHODS" /////////////////////////////////////////////
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	$2.MyStaticFunction = function () {};
-
-///	"PRIVATE CLASS VARIABLES" /////////////////////////////////////////////////
+///	"PRIVATE STATIC CLASS VARIABLES" //////////////////////////////////////////
+///	can be referenced in instance methods thanks to closures
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	var m_id_counter = 0;
 	var m_id_prefix  = 'id';
 
-///	PUBLIC CLASS METHODS //////////////////////////////////////////////////////
+///	"PUBLIC STATIC CLASS METHODS" /////////////////////////////////////////////
+/// Functions attached to the constructor can access any "static" value
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*/	Description
-/*/	$2.method('MyId', function () {
-		// access instance properties with this
-		return "My ID is"+this.id;
-	});
+	$2.GetCounter = function () {
+		return m_id_counter;
+	};
 
-///	PRIVATE CLASS METHODS /////////////////////////////////////////////////////
+///	"PRIVATE STATIC CLASS METHODS" ////////////////////////////////////////////
+///	can be referenced in instance methods thanks to closures
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	function PRI_PrintObjId ( instance ) {
+	function PRI_PrintObjectId ( instance ) {
 		// access passed instance method
-		console.log("id of passed instance is",instance.MyId());
+		console.info( "id of passed instance is:", instance.MyId() );
 		// access "private class variables"
-		console.log("next created id will be",m_id_counter);
+		console.info( "next created id will be", m_id_counter );
 	}
 
+///	PUBLIC CLASS INSTANCE METHODS /////////////////////////////////////////////
+/// remember that instance properties should be defined in the construtor
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Demo showing access to both instance and private methods and variables
+/*/	$2.method('Test', function () {
+		// print some debugging information for this instance
+		console.group("1401 MCLASS TEST");
+		PRI_PrintObjectId( this );
+		var out = this.MyId();
+		console.groupEnd();
+		return "instance test returns: "+out;
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	$2.method('MyId', function ( str ) {
+		// access instance properties with 'this'
+		return this.id;
+	});
+
+///	"PUBLIC STATIC $2 METHODS" /////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	$2.MyStaticFunction = function () {};
+
 ///	OPTIONAL: IMPLEMENT SINGLETON /////////////////////////////////////////////
+///	NOTE: These are invoked like "static" methods e.g. $2.GetSingleton()
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	var m_singleton;
 /*/	Call this at the appropriate time, or uncomment the auto-initialization 
@@ -76,7 +104,7 @@ define ([
 /*/	$2.InitializeSingleton = function ( parameter ) {
 		if (!m_singleton) m_singleton = new $2( parameter );
 		return m_singleton; 
-	});
+	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Return the singleton
 /*/	$2.GetSingleton = function () { 
@@ -94,8 +122,8 @@ define ([
 
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
-	<tabTrigger>/1401mclass</tabTrigger>
+	<tabTrigger>/1401class</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
 	<scope></scope>
-	<description>1401 module class</description>
+	<description>1401 class module</description>
 </snippet>

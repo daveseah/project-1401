@@ -36,14 +36,14 @@ define ([
 
 
 ///	CONSTRUCTION EVENTS ///////////////////////////////////////////////////////
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	MGI.Connect is fired AFTER all other SYSLOOP instances complete
 /*/	$2.SetHandler( 'Connect', function ( VM ) {
 		console.group("$2: Connecting!");
 		m_viewmodel = VM;
 		console.groupEnd();
 	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	MGI.Initialize is fired AFTER all other SYSLOOP instances complete
 /*/	$2.SetHandler( 'Initialize', function () {
 		console.group('$2: Initializing!');
@@ -58,7 +58,7 @@ define ([
 		// XSETTINGS.AppViewModel().screen_autosize(2);
 		console.groupEnd();
 	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	MGI.Construct is fired AFTER all other SYSLOOP instances complete
 /*/	$2.SetHandler( 'Construct', function () {
 		console.group('$2: Constructing!');
@@ -66,7 +66,7 @@ define ([
 		// as zone or level management
 		console.groupEnd();
 	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	MGI.Start is fired AFTER all other SYSLOOP instances complete
 /*/	$2.SetHandler( 'Start', function ( int_ms ) {
 		console.group('$2: Starting!');
@@ -80,8 +80,8 @@ define ([
 	});
 
 
-/// MASTER GAME LOOP ////////////////////////////////////////////////////////
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/// MASTER GAME LOOP //////////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	This is the top-level system update loop. There is only one in the entire
 	game (note: 'GameStep' is not used anywhere else). This GameStep handler
 	is allowed only when SYSLOOP.InitializeGame() is created. 
@@ -104,7 +104,7 @@ define ([
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PUBLIC API ***************************************************************/
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Report the run status of the game to master
 /*/	$2.IsRunning = function () { return _is_running; };
 

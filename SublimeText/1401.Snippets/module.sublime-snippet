@@ -28,10 +28,6 @@ define ( [
 	/1401cind      create a lead-in function comment wrapper
 	/1401sysloop   generate systemloop
 	/1401mfunc     generate module function
-	/1401mclass    generate a C++ like class module
-	
-	Try using tab completion multiple times to fill in variable for the
-	pmake, ploop, sysloop, and mfunc shortcuts
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PRIVATE $2 VARIABLES *************************************************/
@@ -41,24 +37,24 @@ define ( [
 /** PUBLIC API ***************************************************************/
 
 	var ${3:MOD} = {};
-	
-/1401sysloop
-/1401mfunc
+	/1401sysloop
+	/1401mfunc
 
 ///////////////////////////////////////////////////////////////////////////////
 /** PRIVATE $2 FUNCTIONS *************************************************/
 
 	function m_PrivateFunction () {
-	}	
+	}
 
 ///////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE ************************************************************/
 	return $3;
+
 });
 
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
-	<tabTrigger>/1401modshell</tabTrigger>
+	<tabTrigger>/1401module</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
 	<scope></scope>
 	<description>1401 module shell</description>

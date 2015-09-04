@@ -7,26 +7,26 @@
 	// in requireJS declaration!
 	var ${1:MOD} = SYSLOOP.New('${2:Game Module}');
 
-///	STARTUP EVENTS //////////////////////////////////////////////////////////
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	STARTUP EVENTS ////////////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	save viewmodel for app communication, or use SETTINGS.ViewModel()
 /*/	$1.SetHandler('Connect', function( viewmodel ) {
 	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	initialize but don't populate data structures
 /*/	$1.SetHandler('Initialize', function() {
 	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	load external assets, call callback_done() when done loading
 /*/	$1.SetHandler('LoadAssets', function( callback_done ) {
 		// callback on complete
 		callback_done();
 	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	build data and datastructures for this module
 /*/	$1.SetHandler('Construct', function(){
 	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	setup for runtime before regular Update starts
 /*/	$1.SetHandler('Start', function( start_ms ) {
 		// enable runtime events
@@ -35,15 +35,17 @@
 		// $1.EnableAI();
 	});
 
-///	OPTIONAL RUNTIME EVENTS /////////////////////////////////////////////////
+///	OPTIONAL RUNTIME EVENTS ///////////////////////////////////////////////////
 /// These are disabled by default
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /// $1.SetHandler('Update', function( int_ms ) {}); 
 /// $1.SetHandler('GetInput', function( int_ms ) {});
 /// $1.SetHandler('Think', function( int_ms ) {});
 /// $1.SetHandler('OverThink', function( int_ms ) {});
 /// $1.SetHandler('Execute', function( int_ms ) {});
-$0		
+
+$0
+
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>/1401sysloop</tabTrigger>

@@ -5,6 +5,7 @@ var $1Sprite = VISUALFACTORY.MakeDefaultSprite();
 var $1Path = SETTINGS.AssetPath("${2:spritedir}/$1.png");
 $1Piece.SetVisual($1Sprite);
 RENDERER.AddWorldVisual( $1Piece.Visual() );
+$1Piece.SetPositionXY(0,0); 		
 // optional spritesheet declaration
 var $1SequenceSpec = {
 	grid: { columns:1, rows:1, stacked:true },
@@ -13,8 +14,8 @@ var $1SequenceSpec = {
 	]
 };
 $1Sprite.DefineSequences($1Path,$1SequenceSpec, function() {
-	$1Piece.Visual().PlaySequence('idle');
-	$1Piece.SetPositionXY(0,0); 		
+	// 'this' is $1Sprite
+	this.PlaySequence('idle');
 });
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->

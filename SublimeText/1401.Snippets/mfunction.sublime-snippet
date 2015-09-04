@@ -2,11 +2,12 @@
 	<content><![CDATA[
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Description
-/*/	
+/*/	${1:MOD}.${2:FunctionName} = function ($3) {
+	};
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
-	<tabTrigger>/1401cind</tabTrigger>
+	<tabTrigger>/1401mf</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
 	<scope>source.js</scope>
-	<description>1401 method comment header</description>
+	<description>1401 api function</description>
 </snippet>
