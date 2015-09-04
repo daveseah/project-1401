@@ -220,7 +220,7 @@ define ([
 		var hy = y - this.position.y;
 		var hz = z - this.position.z;
 		// update if the change exceeds threashold
-		if ( (hx*hx+hy*hy+hz*hz)>.00001 ) {
+		if ( (hx*hx+hy*hy+hz*hz)>0.00001 ) {
 			this.heading.x = hx;
 			this.heading.y = hy;
 			this.heading.z = hz;
