@@ -13,22 +13,24 @@ build          - the build directory in case you need to
 
 Additionally, the `1401.Snippets` folder can be copied to your SublimeText user folder (go to SublimeText's "Preferences" then "Browse Packages"). Once copied (restart may be necessary), you can issue the following TAB-COMPLETION shortcuts in a Javascript source file:
 ~~~
-/1401modshell  - insert a 1401-style module template for 
+/1401          - print help reference for all commmands
+
+/1401module    - insert a 1401-style module template for 
                  starting a new module
 /1401gamemain  - insert a 1401 main game loop for your 
                  game-main.js file
 /1401sysloop   - insert a 1401 sysloop for game modules
-/1401mclass    - insert a 1401-style "class" template
+/1401class     - insert a 1401-style "class" template
 ~~~
 
 If you want to maintain my weird code formatting conventions, here's a few snippets to help with that:
 ~~~
-/1401mfunc     - insert a 1401-style function definition
-                 with parameters
 /1401csep      - insert a set of 1401-style comment line 
                  separators
 /1401cind      - insert a set of 1401-style indented comment
                  lead-in
+/1401mf        - insert a 1401-style module function
+/1401cm        - insert a 1401-style "class" method
 ~~~
 
 For convenience in creating pieces
