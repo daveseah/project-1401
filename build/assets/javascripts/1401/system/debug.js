@@ -28,6 +28,7 @@ define ([
 		var rm = require.s.contexts._.defined;
 		var mlist = [];
 		var base = '1401/';
+		if (str===undefined) str = base;
 		str = (typeof str =='string') ? str : base;
 
 		Object.keys(rm).forEach(function(key){
@@ -48,9 +49,10 @@ define ([
 				out += '\n';
 			}
 		}
-		if (mlist.length) 
-			return out;
-		else 
+		if (mlist.length) {
+			console.log(out);
+			return mlist.length + ' modules listed';
+		} else 
 			return "module " +str.bracket()+" not found";
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -103,7 +105,8 @@ define ([
 			out += "\n";
 		}
 		if (depth===0) out = '\n'+out;
-		return out;
+		console.log(out);
+		return obj;
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Use to add an instance of something temporarilyl inspectable by
