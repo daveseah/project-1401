@@ -44,7 +44,7 @@ define ([
 
 		// each node has a name
 		this.node_type = 'DEC';
-		this.name = this.node_type+this.id;
+		this.AutoName();
 	}
 	/*/ inheritance /*/
 	Decorator.inheritsFrom(BaseNode);

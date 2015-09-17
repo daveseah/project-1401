@@ -28,17 +28,19 @@ define ([
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function SequenceNode ( children ) {
+	function SequenceNode ( children, read_only_conf ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
 
-		// each node has a name
-		this.node_type = 'SEQ';
-		this.name = this.node_type+this.id;
-		if (DBGOUT) console.log("create",this.name);
-
 		// Sequences evaluate left-to-right and have child nodes
 		this.children = children || [];	
+		// save configuration if any
+		this.config = read_only_conf;
+
+		// each node has a name
+		this.node_type = 'SEQ';
+		this.AutoName();
+
 	}
 	/*/ inheritance /*/
 	SequenceNode.inheritsFrom(BaseNode);

@@ -48,16 +48,16 @@ define ([
 			new BF.Action(),
 			new BF.Decorator(new BF.Action()),
 			new BF.Sequence([
-				new BF.Condition(),
-				new BF.Action(),
-				new BF.Condition(),
-				new BF.Action()
-			]),
-			new BF.Condition(),
-			new BF.Action(),
+				new BF.Condition({memo:'IsDoorOpen'}),
+				new BF.Action({memo:'GoThrough'}),
+				new BF.Condition({memo:'IsSurvived'}),
+				new BF.Action({memo:'Dance'})
+			],{memo:'OpenDoor'}),
+			new BF.Condition({memo:'BaseDoor'}),
+			new BF.Action({memo:'Idle'}),
 			new BF.Action(),
 			new BF.Action()
-		]);
+		],{memo:'Ship'});
 
 		// behavior names are case insensitive
 		BF.DefineBehavior('testMe', b);

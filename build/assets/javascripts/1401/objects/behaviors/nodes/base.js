@@ -79,7 +79,7 @@ define ([
 	BaseNode.RUNNING 	= 'R'; 
 	BaseNode.SUCCESS 	= 'S';
 	BaseNode.FAILURE 	= 'F';
-	
+
 ///	'flags' /////////////////////////////////////////////////////////////////
 	BaseNode.IS_OPEN	= '_isopen';
 
@@ -107,6 +107,15 @@ define ([
 /*/	BaseNode.method('MasterTime', function () {
 		return SETTINGS.MasterTime();
 	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Utility to return the master time from SETTINGS
+/*/	BaseNode.method('AutoName', function () {
+		this.name = this.node_type+this.id;
+		if (this.config && this.config.memo) {
+			this.name += this.config.memo.squote();
+		}
+	});
+
 
 
 ///	BLACKBOARD //////////////////////////////////////////////////////////////

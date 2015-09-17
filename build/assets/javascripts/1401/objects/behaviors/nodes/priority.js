@@ -31,17 +31,20 @@ define ([
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function PriorityNode ( children ) {
+	function PriorityNode ( children, read_only_conf ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
 
-		// each node has a name
-		this.node_type = 'PRI';
-		this.name = this.node_type+this.id;
-		if (DBGOUT) console.log("create",this.name);
-
 		// Priority evaluate left-to-right and have child nodes
 		this.children = children || [];	
+		// save configuration if any
+		this.config = read_only_conf;
+
+		// each node has a name
+		this.node_type = 'PRI';
+		this.AutoName();
+		if (DBGOUT) console.log("create",this.name);
+
 	}
 	/*/ inheritance /*/
 	PriorityNode.inheritsFrom(BaseNode);

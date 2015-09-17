@@ -38,10 +38,10 @@ define ([
 		//	call the parent constructor		
 		BaseNode.call (this);
 		// save node configuration, if any
-		this.conf = read_only_conf;
+		this.config = read_only_conf;
 		// each node has a name
 		this.node_type = 'ACT';
-		this.name = this.node_type+this.id;
+		this.AutoName();
 	}
 	/*/ inheritance /*/
 	Action.inheritsFrom(BaseNode);
