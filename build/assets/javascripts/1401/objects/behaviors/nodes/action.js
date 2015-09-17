@@ -1,25 +1,25 @@
 /* action.js */
 define ([
-	'1401/objects/behaviors/basenode'
+	'1401/objects/behaviors/nodes/base'
 ], function ( 
 	BaseNode
 ) {
 
 	var DBGOUT = true;
 
-/**	BaseAction **************************************************************\
+/**	Action *****************************************************************\
 
-	This is the BaseAction node. Extend it as follows:
+	This is the base Action node. Extend it as follows:
 
-	function MyBaseAction ( parms ) {
+	function MyAction ( parms ) {
 		// call parent constructor
-		BehaviorFactory.BaseAction.call( this, parms );
+		BehaviorFactory.Action.call( this, parms );
 		...
 	}
 	// set up inheritance
-	MyBaseAction.inheritsFrom( BehaviorFactory.BaseAction );
+	MyAction.inheritsFrom( BehaviorFactory.Action );
 	// define or override new methods
-	MyBaseAction.method('Open',function(){...});
+	MyAction.method('Open',function(){...});
 
 	IMPORTANT! Using 'this' instance properties is unsafe if a Node gets
 	reused. Store agent state in the Blackboard using the following methods:
@@ -34,7 +34,7 @@ define ([
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function BaseAction ( parms ) {
+	function Action ( parms ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
 		this.parms = parms;
@@ -43,7 +43,7 @@ define ([
 		this.name = this.node_type+this.id.zeroPad(3);
 	}
 	/*/ inheritance /*/
-	BaseAction.inheritsFrom(BaseNode);
+	Action.inheritsFrom(BaseNode);
 
 ///	'methods' ///////////////////////////////////////////////////////////////
 
@@ -54,7 +54,7 @@ define ([
 
 /*** see basenode.js for overrideable methods ***/
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	BaseAction.method('Tick', function ( pish, intervalMs ) {
+	Action.method('Tick', function ( pish, intervalMs ) {
 		return this.testReturn;	
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,6 +71,6 @@ define ([
 
 /** RETURN CONSTRUCTOR *******************************************************/
 
-	return BaseAction;
+	return Action;
 
 });

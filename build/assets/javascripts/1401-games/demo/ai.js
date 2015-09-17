@@ -44,12 +44,12 @@ define ([
 	AI.BehaviorInitialize = function ( piece ) {
 		console.log("\n\n*** TESTING BEHAVIOR TREE ***\n");
 		
-		var b = BF.Priority([
-			BF.Action(BF.FAILURE),
-			BF.Action(BF.FAILURE),
-			BF.Action(BF.FAILURE),
-			BF.Action(BF.SUCCESS),
-			BF.Action(BF.FAILURE)
+		var b = BF.NewPriority([
+			BF.Action(),
+			BF.Action(),
+			BF.Action(),
+			BF.Action(),
+			BF.Action()
 		]);
 
 		// behavior names are case insensitive

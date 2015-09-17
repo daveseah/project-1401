@@ -2,19 +2,19 @@
 define ([
 	'1401/settings',
 	'1401/objects/behaviors/tree',
-	'1401/objects/behaviors/basenode',
-	'1401/objects/behaviors/action',
-	'1401/objects/behaviors/sequence',
-	'1401/objects/behaviors/priority',
+	'1401/objects/behaviors/nodes/base',
+	'1401/objects/behaviors/nodes/action',
+	'1401/objects/behaviors/nodes/sequence',
+	'1401/objects/behaviors/nodes/priority',
 	'1401/objects/behaviors/blackboard'
 
 ], function ( 
 	SETTINGS,
 	BehaviorTree,
 	BaseNode,
-	ActionNode,
-	SequenceNode,
-	PriorityNode,
+	Action,
+	Sequence,
+	Priority,
 	Blackboard
 ) {
 
@@ -156,37 +156,26 @@ define ([
 	};
 
 
-/// BASENODE ACCESSORS //////////////////////////////////////////////////////
+/// COMPOSITE NODES /////////////////////////////////////////////////////////
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.Sequence = function ( children ) {
-		return new SequenceNode(children);
+	API.NewSequence = function ( children ) {
+		return new Sequence ( children );
 	};
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.Priority = function ( children ) {
-		return new PriorityNode(children);
-	};
-/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.Action = function ( parms ) {
-		return new ActionNode( parms );
+	API.NewPriority = function ( children ) {
+		return new Priority ( children );
 	};
 
 
-///////////////////////////////////////////////////////////////////////////////
-/** MODULE PRIVATE FUNCTIONS ************************************************/
+///	BASE CONSTRUCTORS ///////////////////////////////////////////////////////
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.BaseNode 	= BaseNode;
+	API.Action 		= Action;
 
-	function m_GetBehaviorTreeByName(name) {
-		name = name.toLowerCase();
-		var index = m_behavior_names[name];
-		if (index!==undefined) {
-			return m_trees[index];
-		} else {
-			return undefined;
-		}
-	}
 		
 
+///////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
-
 	return API;
 
 

@@ -1,7 +1,7 @@
-/* sequence.js */
+/* priority.js */
 define ([
 	'1401/settings',
-	'1401/objects/behaviors/basenode'
+	'1401/objects/behaviors/nodes/base'
 ], function ( 
 	SETTINGS,
 	BaseNode
@@ -9,38 +9,41 @@ define ([
 
 	var DBGOUT = false;
 
-/**	BehaviorTree Sequence ***************************************************\
+/**	BehaviorTree Priority ***************************************************\
+	
+	A PriorityNode is a type of composite that returns SUCCESS if any one of
+	its children is successful. It returns RUNNING until  all children have
+	reported in.
 
-	A SequenceNode is a type of composite that returns SUCCESS ONLY IF all its
-	children return are successful. Each child is executed one after the
-	other.
-
-		var node = SequenceNode ([
+		var node = PriorityNode ([
+			Failer(),
+			Failer(),
 			Suceeder(),
 			Failer()
 		]);
 
-	node.Tick() would return FAIL because one of its children reports fail. By
-	comparison, the PriorityNode type is more forgiving, returning SUCCESS if
-	any of its children are successful.
-	
+	node.Tick() would return SUCCESS because one of its children
+	reports success. By comparison, the SequenceNode is far less forgiving,
+	running SUCCESS only if ALL its children report success, one after
+	the other.
+
 
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function SequenceNode ( children ) {
+	function PriorityNode ( children ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
 
 		// each node has a name
-		this.name = 'seq'+this.id.zeroPad(3);
-		this.description = 'sequence node';
+		this.name = 'pri'+this.id.zeroPad(3);
+		this.description = 'priority node';
 
-		// Sequences evaluate left-to-right and have child nodes
+		// Priority evaluate left-to-right and have child nodes
 		this.children = children || [];	
 	}
 	/*/ inheritance /*/
-	SequenceNode.inheritsFrom(BaseNode);
+	PriorityNode.inheritsFrom(BaseNode);
 
 ///	'methods' ///////////////////////////////////////////////////////////////
 
@@ -51,18 +54,18 @@ define ([
 
 /*** see basenode.js for overrideable methods ***/
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	SequenceNode.method('Tick', function ( pish, intervalMs ) {
+	PriorityNode.method('Tick', function ( pish, intervalMs ) {
 		for (i=0;i<this.children.length;i++) {
 			status = this.children[i].Execute(pish,intervalMs);
-			if (status!==BaseNode.SUCCESS) {
-				if (DBGOUT) console.log(i,"FAILED. Aborting FAIL");
+			if (status!==BaseNode.FAILURE) {
+				if (DBGOUT) console.log(i,"succeeded! returning SUCCESS");
 				return status;
 			} else {
-				if (DBGOUT) console.log(i,"SUCCEED...");
+				if (DBGOUT) console.log(i,"failed...trying next");
 			}
 		}
-		if (DBGOUT) console.log("all",this.children.length,"succeeded!");
-		return BaseNode.SUCCESS;
+		if (DBGOUT) console.log("all",this.children.length,"failed! return FAILURE");
+		return BaseNode.FAILURE;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -78,6 +81,6 @@ define ([
 
 /** RETURN CONSTRUCTOR *******************************************************/
 
-	return SequenceNode;
+	return PriorityNode;
 
 });
