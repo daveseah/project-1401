@@ -7,7 +7,7 @@ define ([
 	BaseNode
 ) {
 
-	var DBGOUT = false;
+	var DBGOUT = true;
 
 /**	BehaviorTree Sequence ***************************************************\
 
@@ -33,8 +33,10 @@ define ([
 		BaseNode.call (this);
 
 		// each node has a name
-		this.name = 'seq'+this.id.zeroPad(3);
-		this.description = 'sequence node';
+		this.node_type = 'SEQ';
+		this.name = this.node_type+this.id;
+		console.log("create",this.name);
+
 
 		// Sequences evaluate left-to-right and have child nodes
 		this.children = children || [];	
@@ -47,21 +49,28 @@ define ([
 	/* avoid heap-allocation with reusable variables */
 	var blackboard;		// piece blackboard (AI memory)
 	var i, status;		// counter
+	var child;			// child holder
+	var out;			// output holder
 
 
 /*** see basenode.js for overrideable methods ***/
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SequenceNode.method('Tick', function ( pish, intervalMs ) {
+		out = "";
 		for (i=0;i<this.children.length;i++) {
-			status = this.children[i].Execute(pish,intervalMs);
+			child = this.children[i];
+			status = child.Execute(pish,intervalMs);
 			if (status!==BaseNode.SUCCESS) {
-				if (DBGOUT) console.log(i,"FAILED. Aborting FAIL");
+				if (DBGOUT) {
+					out+= child.name+'-'+status+' ABORT';
+					console.log(out);
+				}
 				return status;
 			} else {
-				if (DBGOUT) console.log(i,"SUCCEED...");
+				if (DBGOUT) out+= child.name+'-'+status+' ';
 			}
 		}
-		if (DBGOUT) console.log("all",this.children.length,"succeeded!");
+		if (DBGOUT) console.log(out,"all",this.children.length,"success!");
 		return BaseNode.SUCCESS;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

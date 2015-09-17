@@ -37,9 +37,10 @@ define ([
 	function Action ( parms ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
+		// save node configuration, if any
 		this.parms = parms;
 		// each node has a name
-		this.node_type = 'action';
+		this.node_type = 'ACT';
 		this.name = this.node_type+this.id.zeroPad(3);
 	}
 	/*/ inheritance /*/
@@ -52,13 +53,16 @@ define ([
 	var blackboard;		// scratch memory for AI in piece
 	var status, i;		// running state of piece-ish
 
-/*** see basenode.js for overrideable methods ***/
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Action.method('Tick', function ( pish, intervalMs ) {
-		return this.testReturn;	
+/*/	call periodically if RUNNING until return SUCCESS, FAILURE
+/*/	Action.method('Tick', function ( pish ) {
+		// execute every tick, must return status
+		// console.log(this.name,"tick",pish.name.bracket());
+		if (Math.random()>0.5) 
+			return BaseNode.SUCCESS;
+		else
+			return BaseNode.FAILURE;
 	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
 
 ///////////////////////////////////////////////////////////////////////////////
 /** BEHAVIOR PRIVATE FUNCTIONS ***********************************************/

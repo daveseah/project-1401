@@ -68,17 +68,18 @@ define ([
 		// composite and decorator nodes have children
 		this.children = [];
 		// each node has a name and description
-		this.name = 'bsn'+this.id.zeroPad(3);
-		this.node_type = 'base';
+		this.node_type = 'BN';
+		this.name = this.node_type+this.id;
 	}
 
 ///	'static' properties /////////////////////////////////////////////////////
 	BaseNode.idCounter = 1;
 
 ///	'enums' /////////////////////////////////////////////////////////////////
-	BaseNode.RUNNING 	= 1; 
-	BaseNode.SUCCESS 	= 2;
-	BaseNode.FAILURE 	= 3;
+	BaseNode.RUNNING 	= 'R'; 
+	BaseNode.SUCCESS 	= 'S';
+	BaseNode.FAILURE 	= 'F';
+	
 ///	'flags' /////////////////////////////////////////////////////////////////
 	BaseNode.IS_OPEN	= '_isopen';
 
@@ -112,14 +113,12 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	wrapper for blackboard.GetLocal to simplify access during authoring
 /*/	BaseNode.method('BBGet', function ( pish, key ) {
-		// console.log(pish.ai.behavior.id+':'+this.id+':'+key);
-		return pish.ai.blackboard.GetLocal( this.id, key );
+		return pish.ai.blackboard.NodeMemGet( this.id, key );
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	wrapper for blackboard.SetLocal to simplify access during authoring
 /*/	BaseNode.method('BBSet', function ( pish, key, value ) {
-		// console.log(pish.ai.behavior.id+':'+this.id+':'+key);
-		pish.ai.blackboard.SetLocal( this.id, key, value );
+		pish.ai.blackboard.NodeMemSet( this.id, key, value );
 	});
 
 
@@ -160,31 +159,31 @@ define ([
 /*/	do execution management on entry of this node
 /*/	BaseNode.method('Enter', function ( pish ) {
 		// code that happens before every tick
-		// console.log(this.id,"enter",pish.name.bracket());
+		// console.log(this.name,"enter",pish.name.bracket());
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	initialize the node data structures in prep for running
 /*/	BaseNode.method('Open', function ( pish ) {
 		// setup that happens just once
-		// console.log(this.id,"open",pish.name.bracket());
+		// console.log(this.name,"open",pish.name.bracket());
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	call periodically if RUNNING until return SUCCESS, FAILURE
 /*/	BaseNode.method('Tick', function ( pish ) {
 		// execute every tick, must return status
-		// console.log("this.id,tick",pish.name.bracket());
-		return BaseNode.RUNNING;
+		// console.log(this.name,"tick",pish.name.bracket());
+		return BaseNode.SUCCESS;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	clean up node data structures when run has completed SUCCESS or FAIL
 /*/	BaseNode.method('Close', function ( pish ) {
-		// console.log(this.id,"close",pish.name.bracket());
+		// console.log(this.name,"close",pish.name.bracket());
 		// cleanup that happens once success/failure occurs
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	do execution management on exit of this node
 /*/	BaseNode.method('Exit', function ( pish ) {
-		// console.log(this.id,"exit",pish.name.bracket());
+		// console.log(this.name,"exit",pish.name.bracket());
 		// code that happens after every tick
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

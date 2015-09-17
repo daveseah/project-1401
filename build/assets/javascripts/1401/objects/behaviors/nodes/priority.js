@@ -7,7 +7,7 @@ define ([
 	BaseNode
 ) {
 
-	var DBGOUT = false;
+	var DBGOUT = true;
 
 /**	BehaviorTree Priority ***************************************************\
 	
@@ -36,8 +36,9 @@ define ([
 		BaseNode.call (this);
 
 		// each node has a name
-		this.name = 'pri'+this.id.zeroPad(3);
-		this.description = 'priority node';
+		this.node_type = 'PRI';
+		this.name = this.node_type+this.id;
+		console.log("create",this.name);
 
 		// Priority evaluate left-to-right and have child nodes
 		this.children = children || [];	
@@ -50,18 +51,20 @@ define ([
 	/* avoid heap-allocation with reusable variables */
 	var blackboard;		// piece blackboard (AI memory)
 	var i, status;		// counter
+	var child;			// child node
 
 
 /*** see basenode.js for overrideable methods ***/
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	PriorityNode.method('Tick', function ( pish, intervalMs ) {
 		for (i=0;i<this.children.length;i++) {
-			status = this.children[i].Execute(pish,intervalMs);
+			child = this.children[i];
+			status = child.Execute(pish,intervalMs);
 			if (status!==BaseNode.FAILURE) {
-				if (DBGOUT) console.log(i,"succeeded! returning SUCCESS");
+				if (DBGOUT) console.log(child.name,"succeeded! returning SUCCESS");
 				return status;
 			} else {
-				if (DBGOUT) console.log(i,"failed...trying next");
+				if (DBGOUT) console.log(child.name,"failed...trying next");
 			}
 		}
 		if (DBGOUT) console.log("all",this.children.length,"failed! return FAILURE");
