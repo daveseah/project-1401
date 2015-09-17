@@ -59,8 +59,10 @@ define ([
 			new BF.Action()
 		],{memo:'Ship'});
 
+		var bb = new BF.SubTree(b,{memo:'SUB'});
+
 		// behavior names are case insensitive
-		BF.DefineBehavior('testMe', b);
+		BF.DefineBehavior('testMe', bb);
 		BF.AssignBehavior('testme', piece);
 	};
 

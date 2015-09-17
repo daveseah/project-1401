@@ -8,6 +8,7 @@ define ([
 	'1401/objects/behaviors/nodes/decorator',
 	'1401/objects/behaviors/nodes/condition',
 	'1401/objects/behaviors/nodes/action',
+	'1401/objects/behaviors/nodes/subtree',
 	'1401/objects/behaviors/blackboard'
 
 ], function ( 
@@ -19,6 +20,7 @@ define ([
 	Decorator,
 	Condition,
 	Action,
+	SubTree,
 	Blackboard
 ) {
 
@@ -120,7 +122,8 @@ define ([
 			console.error("'"+name+"' already defined. Aborting.");
 			return;
 		}
-		if (DBGOUT) console.log("creating behavior",name.bracket());
+		if (DBGOUT) 
+			console.log("creating",name.squote(),"behavior",btree.id.bracket());
 		/* add behaviorTree */
 		m_behaviors[name] = btree;
 	};
@@ -138,8 +141,6 @@ define ([
 		name = name.toLowerCase();
 		/* create behavior memory if it doesn't exist yet */
 		if (pish.ai===null) {
-			if (DBGOUT) 
-				console.log("creating blackboard for",pish.name.bracket());
 			pish.ai = {};
 			pish.ai.blackboard = new Blackboard ();
 		}
@@ -151,7 +152,7 @@ define ([
 		if (bt) {
 			pish.ai.behavior = bt;
 			pish.ai.blackboard.TreePathPush(bt);
-			console.log("assigned behavior",name.bracket(),"to",pish.name.bracket());
+			console.log("assigning",name.squote(),"behavior to",pish.name.bracket());
 		} else {
 			console.error("behavior",name.squote(),"does not exist. Assigning null behavior to piece",pish.name.bracket());
 			pish.ai.behavior = m_default_tree;		
@@ -179,6 +180,7 @@ define ([
 	API.Action 		= Action;
 	API.Condition 	= Condition;
 	API.Decorator 	= Decorator;
+	API.SubTree 	= SubTree;
 		
 
 ///////////////////////////////////////////////////////////////////////////////

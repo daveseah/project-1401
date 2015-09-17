@@ -61,11 +61,11 @@ define ([
 /// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	call periodically if RUNNING until return SUCCESS, FAILURE
-/*/	Decorator.method('Tick', function ( pish, intervalMs ) {
+/*/	Decorator.method('Tick', function ( pish, int_ms ) {
 		// execute every tick, must return status
 		// console.log(this.name,"tick",pish.name.bracket());
 		child = this.children[0];
-		status = child.Execute( pish, intervalMs );
+		status = child.Execute( pish, int_ms );
 		// do something with the status before returning it
 		return status;
 	});

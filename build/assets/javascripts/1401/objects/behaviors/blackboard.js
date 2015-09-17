@@ -95,12 +95,15 @@ define ([
 /// SUBTREE PATH SUPPORT ////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Blackboard.method('TreePathPush', function ( tree ) {
+		if (!tree.id) 
+			throw new Error('must pass tree object w/ id');
 		this.tree_path.push( tree.id );
-		return tree.id;
+		// console.log("PushPath:",this.TreePath());
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Blackboard.method('TreePathPop', function() {
-		return this.tree_path.pop();
+		this.tree_path.pop();
+		// console.log("PopPath:",this.TreePath());
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Blackboard.method('TreePath', function () {

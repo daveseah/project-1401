@@ -43,8 +43,6 @@ define ([
 		// each node has a name
 		this.node_type = 'PRI';
 		this.AutoName();
-		if (DBGOUT) console.log("create",this.name);
-
 	}
 	/*/ inheritance /*/
 	PriorityNode.inheritsFrom(BaseNode);
@@ -60,11 +58,11 @@ define ([
 
 /// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	PriorityNode.method('Tick', function ( pish, intervalMs ) {
+	PriorityNode.method('Tick', function ( pish, int_ms ) {
 		out = this.name.bracket();
 		for (i=0;i<this.children.length;i++) {
 			child = this.children[i];
-			status = child.Execute(pish,intervalMs);
+			status = child.Execute(pish,int_ms);
 			if (status!==BaseNode.FAILURE) {
 				if (DBGOUT) {
 					out+= ' '+child.name+'-'+status+' SUCCESS';

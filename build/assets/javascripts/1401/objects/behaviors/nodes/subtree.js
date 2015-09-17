@@ -1,4 +1,4 @@
-/* action.js */
+/* subtree.js */
 define ([
 	'1401/objects/behaviors/nodes/base'
 ], function ( 
@@ -7,19 +7,19 @@ define ([
 
 	var DBGOUT = true;
 
-/**	Action *****************************************************************\
+/**	SubTree *****************************************************************\
 
-	This is the base Action node. Extend it as follows:
+	This is the base SubTree node. Extend it as follows:
 
-	function MyAction ( parms ) {
+	function MySubTree ( parms ) {
 		// call parent constructor
-		BehaviorFactory.Action.call( this, parms );
+		BehaviorFactory.SubTree.call( this, parms );
 		...
 	}
 	// set up inheritance
-	MyAction.inheritsFrom( BehaviorFactory.Action );
+	MySubTree.inheritsFrom( BehaviorFactory.SubTree );
 	// define or override new methods
-	MyAction.method('Open',function(){...});
+	MySubTree.method('Open',function(){...});
 
 	IMPORTANT! Using 'this' instance properties is unsafe if a Node gets
 	reused. Store agent state in the Blackboard using the following methods:
@@ -34,17 +34,19 @@ define ([
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function Action ( read_only_conf ) {
+	function SubTree ( tree_node, read_only_conf ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
+		// save tree_node
+		this.tree_node = tree_node;
 		// save node configuration, if any
 		this.config = read_only_conf;
 		// each node has a name
-		this.node_type = 'ACT';
+		this.node_type = 'SUB';
 		this.AutoName();
 	}
 	/*/ inheritance /*/
-	Action.inheritsFrom(BaseNode);
+	SubTree.inheritsFrom(BaseNode);
 
 ///	'methods' ///////////////////////////////////////////////////////////////
 
@@ -55,14 +57,23 @@ define ([
 
 /// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	initialize the node data structures in prep for running
+/*/	SubTree.method('Enter', function ( pish ) {
+		// setup that happens just once
+		// console.log(this.name,"open",pish.name.bracket());
+		pish.ai.blackboard.TreePathPush(this);
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	call periodically if RUNNING until return SUCCESS, FAILURE
-/*/	Action.method('Tick', function ( pish, int_ms ) {
-		// execute every tick, must return status
-		// console.log(this.name,"tick",pish.name.bracket());
-		if (Math.random()>0.5) 
-			return BaseNode.SUCCESS;
-		else
-			return BaseNode.FAILURE;
+/*/	SubTree.method('Tick', function ( pish, int_ms ) {
+		return this.tree_node.Execute( pish, int_ms );
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	clean up node data structures when run has completed SUCCESS or FAIL
+/*/	SubTree.method('Exit', function ( pish ) {
+		// console.log(this.name,"close",pish.name.bracket());
+		// cleanup that happens once success/failure occurs
+		pish.ai.blackboard.TreePathPop();
 	});
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -76,6 +87,6 @@ define ([
 
 /** RETURN CONSTRUCTOR *******************************************************/
 
-	return Action;
+	return SubTree;
 
 });

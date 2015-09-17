@@ -40,7 +40,6 @@ define ([
 		// each node has a name
 		this.node_type = 'SEQ';
 		this.AutoName();
-
 	}
 	/*/ inheritance /*/
 	SequenceNode.inheritsFrom(BaseNode);
@@ -56,11 +55,11 @@ define ([
 
 /// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	SequenceNode.method('Tick', function ( pish, intervalMs ) {
+	SequenceNode.method('Tick', function ( pish, int_ms ) {
 		out = this.name.bracket();
 		for (i=0;i<this.children.length;i++) {
 			child = this.children[i];
-			status = child.Execute(pish, intervalMs);
+			status = child.Execute(pish, int_ms);
 			if (status!==BaseNode.SUCCESS) {
 				if (DBGOUT) {
 					out+= ' '+child.name+'-'+status+' ABORT';

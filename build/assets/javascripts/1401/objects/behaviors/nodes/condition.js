@@ -56,7 +56,7 @@ define ([
 /// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	call periodically if RUNNING until return SUCCESS, FAILURE
-/*/	Condition.method('Tick', function ( pish ) {
+/*/	Condition.method('Tick', function ( pish, int_ms ) {
 		// execute every tick, must return status
 		// console.log(this.name,"tick",pish.name.bracket());
 		if (Math.random()>0.5) 

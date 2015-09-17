@@ -141,7 +141,7 @@ define ([
 	. Execute is propagated to every child BT node
 	. Tick does the work and returns status, but does NOT propagate the 
 	  signal to children automatically. CompositeNodes implement that.
-/*/ BaseNode.method('Execute', function ( pish, interval_ms ) {
+/*/ BaseNode.method('Execute', function ( pish, int_ms ) {
 		// always call "enter"
 		this.Enter(pish);
 		// if first-time running, call "open"
@@ -178,7 +178,7 @@ define ([
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	call periodically if RUNNING until return SUCCESS, FAILURE
-/*/	BaseNode.method('Tick', function ( pish ) {
+/*/	BaseNode.method('Tick', function ( pish, int_ms ) {
 		// execute every tick, must return status
 		// console.log(this.name,"tick",pish.name.bracket());
 		return BaseNode.SUCCESS;
