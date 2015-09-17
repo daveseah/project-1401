@@ -10,31 +10,47 @@ define ([
 
 /**	Behavior Tree ***********************************************************\
 
+    Project 1401's behavior tree implementation and terminology is inspired
+    by Renato Pereira's Behavior Tree tutorials, adapted to use 1401's piece
+    and class hierarchy. See https://github.com/behavior3/behavior3js for
+    his own implementation of Behavior Trees!
+
+	- 
+
 	A Behavior Tree (BT) structures a set of robot control nodes that are
 	evaluated in a well-defined order. The control types are: 
 
-		SELECTOR / PRIORITY - composite nodes that have children
-		DECORATOR / CONDITION - modify SUCCESS/FAIL/RUNNING of children
-		ACTION - where stuff it gets done! 
+	COMPOSITE	Node that processes child nodes in some order
+	ACTION		Node that does game-engine work (like a command)
+	DECORATOR 	Node that filters the output of its single child
+	CONDITION 	Node that detects conditions
 
-	BT children are evaluated from left-to-right, and always report one of
-	three conditions: SUCCESS, FAIL or RUNNING. The reported conditions
-	are propagated up from the leaf nodes of the BT.
+	Each BT is comprised of many subtrees of the above nodes, and the
+	status of each node type is evaluated from left-to-right. The return
+	status (SUCCESS, FAIL or RUNNING) determines whether subsequent nodes
+	or entire subtrees execute. 
 
-	Project 1401's behavior tree implementation and terminology is inspired
-	by Renato Pereira's behavior3js library, adapted to use 1401's piece
-	and class hierarchy. See https://github.com/renatopp/behavior3js
+	A BT is a REUSABLE structure that is define-once, apply-to-many.
+	The nodes make use of a memory structure called a Blackboard, 
+	which is essentially a runtime memory context for the node's raw code.
 
-	In 1401, the BehaviorTree object stores a root node and provides
-	some convenience functions. The Execute() function is called during the
-	global Piece.Update(). 
+	-
+
+	1401 IMPLEMENTATION
+
+	Each Piece has an ai property with the following subproperties:
+	ai.behavior  	= a BehaviorTree
+	ai.blackboard 	= local memory context for BehaviorTree
+
+	The ai.behavior.Execute() function is called in Piece.Think()
+	if it exists. This happens after Piece.Update().
 
 
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
 	function BehaviorTree ( name, rootNode ) {
-		this.id = BehaviorTree.idCounter++;
+		this.id = 'BT'+BehaviorTree.idCounter++;
 		this.name = name || 'behavior'+this.id.zeroPad(3);
 		this.rootNode = rootNode || null;
 	}
@@ -42,52 +58,25 @@ define ([
 ///	'static' properties //////////////////////////////////////////////////////
 	BehaviorTree.idCounter = 1;
 
-///	'enums' //////////////////////////////////////////////////////////////////
 
-///	'methods' ///////////////////////////////////////////////////////////////
-
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*/	Accessor for returning RootNode 
-/*/	BehaviorTree.method('RootNode', function () {
-		return this.rootNode;
-	});
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-/*/	Set all basenodes belonging to this tree to tree_id, which is used by
-	BT nodes to create a unique object store
-/*/	BehaviorTree.method('ImprintNodes', function () {
-		m_temp = ".";
-		m_RecursiveSetTreeID(this.id, this.rootNode);
-	});
+/// EXECUTE THE BEHAVIOR TREE ///////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 /*/	convenient way to do the Execute tick on the root node
 /*/	BehaviorTree.method('Execute', function ( pish, interval_ms ){
 		if (SETTINGS.DEBUG_AI) {
 			if (!SETTINGS.DEBUG_AI_STEP) return;
-			console.log("\tAI STEP ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
+			console.log("\tAI STEP ["+SETTINGS.MasterFrame().zeroPad(5)+
+				"] "+SETTINGS.MasterTime()+'ms');
 		}
 		this.rootNode.Execute ( pish, interval_ms );
 	});
 
-
-///////////////////////////////////////////////////////////////////////////////
-/** BEHAVIOR PRIVATE FUNCTIONS ***********************************************/
-
-	// Functions should receive entire state in parameters, as stored values
-	// in the object instances are not persistent because the same behavior
-	// tree's nodes can be used across multiple agents. The blackboard is
-	// what provides persistent memory
-
-	var m_temp;
-	function m_RecursiveSetTreeID ( treeID, node ) {
-		console.log(m_temp,node.SetTreeID(treeID));
-		var children = node.Children();
-		m_temp += "..";
-		for (var i=0;i<children.length;i++) {
-			var child = children[i];
-			console.log(m_temp, child.SetTreeID(treeID));
-			if (child.HasChildren()) m_RecursiveSetTreeID(treeID, child);
-		}
-	}
+/// ACCESSOR METHODS ////////////////////////////////////////////////////////
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Accessor for returning RootNode 
+/*/	BehaviorTree.method('RootNode', function () {
+		return this.rootNode;
+	});
 
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

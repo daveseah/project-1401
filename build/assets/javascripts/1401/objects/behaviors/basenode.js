@@ -9,62 +9,78 @@ define ([
 
 /**	Behavior BaseNode *******************************************************\
 
-	The BaseNode implements the common runtime functions of a BehaviorTree-
-	style node. Each node is like a mini program, and it needs a reference
-	to the parent behavior tree, the piece instance, and the time. 
+    Project 1401's behavior tree implementation and terminology is inspired
+    by Renato Pereira's Behavior Tree tutorials, adapted to use 1401's piece
+    and class hierarchy. See https://github.com/behavior3/behavior3js for
+    his own implementation of Behavior Trees!
 
-	BaseNode is not created directly, but is subclassed into the Action,
-	Sequence, Priority, Decorator, and Condition node types.
+    -
 
-	There are 5 types of events that are propagated through a BehaviorTree
-	for every "tick" of the AI clock through a call to Execute()
-		Enter - called first
-		Open - called once when node is first entered
-		Tick - returns RUNNING, SUCCESS, or FAIL
-		Close - called when SUCCESS or FAIL condition met
-		Exit - called last
-	The piece and interval_ms since the last call are passed to each event.
+    The BaseNode implements the common runtime functions of a BehaviorTree-
+    style node. Each node is like a mini program, and it needs a reference
+    to the parent behavior tree, the piece instance, and the time. 
 
-	All behavior node instances are REUSABLE across behavior trees, so it's
-	important NOT to store state as instance properties inheriting classes.
-	Use the blackboard! 
-		this.BBGet (pish, key) 
-		this.Set (pish, key, value)
-	The Get/Set methods in BaseNode use the tree and node ids to create a unique
-	key hash within the blackboard. See blackboard.js for more information.
+    BaseNode is not created directly, but is subclassed into the following
+    types. They all return SUCCESS, FAIL, RUNNING when called.
 
-	To avoid growing the heap, avoid declaring var in any of the events.
+    Sequence    Composite that executes its children (all success)
+    Priority    Composite that excecutes its children (first success)
+    MemSequence A Sequence that remembers its last RUNNING node
+    MemPriority A Priority that remembers its last RUNNING node
+    Action      Basenode for code that actually does something in engine
+    Decorator   Basenode for filter
+    Condition   Basenode for a condition test
 
-	Project 1401's behavior tree implementation and terminology is inspired
-	by Renato Pereira's behavior3js library, adapted to use 1401's piece
-	and class hierarchy. See https://github.com/renatopp/behavior3js
+    5 EVENT TYPES are propagated through a BehaviorTree for every "tick" 
+    of the AI clock. 
+
+    Enter   - always called first
+    Open    - called on very first "Enter" for one-time init
+    Tick    - returns RUNNING, SUCCESS, or FAIL
+    Close   - called when SUCCESS or FAILURE condition met
+    Exit    - always called last
+
+    The piece and interval_ms since the last call are passed to each event,
+    so piece properties are available to event handlers.
+    
+    NOTE:   All behavior node instances are REUSABLE across behavior trees, 
+            so it's important NOT to store state as instance properties 
+            inheriting classes.
+    
+    NOTE:   To use the blackboard within a method:
+            - this.BBGet (pish, key) 
+            - this.BBSet (pish, key, value)
+
+            The Get/Set methods in BaseNode use the tree and node ids to
+            create  a unique key hash within the blackboard. See blackboard.js
+            for more  details about hos this works.
+
+    TIP:    To avoid growing the runtime heap, avoid declaring var in any of 
+            the events.
 
 
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function BaseNode ( tree_id ) {
+	function BaseNode () {
 		// each node has a unique id and an associated tree
 		this.id = BaseNode.idCounter++;
-		this.tree_id = tree_id || 0;
-		// each node potentially has children
+		// composite and decorator nodes have children
 		this.children = [];
-
 		// each node has a name and description
 		this.name = 'bsn'+this.id.zeroPad(3);
-		this.description = 'basenode';
+		this.node_type = 'base';
 	}
 
 ///	'static' properties /////////////////////////////////////////////////////
 	BaseNode.idCounter = 1;
 
 ///	'enums' /////////////////////////////////////////////////////////////////
-	BaseNode.RUNNING 	= 1;
+	BaseNode.RUNNING 	= 1; 
 	BaseNode.SUCCESS 	= 2;
 	BaseNode.FAILURE 	= 3;
 ///	'flags' /////////////////////////////////////////////////////////////////
 	BaseNode.IS_OPEN	= '_isopen';
-
 
 ///	'methods' ///////////////////////////////////////////////////////////////
 
@@ -75,13 +91,6 @@ define ([
 	var x_state;			// running state of piece-ish
 
 
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*/	Set the TreeID that owns this basenode, which is used to create a hash
-	key for indexing into the blackboard (necessary for subtree support)
-/*/	BaseNode.method('SetTreeID', function ( treeID ) {
-		this.tree_id = treeID;
-		return "TREE["+treeID+"] --> "+this.name.bracket();
-	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Return the children node array for this basenode. It may be empty.
 /*/	BaseNode.method('Children', function () {
@@ -98,54 +107,51 @@ define ([
 		return SETTINGS.MasterTime();
 	});
 
+
+///	BLACKBOARD //////////////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	wrapper for blackboard.GetLocal to simplify access during authoring
 /*/	BaseNode.method('BBGet', function ( pish, key ) {
 		// console.log(pish.ai.behavior.id+':'+this.id+':'+key);
-		return pish.ai.blackboard.GetLocal(pish.ai.behavior.id, this.id, key);
+		return pish.ai.blackboard.GetLocal( this.id, key );
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	wrapper for blackboard.SetLocal to simplify access during authoring
 /*/	BaseNode.method('BBSet', function ( pish, key, value ) {
 		// console.log(pish.ai.behavior.id+':'+this.id+':'+key);
-		pish.ai.blackboard.SetLocal(pish.ai.behavior.id, this.id, key, value);
+		pish.ai.blackboard.SetLocal( this.id, key, value );
 	});
 
 
+///	MAIN EXECUTION //////////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*/	Main method for handling "ticks" to the AI. There are five events:
-	enter, open, tick, close, and exit.
-	Note: 
-	.. pish.ai has .blackboard store unique to the piece-ish.
-	.. Execute is propagated to every child BT node
-	.. Tick does work and returns status, but does not propagate the signal
-	.. node state is stored in pish.ai.blackboard[tree_id+node_id] 	
+/*/	Main method for handling "ticks" to the AI. This is the glue that calls
+	all the event handlers (e.g. enter, open) in the correct order.
+	NOTES:
+	. pish.ai has .blackboard store unique to it.
+	. node state is stored in pish.ai.blackboard[tree_id+node_id]
+	. Execute is propagated to every child BT node
+	. Tick does the work and returns status, but does NOT propagate the 
+	  signal to children automatically. CompositeNodes implement that.
 /*/ BaseNode.method('Execute', function ( pish, interval_ms ) {
-
 		// always call "enter"
 		this.Enter(pish);
-
 		// if first-time running, call "open"
 		if (!this.BBGet(pish, BaseNode.IS_OPEN)) {
 			this.BBSet(pish, BaseNode.IS_OPEN, true);
 			this.Open(pish);
 		}
-
 		// execute the behavior code and check if it succeeded
 		state = this.Tick(pish);
-
 		// if the node isn't still running, then call "close"
 		if (state !== BaseNode.RUNNING) {
 			this.BBSet(pish, BaseNode.IS_OPEN, false);
 			this.Close(pish);
 		}
-
 		// always call "exit"
 		this.Exit(pish);
-
 		// return state to whoever called Execute.
 		return state; 
-
 	});
 
 

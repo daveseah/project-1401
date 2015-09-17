@@ -1,72 +1,49 @@
 /* action.js */
 define ([
-	'1401/settings',
 	'1401/objects/behaviors/basenode'
 ], function ( 
-	SETTINGS,
 	BaseNode
 ) {
 
 	var DBGOUT = true;
 
-/**	ActionNode **************************************************************\
+/**	BaseAction **************************************************************\
 
-	This is an example implementation of an Action node, which performs
-	its useful action. This version of ActionNode isn't very useful; you
-	should extend it with code like this:
+	This is the BaseAction node. Extend it as follows:
 
-		function MyActionNode () {
-			// call parent constructor
-			BehaviorFactory.ActionNode.call(this);
-			...
-		}
-		// set up inheritance
-		MyActionNode.inheritsFrom(BehaviorFactory.ActionNode);
-		// define or override new methods
-		MyActionNode.method('Open',function(){...});
+	function MyBaseAction ( parms ) {
+		// call parent constructor
+		BehaviorFactory.BaseAction.call( this, parms );
+		...
+	}
+	// set up inheritance
+	MyBaseAction.inheritsFrom( BehaviorFactory.BaseAction );
+	// define or override new methods
+	MyBaseAction.method('Open',function(){...});
 
-	You can create a SUCCEEDER and FAILURE node for testing by passing
-	BaseNode.SUCCESS, etc to the constructor.	
+	IMPORTANT! Using 'this' instance properties is unsafe if a Node gets
+	reused. Store agent state in the Blackboard using the following methods:
 
-	Each node instance has a blackboard scratch dictionary that can be
-	accessed using the BaseNode.BBGet(pish,key) and
-	BaseNode.BBSet(pish,key,value) methods. Pish (a piece-ish object that has
-	the ai property at minimum) is passed during BaseNode.Execute() and
-	distributed to Open, Close, Enter, Exit, and Tick event methods. Override
-	those to implement your own code.
+		BBGet( pish, key )
+		BBSet( pish, key, value )
 
-	Remember that every instance of a behavior tree and behavior node is
-	possible used across multiple agents. That is why pish has to be passed-
-	in during Execute, so you can access the unique blackboard scratch memory
-	through the piece itself.
+	A 'pish' is an object with id and ai properties, not necessarily a piece,
+	but is "piecelike" as far as the behavior tree is concerned. 
 
 
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function ActionNode ( testflag ) {
-
+	function BaseAction ( parms ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
-
+		this.parms = parms;
 		// each node has a name
-		this.name = 'act'+this.id.zeroPad(3);
-		this.description = 'action node';
-
-		// make a "succeeder" or "failurer" or "runner"
-		switch (testflag) {
-			case BaseNode.SUCCESS:
-			case BaseNode.FAILURE:
-			case BaseNode.RUNNING:
-				this.testReturn = testflag;
-				break;
-			default:
-				this.testReturn = BaseNode.SUCCESS;
-				break;
-		}
+		this.node_type = 'action';
+		this.name = this.node_type+this.id.zeroPad(3);
 	}
 	/*/ inheritance /*/
-	ActionNode.inheritsFrom(BaseNode);
+	BaseAction.inheritsFrom(BaseNode);
 
 ///	'methods' ///////////////////////////////////////////////////////////////
 
@@ -77,7 +54,7 @@ define ([
 
 /*** see basenode.js for overrideable methods ***/
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	ActionNode.method('Tick', function ( pish, intervalMs ) {
+	BaseAction.method('Tick', function ( pish, intervalMs ) {
 		return this.testReturn;	
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -94,6 +71,6 @@ define ([
 
 /** RETURN CONSTRUCTOR *******************************************************/
 
-	return ActionNode;
+	return BaseAction;
 
 });
