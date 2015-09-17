@@ -7,7 +7,7 @@ define ([
 	BaseNode
 ) {
 
-	var DBGOUT = true;
+	var DBGOUT = false;
 
 /**	BehaviorTree Sequence ***************************************************\
 
@@ -35,8 +35,7 @@ define ([
 		// each node has a name
 		this.node_type = 'SEQ';
 		this.name = this.node_type+this.id;
-		console.log("create",this.name);
-
+		if (DBGOUT) console.log("create",this.name);
 
 		// Sequences evaluate left-to-right and have child nodes
 		this.children = children || [];	

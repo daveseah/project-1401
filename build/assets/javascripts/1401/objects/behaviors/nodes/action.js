@@ -34,11 +34,11 @@ define ([
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function Action ( parms ) {
+	function Action ( read_only_conf ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
 		// save node configuration, if any
-		this.parms = parms;
+		this.conf = read_only_conf;
 		// each node has a name
 		this.node_type = 'ACT';
 		this.name = this.node_type+this.id.zeroPad(3);
@@ -53,6 +53,7 @@ define ([
 	var blackboard;		// scratch memory for AI in piece
 	var status, i;		// running state of piece-ish
 
+/// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	call periodically if RUNNING until return SUCCESS, FAILURE
 /*/	Action.method('Tick', function ( pish ) {

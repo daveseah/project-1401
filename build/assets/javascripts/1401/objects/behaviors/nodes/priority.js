@@ -38,7 +38,7 @@ define ([
 		// each node has a name
 		this.node_type = 'PRI';
 		this.name = this.node_type+this.id;
-		console.log("create",this.name);
+		if (DBGOUT) console.log("create",this.name);
 
 		// Priority evaluate left-to-right and have child nodes
 		this.children = children || [];	
@@ -52,22 +52,30 @@ define ([
 	var blackboard;		// piece blackboard (AI memory)
 	var i, status;		// counter
 	var child;			// child node
+	var out;			// output holder
 
 
-/*** see basenode.js for overrideable methods ***/
+/// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	PriorityNode.method('Tick', function ( pish, intervalMs ) {
+		out = "";
 		for (i=0;i<this.children.length;i++) {
 			child = this.children[i];
 			status = child.Execute(pish,intervalMs);
 			if (status!==BaseNode.FAILURE) {
-				if (DBGOUT) console.log(child.name,"succeeded! returning SUCCESS");
+				if (DBGOUT) {
+					out+= child.name+'-'+status+' SUCCESS';
+					console.log(out);
+				}
 				return status;
 			} else {
-				if (DBGOUT) console.log(child.name,"failed...trying next");
+				if (DBGOUT) {
+					out+= child.name+'-'+status+' ';
+					console.log(out);
+				}
 			}
 		}
-		if (DBGOUT) console.log("all",this.children.length,"failed! return FAILURE");
+		if (DBGOUT) console.log(out,"all",this.children.length,"failed!");
 		return BaseNode.FAILURE;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

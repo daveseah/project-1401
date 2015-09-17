@@ -280,11 +280,16 @@ define ([
 /** SNEAKY DEBUG STUFF *******************************************************/
 //////////////////////////////////////////////////////////////////////////////
 	
+	// debug key behavior
 	SETTINGS.DEBUG_TRACE_BY_KEY 	= true;
-	SETTINGS.KEY_DEBUG 				= false;
+	SETTINGS.DEBUG_SHOW_TIME		= true;
+	// polled by BehaviorTree
 	SETTINGS.DEBUG_AI 				= true;
 	SETTINGS.DEBUG_AI_STEP			= false;
+	// polled by master to slow update cycle
 	SETTINGS.DEBUG_INTERVAL			= 0;
+	// internal debug state switch
+	SETTINGS.DEBUG_KEY_STATE 		= false;
 	window.DBGKEY = false;
 
 	window.onkeydown = function (e) {
@@ -292,10 +297,11 @@ define ([
 		if (!e) e = window.event;
 		if (!e.altKey) return;
 
-		if (!SETTINGS.KEY_DEBUG) {
-			SETTINGS.KEY_DEBUG = true;
-			window.DBGKEY = SETTINGS.KEY_DEBUG;
-			console.log("DBGKEY ++++ ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
+		if (!SETTINGS.DEBUG_KEY_STATE) {
+			SETTINGS.DEBUG_KEY_STATE = true;
+			window.DBGKEY = SETTINGS.DEBUG_KEY_STATE;
+			if (SETTINGS.DEBUG_SHOW_TIME)
+				console.log("DBGKEY ++++ ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
 			e.preventDefault();
 		}
 	};
@@ -303,15 +309,15 @@ define ([
 	window.onkeyup = function (e) {
 		if (!SETTINGS.DEBUG_TRACE_BY_KEY) return;
 		if (!e) e = window.event;
-		if (SETTINGS.KEY_DEBUG) {
-			if (SETTINGS.KEY_DEBUG) {
+		if (SETTINGS.DEBUG_KEY_STATE) {
+			if (SETTINGS.DEBUG_KEY_STATE) {
 				switch (e.keyCode) {
 					case 49: // '1'
 						SETTINGS.DEBUG_AI_STEP = true;
 						break;
 					case 189: // '-'
 						SETTINGS.DEBUG_INTERVAL = S.TIMESTEP * 10;
-						console.log("\t20X SLOW TIMESTEP (ALT= to restore)");
+						console.log("\t10X SLOW TIMESTEP (ALT= to restore)");
 						break;
 					case 187: // '='
 						SETTINGS.DEBUG_INTERVAL = S.TIMESTEP;
@@ -320,9 +326,10 @@ define ([
 					}
 			}
 			if (!e.altKey) {
-				SETTINGS.KEY_DEBUG = false;
-				window.DBGKEY = SETTINGS.KEY_DEBUG;
-			console.log("DBGKEY ---- ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
+				SETTINGS.DEBUG_KEY_STATE = false;
+				window.DBGKEY = SETTINGS.DEBUG_KEY_STATE;
+				if (SETTINGS.DEBUG_SHOW_TIME)
+					console.log("DBGKEY ---- ["+SETTINGS.MasterFrame().zeroPad(5)+"] "+SETTINGS.MasterTime()+'ms');
 				e.preventDefault();
 			}
 		}
