@@ -3,18 +3,22 @@ define ([
 	'1401/settings',
 	'1401/objects/behaviors/tree',
 	'1401/objects/behaviors/nodes/base',
-	'1401/objects/behaviors/nodes/action',
 	'1401/objects/behaviors/nodes/sequence',
 	'1401/objects/behaviors/nodes/priority',
+	'1401/objects/behaviors/nodes/decorator',
+	'1401/objects/behaviors/nodes/condition',
+	'1401/objects/behaviors/nodes/action',
 	'1401/objects/behaviors/blackboard'
 
 ], function ( 
 	SETTINGS,
 	BehaviorTree,
 	BaseNode,
-	Action,
 	Sequence,
 	Priority,
+	Decorator,
+	Condition,
+	Action,
 	Blackboard
 ) {
 
@@ -169,9 +173,12 @@ define ([
 
 ///	BASE CONSTRUCTORS ///////////////////////////////////////////////////////
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.Priority 	= Priority;
+	API.Sequence 	= Sequence;
 	API.BaseNode 	= BaseNode;
 	API.Action 		= Action;
-
+	API.Condition 	= Condition;
+	API.Decorator 	= Decorator;
 		
 
 ///////////////////////////////////////////////////////////////////////////////

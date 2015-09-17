@@ -58,19 +58,19 @@ define ([
 /// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	PriorityNode.method('Tick', function ( pish, intervalMs ) {
-		out = "";
+		out = this.name.bracket();
 		for (i=0;i<this.children.length;i++) {
 			child = this.children[i];
 			status = child.Execute(pish,intervalMs);
 			if (status!==BaseNode.FAILURE) {
 				if (DBGOUT) {
-					out+= child.name+'-'+status+' SUCCESS';
+					out+= ' '+child.name+'-'+status+' SUCCESS';
 					console.log(out);
 				}
 				return status;
 			} else {
 				if (DBGOUT) {
-					out+= child.name+'-'+status+' ';
+					out+= ' '+child.name+'-'+status;
 					console.log(out);
 				}
 			}

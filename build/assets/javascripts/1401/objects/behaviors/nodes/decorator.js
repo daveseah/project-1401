@@ -1,4 +1,4 @@
-/* action.js */
+/* decorator.js */
 define ([
 	'1401/objects/behaviors/nodes/base'
 ], function ( 
@@ -7,19 +7,19 @@ define ([
 
 	var DBGOUT = true;
 
-/**	Action *****************************************************************\
+/**	Decorator ***************************************************************\
 
-	This is the base Action node. Extend it as follows:
+	This is the base Decorator node. Extend it as follows:
 
-	function MyAction ( parms ) {
+	function MyDecorator ( parms ) {
 		// call parent constructor
-		BehaviorFactory.Action.call( this, parms );
+		BehaviorFactory.Decorator.call( this, parms );
 		...
 	}
 	// set up inheritance
-	MyAction.inheritsFrom( BehaviorFactory.Action );
+	MyDecorator.inheritsFrom( BehaviorFactory.Decorator );
 	// define or override new methods
-	MyAction.method('Open',function(){...});
+	MyDecorator.method('Open',function(){...});
 
 	IMPORTANT! Using 'this' instance properties is unsafe if a Node gets
 	reused. Store agent state in the Blackboard using the following methods:
@@ -34,17 +34,20 @@ define ([
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function Action ( read_only_conf ) {
+	function Decorator ( child, read_only_conf ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
-		// save node configuration, if any
-		this.conf = read_only_conf;
+		// save the child node
+		this.children.push(child);
+		// save configuration if any
+		this.config = read_only_conf;
+
 		// each node has a name
-		this.node_type = 'ACT';
+		this.node_type = 'DEC';
 		this.name = this.node_type+this.id;
 	}
 	/*/ inheritance /*/
-	Action.inheritsFrom(BaseNode);
+	Decorator.inheritsFrom(BaseNode);
 
 ///	'methods' ///////////////////////////////////////////////////////////////
 
@@ -52,17 +55,19 @@ define ([
 	/* values are not persistent; must refresh every tick! */
 	var blackboard;		// scratch memory for AI in piece
 	var status, i;		// running state of piece-ish
+	var child;			// child holder
+	var out;			// output holder
 
 /// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	call periodically if RUNNING until return SUCCESS, FAILURE
-/*/	Action.method('Tick', function ( pish ) {
+/*/	Decorator.method('Tick', function ( pish, intervalMs ) {
 		// execute every tick, must return status
 		// console.log(this.name,"tick",pish.name.bracket());
-		if (Math.random()>0.5) 
-			return BaseNode.SUCCESS;
-		else
-			return BaseNode.FAILURE;
+		child = this.children[0];
+		status = child.Execute( pish, intervalMs );
+		// do something with the status before returning it
+		return status;
 	});
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -76,6 +81,6 @@ define ([
 
 /** RETURN CONSTRUCTOR *******************************************************/
 
-	return Action;
+	return Decorator;
 
 });

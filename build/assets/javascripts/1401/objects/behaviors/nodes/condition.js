@@ -1,4 +1,4 @@
-/* action.js */
+/* condition.js */
 define ([
 	'1401/objects/behaviors/nodes/base'
 ], function ( 
@@ -7,19 +7,19 @@ define ([
 
 	var DBGOUT = true;
 
-/**	Action *****************************************************************\
+/**	Condition ***************************************************************\
 
-	This is the base Action node. Extend it as follows:
+	This is the base Condition node. Extend it as follows:
 
-	function MyAction ( parms ) {
+	function MyCondition ( parms ) {
 		// call parent constructor
-		BehaviorFactory.Action.call( this, parms );
+		BehaviorFactory.Condition.call( this, parms );
 		...
 	}
 	// set up inheritance
-	MyAction.inheritsFrom( BehaviorFactory.Action );
+	MyCondition.inheritsFrom( BehaviorFactory.Condition );
 	// define or override new methods
-	MyAction.method('Open',function(){...});
+	MyCondition.method('Open',function(){...});
 
 	IMPORTANT! Using 'this' instance properties is unsafe if a Node gets
 	reused. Store agent state in the Blackboard using the following methods:
@@ -34,17 +34,17 @@ define ([
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function Action ( read_only_conf ) {
+	function Condition ( read_only_conf ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
 		// save node configuration, if any
 		this.conf = read_only_conf;
 		// each node has a name
-		this.node_type = 'ACT';
+		this.node_type = 'IF';
 		this.name = this.node_type+this.id;
 	}
 	/*/ inheritance /*/
-	Action.inheritsFrom(BaseNode);
+	Condition.inheritsFrom(BaseNode);
 
 ///	'methods' ///////////////////////////////////////////////////////////////
 
@@ -56,7 +56,7 @@ define ([
 /// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	call periodically if RUNNING until return SUCCESS, FAILURE
-/*/	Action.method('Tick', function ( pish ) {
+/*/	Condition.method('Tick', function ( pish ) {
 		// execute every tick, must return status
 		// console.log(this.name,"tick",pish.name.bracket());
 		if (Math.random()>0.5) 
@@ -76,6 +76,6 @@ define ([
 
 /** RETURN CONSTRUCTOR *******************************************************/
 
-	return Action;
+	return Condition;
 
 });

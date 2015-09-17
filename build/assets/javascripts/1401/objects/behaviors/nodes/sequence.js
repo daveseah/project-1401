@@ -7,7 +7,7 @@ define ([
 	BaseNode
 ) {
 
-	var DBGOUT = false;
+	var DBGOUT = true;
 
 /**	BehaviorTree Sequence ***************************************************\
 
@@ -52,21 +52,21 @@ define ([
 	var out;			// output holder
 
 
-/*** see basenode.js for overrideable methods ***/
+/// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	SequenceNode.method('Tick', function ( pish, intervalMs ) {
-		out = "";
+		out = this.name.bracket();
 		for (i=0;i<this.children.length;i++) {
 			child = this.children[i];
-			status = child.Execute(pish,intervalMs);
+			status = child.Execute(pish, intervalMs);
 			if (status!==BaseNode.SUCCESS) {
 				if (DBGOUT) {
-					out+= child.name+'-'+status+' ABORT';
+					out+= ' '+child.name+'-'+status+' ABORT';
 					console.log(out);
 				}
 				return status;
 			} else {
-				if (DBGOUT) out+= child.name+'-'+status+' ';
+				if (DBGOUT) out+= ' '+child.name+'-'+status;
 			}
 		}
 		if (DBGOUT) console.log(out,"all",this.children.length,"success!");

@@ -44,9 +44,16 @@ define ([
 	AI.BehaviorInitialize = function ( piece ) {
 		console.log("\n\n*** TESTING BEHAVIOR TREE ***\n");
 		
-		var b = BF.NewPriority([
+		var b = new BF.Priority([
 			new BF.Action(),
-			new BF.Action(),
+			new BF.Decorator(new BF.Action()),
+			new BF.Sequence([
+				new BF.Condition(),
+				new BF.Action(),
+				new BF.Condition(),
+				new BF.Action()
+			]),
+			new BF.Condition(),
 			new BF.Action(),
 			new BF.Action(),
 			new BF.Action()
