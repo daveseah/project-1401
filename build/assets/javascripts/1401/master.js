@@ -169,31 +169,36 @@ define ([
 /*/	function m_TimeStep() {
 		if (!m_game) return;
 
-		// update mastertime
-		SETTINGS._SetMasterTime ( m_current_time_ms );
-		SETTINGS._SetMasterFrame ( m_current_frame_num );
+		try {
+			// update mastertime
+			SETTINGS._SetMasterTime ( m_current_time_ms );
+			SETTINGS._SetMasterFrame ( m_current_frame_num );
 
-		// step the game
-		if (m_game.IsRunning()) {
-			AUTOSYS.HeartBeat( m_interval_ms );
-			// there is only one master step, defined in game-main.js
-			SYSLOOP.GameStep( m_interval_ms );
-			// note that GameStep is responsible for calling
-			// GetInput, Update, Think, etc in the correct order
-		}
-		
-		// update mastertime counter
-		m_current_time_ms += m_interval_ms;
-		m_current_frame_num++;
+			// step the game
+			if (m_game.IsRunning()) {
+				AUTOSYS.HeartBeat( m_interval_ms );
+				// there is only one master step, defined in game-main.js
+				SYSLOOP.GameStep( m_interval_ms );
+				// note that GameStep is responsible for calling
+				// GetInput, Update, Think, etc in the correct order
+			}
+			
+			// update mastertime counter
+			m_current_time_ms += m_interval_ms;
+			m_current_frame_num++;
 
-		// unset debug step
-		if (SETTINGS.DEBUG_TRACE_BY_KEY) {
-			SETTINGS.DEBUG_AI_STEP = false;		
-		}
-		if (SETTINGS.DEBUG_INTERVAL>0) {
-			clearInterval(m_timer_id);
-			m_timer_id = setInterval( m_TimeStep, SETTINGS.DEBUG_INTERVAL );
-			SETTINGS.DEBUG_INTERVAL = 0;
+			// unset debug step
+			if (SETTINGS.DEBUG_TRACE_BY_KEY) {
+				SETTINGS.DEBUG_AI_STEP = false;		
+			}
+			if (SETTINGS.DEBUG_INTERVAL>0) {
+				clearInterval(m_timer_id);
+				m_timer_id = setInterval( m_TimeStep, SETTINGS.DEBUG_INTERVAL );
+				SETTINGS.DEBUG_INTERVAL = 0;
+			}
+		} catch (e) {
+			console.error(e.stack);
+			debugger;
 		}
 
 	}
