@@ -1,0 +1,61 @@
+<snippet>
+	<content><![CDATA[
+/* NOTE: BF is 1401/system/behaviorfactory module */
+
+/// $2: $1 ///
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/* subclass from BF.$2 */
+function ${1:BehaviorNode} ( read_only_conf ) {
+	// call the parent constructor
+	// BF.Condition, BF.Action, or BF.Decorator
+	BF.${2:Action}.call (this);	
+	// save configuration if any, set common flags
+	this.SaveConfig( read_only_conf );
+	// each node has a name
+	this.node_type = BF.TYPE.$2;
+	this.AutoName();
+}
+/* inheritance */
+$1.inheritsFrom(BF.$2);
+
+/* overrides */
+// $1.method( 'Enter', function ( pish ) { });
+// $1.method( 'Open', function ( pish ) { });
+$1.method( 'Tick', function ( pish, int_ms ) {
+	$0
+	return BF.SUCCESS;	// or BF.FAILURE or BF.RUNNING
+});
+// $1.method( 'Close', function ( pish ) { });
+// $1.method( 'Exit', function ( pish ) { });
+
+/*/////////////////////////////////////////////////////////////////////////////
+
+   Helpful Methods
+      this.MasterTime()   - current time in ms elapsed
+      this.Children()     - return childnode array
+      this.HasChildren()  - return true if not empty childnode array
+      pish.ai.blackboard  - access blackboard
+      pish.ai.behavior    - access behavior tree running the piece
+      this.DBG            - set true if config.debug was true
+
+   Blackboard Local Memory is unique for every node in a piece's BT
+      this.BBGet(key) 
+      this.BBSet(key,val)
+
+   Blackboard Tree Memory is shared by all pieces using that tree
+      TreeMemGet(tree_id, key)
+      TreeMemSet(tree_id, key, val)
+
+   Blackboard Agent Memory is shared by all nodes running in a piece
+      AgentMemGet(key)
+      AgentMemSet(key, val)
+
+/*/////////////////////////////////////////////////////////////////////////////
+	
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>/1401btnode</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<scope>source.js</scope>
+	<description>1401 behavior tree node subclass</description>
+</snippet>

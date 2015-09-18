@@ -15,7 +15,8 @@
 /1401cind        make 1401-style comment leader (for functions)
 
 /1401pmake       make a new piece and give it a spritesheet
-/1401ploop       make a piece iterator for loop       
+/1401ploop       make a piece iterator for loop
+/1401btnode      make a behavior tree node subclass
 
 /*/	
 ]]></content>
