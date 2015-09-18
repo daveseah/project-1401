@@ -7,7 +7,7 @@ define ([
 	'1401/system/renderer',
 	'1401/system/visualfactory',
 	'1401/system/piecefactory',
-	'1401-games/demo/controls'
+	'1401-games/demo/modules/controls'
 ], function ( 
 	KEY,
 	PHYSICS,
@@ -136,9 +136,7 @@ define ([
 
 		window.DBG_Out( "<b>Simple Ship Movement and Control</b>" );
 		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/004</tt>" );
-
 		window.DBG_Out( "Use WASDQE to move. SPACE brakes." );
-		window.DBG_Out( "<i>open javascript console to see debug messages (ctl-shift-J or cnd-opt-J)</i>" );
 	}	
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

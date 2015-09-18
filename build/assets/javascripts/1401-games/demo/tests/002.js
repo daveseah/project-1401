@@ -99,7 +99,6 @@ define ([
 	function m_Start() {
 		window.DBG_Out( "<b>Finite Star Scroll Parallax</b>" );
 		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/002</tt>" );
-		window.DBG_Out( "<i>open javascript console to see debug messages (ctl-shift-J or cnd-opt-J)</i>" );
 	}	
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
