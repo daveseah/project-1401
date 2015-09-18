@@ -1,4 +1,4 @@
-/* demo/test/01.js */
+/* demo/test/001.js */
 define ([
 	'1401/objects/sysloop',
 	'1401/settings',
@@ -43,13 +43,18 @@ define ([
 /** MODULE DECLARATION *******************************************************/
 
 	var MOD = SYSLOOP.New("Test01");
-	MOD.EnableUpdate( true );
 
-	MOD.SetHandler( 'Start', m_Start );
-	MOD.SetHandler( 'Construct', m_Construct );
-	MOD.SetHandler( 'Update', m_Update);
 	MOD.SetHandler( 'Initialize', m_Initialize );
-	MOD.SetHandler( 'Think', function() { console.log("think!"); } );
+	MOD.SetHandler( 'Construct', m_Construct );
+	MOD.SetHandler( 'Start', m_Start );
+
+	MOD.EnableUpdate();
+	MOD.SetHandler( 'Update', m_Update);
+
+	MOD.EnableAI();
+	MOD.SetHandler( 'Think', function() { 
+		console.log("think!"); 
+	});
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -150,6 +155,9 @@ define ([
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Start() {
+		window.DBG_Out( "<b>System Loop Test</b>" );
+		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/001</tt>" );
+		window.DBG_Out( "<i>open javascript console to see debug messages (ctl-shift-J or cnd-opt-J)</i>" );
 	}	
 
 

@@ -76,6 +76,9 @@ define ([
 		RENDERER.Initialize ( parm );
 		RENDERER.AutoRender();
 
+		// size the width of the debug window
+		$('#debug').css('width',parm.renderWidth+'px');
+		// debug.js defines window.DBG_Out() which writes to #debug
 	}
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

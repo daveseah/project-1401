@@ -1,4 +1,4 @@
-/* demo/test/04.js */
+/* demo/test/004-ship-controls.js */
 define ([
 	'keypress',
 	'physicsjs',
@@ -24,8 +24,7 @@ define ([
 ///////////////////////////////////////////////////////////////////////////////
 /**	SUBMODULE TEST 004 *******************************************************\
 
-	Add Physics and Controls
-
+	Add rudimentary physics and ship controls
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE DECLARATION *******************************************************/
@@ -134,6 +133,12 @@ define ([
 	function m_Start() {
 		RENDERER.SelectWorld3D();
 		SHIPCONTROLS.BindKeys();
+
+		window.DBG_Out( "<b>Simple Ship Movement and Control</b>" );
+		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/004</tt>" );
+
+		window.DBG_Out( "Use WASDQE to move. SPACE brakes." );
+		window.DBG_Out( "<i>open javascript console to see debug messages (ctl-shift-J or cnd-opt-J)</i>" );
 	}	
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

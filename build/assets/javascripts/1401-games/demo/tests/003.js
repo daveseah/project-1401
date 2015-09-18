@@ -1,4 +1,4 @@
-/* demo/test/03.js */
+/* demo/test/003.js */
 define ([
 	'1401/objects/sysloop',
 	'1401/settings',
@@ -26,8 +26,8 @@ define ([
 	var MOD = SYSLOOP.New("Test03");
 	MOD.EnableUpdate( true );
 
-	MOD.SetHandler( 'Start', m_Start );
 	MOD.SetHandler( 'Construct', m_Construct );
+	MOD.SetHandler( 'Start', m_Start );
 	MOD.SetHandler( 'Update', m_Update);
 
 
@@ -40,6 +40,13 @@ define ([
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE HANDLER FUNCTIONS *************************************************/
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	function m_Start() {
+		window.DBG_Out( "<b>Infinite Star Scroll Parallax</b>" );
+		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/003</tt>" );
+		window.DBG_Out( "<i>open javascript console to see debug messages (ctl-shift-J or cnd-opt-J)</i>" );
+	}	
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Construct() {
@@ -92,10 +99,6 @@ define ([
 ///	HEAP-SAVING PRE-ALLOCATED VARIABLES /////////////////////////////////////
 
 	var x, rot, vp, layers, i, sf;
-
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	function m_Start() {
-	}	
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	var counter = 0;

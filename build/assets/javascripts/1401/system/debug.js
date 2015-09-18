@@ -16,7 +16,9 @@ define ([
 
 	var API = {};
 	API.name = "debug";
+
 	var m_watching = {};
+	var m_debug_selector = '#debug';
 
 
 ///	INSPECTION ROUTINES //////////////////////////////////////////////////////
@@ -124,8 +126,17 @@ define ([
 		console.info("AddWatch: defined new debug object key",key.bracket(),obj);
 	};
 
-/** SUPPORTING FUNCTIONS ****************************************************/
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Append a <div>msg</div> to the #debug div. Can be overridden by adding
+	selector argument
+/*/	API.Out = function ( msg, escape_msg, selector ) {
+		m_DebugOut( msg, escape_msg, selector );
+	};
 
+
+
+/** SUPPORTING FUNCTIONS ****************************************************/
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Support function for InspectModule() and InspectObject()
 	Also checks m_watching array
 /*/	function m_DumpObj ( obj, depth ) {
@@ -152,12 +163,36 @@ define ([
 		return str;
 	}
 
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Debugger window text output
+/*/	function m_DebugOut ( msg, escape_msg, selector ) {
+		selector = selector || m_debug_selector;
+		var $dbg = $(selector);
+		if (Object.prototype.toString.call(e)==='[object Array]') {
+			$dbg = e[0];		// get first matching element
+		}
+		if (escape_msg) {
+			var e = document.createElement('div');
+			var t = document.createTextNode(msg);
+			e.appendChild(t);
+			$dbg.append(e);
+		} else {
+			$dbg.append('<div>'+msg+'</div>');
+		}
+	}
+
 
 /** GLOBAL HOOKS *************************************************************/
 
 	if (GLOBAL) {
 		window.InspectModule = API.InspectModule;
 		window.InspectObject = API.InspectObject;
+		window.DBG_Out = function ( msg, selector ) {
+			API.Out(msg,false, selector);
+		};
+		window.DBG_OutClean = function ( msg, selector ) {
+			API.Out(msg,true,selector);
+		}
 	}
 
 

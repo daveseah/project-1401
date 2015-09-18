@@ -1,4 +1,4 @@
-/* demo/test/02.js */
+/* demo/test/002.js */
 define ([
 	'1401/objects/sysloop',
 	'1401/settings',
@@ -26,8 +26,8 @@ define ([
 	var MOD = SYSLOOP.New("Test02");
 	MOD.EnableUpdate( true );
 
-	MOD.SetHandler( 'Start', m_Start );
 	MOD.SetHandler( 'Construct', m_Construct );
+	MOD.SetHandler( 'Start', m_Start );
 	MOD.SetHandler( 'Update', m_Update);
 
 
@@ -40,10 +40,6 @@ define ([
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE HANDLER FUNCTIONS *************************************************/
-
-///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	function m_Start() {
-	}	
 
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,6 +94,13 @@ define ([
 		// console.info("NOTE: WorldCam is set between 2D and 3D modes every few seconds, which creates a visual jump\n\n");
 	}
 
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	function m_Start() {
+		window.DBG_Out( "<b>Finite Star Scroll Parallax</b>" );
+		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/002</tt>" );
+		window.DBG_Out( "<i>open javascript console to see debug messages (ctl-shift-J or cnd-opt-J)</i>" );
+	}	
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	var counter = 0;

@@ -1,4 +1,4 @@
-/* demo/test/05.js */
+/* demo/test/005.js */
 define ([
 	'keypress',
 	'physicsjs',
@@ -9,7 +9,7 @@ define ([
 	'1401/system/piecefactory',
 	'1401-games/demo/controls',
 	'1401-games/demo/ai'
-], function ( 
+], function (
 	KEY,
 	PHYSICS,
 	SYSLOOP,
@@ -26,18 +26,20 @@ define ([
 ///////////////////////////////////////////////////////////////////////////////
 /**	SUBMODULE TEST 005 *******************************************************\
 
-	Add AI stuff!
+	This test module exercises the behavior tree system through
+	ai.js.
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE DECLARATION *******************************************************/
 
 	var MOD = SYSLOOP.New("Test03");
-	MOD.EnableUpdate( true );
-	MOD.EnableInput( true );
 
-	MOD.SetHandler( 'GetInput', m_GetInput);
-	MOD.SetHandler( 'Start', m_Start );
 	MOD.SetHandler( 'Construct', m_Construct );
+	MOD.SetHandler( 'Start', m_Start );
+
+	MOD.EnableInput( true );
+	MOD.SetHandler( 'GetInput', m_GetInput);
+	MOD.EnableUpdate( true );
 	MOD.SetHandler( 'Update', m_Update);
 
 
@@ -138,6 +140,12 @@ define ([
 
 		// ai testing temporary stuff
         AITEST.BehaviorInitialize(crixa);
+
+		window.DBG_Out( "<b>Behavior Tree AI</b>" );
+		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/005</tt>" );
+		window.DBG_Out( "This is a work in progress." )
+		window.DBG_Out( "<i>open javascript console to see debug messages (ctl-shift-J or cnd-opt-J)</i>" );
+
 	}	
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
