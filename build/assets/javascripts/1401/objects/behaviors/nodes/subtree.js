@@ -42,7 +42,7 @@ define ([
 		// save node configuration, if any
 		this.config = read_only_conf;
 		// each node has a name
-		this.node_type = 'SUB';
+		this.node_type = BaseNode.TYPE.SubTree;
 		this.AutoName();
 	}
 	/*/ inheritance /*/

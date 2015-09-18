@@ -92,25 +92,30 @@ define ([
 	};
 
 
-/** PUBLIC API ***************************************************************/
+/** PUBLIC BF ***************************************************************/
 
-	var API = {};
-	API.name = "behaviorfactory";
-	API.SUCCESS = BaseNode.SUCCESS;
-	API.FAILURE = BaseNode.FAILURE;
-	API.RUNNING = BaseNode.RUNNING;
+	var BF = {};
+
+	BF.name = "behaviorfactory";
+
+	// import enums from BaseNode
+	BF.SUCCESS 	= BaseNode.SUCCESS;
+	BF.FAILURE 	= BaseNode.FAILURE;
+	BF.RUNNING 	= BaseNode.RUNNING;
+	// TYPE has codes for each type of node in system
+	BF.TYPE 	= BaseNode.TYPE;
 
 /// INITIALIZATION //////////////////////////////////////////////////////////
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Called by Master to initialize logic systems 
-/*/	API.Initialize = function () {
+/*/	BF.Initialize = function () {
 	};
 
 
 /// BEHAVIOR TREE DEFINITIONS ///////////////////////////////////////////////
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	define a named behavior with a name and a btreeRoot
-/*/	API.DefineBehavior = function ( name, btreeRoot ) {
+/*/	BF.DefineBehavior = function ( name, btreeRoot ) {
 		if ( !(name && btreeRoot) ) {
 			console.error("Must pass a Name and a BehaviorTree. Aborting.");
 			return;
@@ -132,7 +137,7 @@ define ([
 /// BEHAVIOR TREE ASSIGNMENT ////////////////////////////////////////////////
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	assign behavior to piece. 
-/*/	API.AssignBehavior = function ( name, pish ) {
+/*/	BF.AssignBehavior = function ( name, pish ) {
 		if ( !(pish && name) ) {
 			var out = "Must pass the Name of behavior and a piece. Aborting";
 			console.error(out);
@@ -163,29 +168,29 @@ define ([
 
 /// COMPOSITE NODES /////////////////////////////////////////////////////////
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.NewSequence = function ( children ) {
+	BF.NewSequence = function ( children ) {
 		return new Sequence ( children );
 	};
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.NewPriority = function ( children ) {
+	BF.NewPriority = function ( children ) {
 		return new Priority ( children );
 	};
 
 
 ///	BASE CONSTRUCTORS ///////////////////////////////////////////////////////
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	API.Priority 	= Priority;
-	API.Sequence 	= Sequence;
-	API.BaseNode 	= BaseNode;
-	API.Action 		= Action;
-	API.Condition 	= Condition;
-	API.Decorator 	= Decorator;
-	API.SubTree 	= SubTree;
+	BF.Priority 	= Priority;
+	BF.Sequence 	= Sequence;
+	BF.BaseNode 	= BaseNode;
+	BF.Action 		= Action;
+	BF.Condition 	= Condition;
+	BF.Decorator 	= Decorator;
+	BF.SubTree 	= SubTree;
 		
 
 ///////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
-	return API;
+	return BF;
 
 
 });

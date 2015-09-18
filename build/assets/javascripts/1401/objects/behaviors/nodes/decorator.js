@@ -43,7 +43,7 @@ define ([
 		this.config = read_only_conf;
 
 		// each node has a name
-		this.node_type = 'DEC';
+		this.node_type = BaseNode.TYPE.Decorator;
 		this.AutoName();
 	}
 	/*/ inheritance /*/

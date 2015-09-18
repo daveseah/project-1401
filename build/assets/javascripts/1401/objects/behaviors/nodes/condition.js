@@ -40,7 +40,7 @@ define ([
 		// save node configuration, if any
 		this.config = read_only_conf;
 		// each node has a name
-		this.node_type = 'IF';
+		this.node_type = BaseNode.TYPE.Condition;
 		this.AutoName();
 	}
 	/*/ inheritance /*/

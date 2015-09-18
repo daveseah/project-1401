@@ -67,8 +67,10 @@ define ([
 		this.id = BaseNode.idCounter++;
 		// composite and decorator nodes have children
 		this.children = [];
+		this.DBG = false;
+		this.MEMO = '';
 		// each node has a name and description
-		this.node_type = 'BN';
+		this.node_type = BaseNode.TYPE.BaseNode;
 		this.name = this.node_type+this.id;
 	}
 
@@ -76,9 +78,18 @@ define ([
 	BaseNode.idCounter = 1;
 
 ///	'enums' /////////////////////////////////////////////////////////////////
-	BaseNode.RUNNING 	= 'R'; 
-	BaseNode.SUCCESS 	= 'S';
-	BaseNode.FAILURE 	= 'F';
+	BaseNode.RUNNING 		= 'R'; 
+	BaseNode.SUCCESS 		= 'S';
+	BaseNode.FAILURE 		= 'F';
+	BaseNode.TYPE 			= {};
+	BaseNode.TYPE.BaseNode 	= 'BAS';
+	BaseNode.TYPE.Action 	= 'ACT';
+	BaseNode.TYPE.Condition = 'CON';
+	BaseNode.TYPE.Decorator = 'DEC';
+	BaseNode.TYPE.Sequence 	= 'SEQ';
+	BaseNode.TYPE.Priority 	= 'PRI';
+	BaseNode.TYPE.SubTree 	= 'SUB';
+
 
 ///	'flags' /////////////////////////////////////////////////////////////////
 	BaseNode.IS_OPEN	= '_isopen';
@@ -111,9 +122,14 @@ define ([
 /*/	Utility to return the master time from SETTINGS
 /*/	BaseNode.method('AutoName', function () {
 		this.name = this.node_type+this.id;
-		if (this.config && this.config.memo) {
-			this.name += this.config.memo.squote();
-		}
+		this.name += this.MEMO;
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Utility to save shared configuration properties
+/*/	BaseNode.method('SaveConfig', function ( read_only_conf ) {
+		this.config = read_only_conf;
+		this.DBG = (this.config.debug!==undefined) ? this.config.debug : false;
+		this.MEMO = this.config.memo || '';
 	});
 
 
@@ -122,12 +138,25 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	wrapper for blackboard.GetLocal to simplify access during authoring
 /*/	BaseNode.method('BBGet', function ( pish, key ) {
-		return pish.ai.blackboard.NodeMemGet( this.id, key );
+		if (pish&&key) {
+			return pish.ai.blackboard.NodeMemGet( this, key );
+		}
+		throw new Error('BBGet requires a piece and a key');
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	wrapper for blackboard.SetLocal to simplify access during authoring
 /*/	BaseNode.method('BBSet', function ( pish, key, value ) {
-		pish.ai.blackboard.NodeMemSet( this.id, key, value );
+		if (pish&&key&&(value!==undefined)) {
+			pish.ai.blackboard.NodeMemSet( this, key, value );
+			return;
+		}
+		throw new Error('BBSet requires a piece, key, and value');
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	return the hashpath, if a unique string based on the current
+	executing node is needed for anything
+/*/	BaseNode.method('NodeHash', function ( pish, key ) {
+		return pish.ai.blackboard.NodeMemKey(pish,key);
 	});
 
 
@@ -150,7 +179,7 @@ define ([
 			this.Open(pish);
 		}
 		// execute the behavior code and check if it succeeded
-		state = this.Tick(pish);
+		state = this.Tick(pish, int_ms);
 		// if the node isn't still running, then call "close"
 		if (state !== BaseNode.RUNNING) {
 			this.BBSet(pish, BaseNode.IS_OPEN, false);

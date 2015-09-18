@@ -35,10 +35,10 @@ define ([
 		// Sequences evaluate left-to-right and have child nodes
 		this.children = children || [];	
 		// save configuration if any
-		this.config = read_only_conf;
+		this.SaveConfig( read_only_conf );
 
 		// each node has a name
-		this.node_type = 'SEQ';
+		this.node_type = BaseNode.TYPE.Sequence;
 		this.AutoName();
 	}
 	/*/ inheritance /*/
@@ -61,16 +61,17 @@ define ([
 			child = this.children[i];
 			status = child.Execute(pish, int_ms);
 			if (status!==BaseNode.SUCCESS) {
-				if (DBGOUT) {
+				if (this.DBG) {
 					out+= ' '+child.name+'-'+status+' ABORT';
 					console.log(out);
 				}
 				return status;
 			} else {
-				if (DBGOUT) out+= ' '+child.name+'-'+status;
+				if (this.DBG) out+= ' '+child.name+'-'+status;
 			}
 		}
-		if (DBGOUT) console.log(out,"all",this.children.length,"success!");
+		if (this.DBG) 
+			console.log(out,"all",this.children.length,"success!");
 		return BaseNode.SUCCESS;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

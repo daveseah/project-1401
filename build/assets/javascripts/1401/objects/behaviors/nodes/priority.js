@@ -41,7 +41,7 @@ define ([
 		this.config = read_only_conf;
 
 		// each node has a name
-		this.node_type = 'PRI';
+		this.node_type = BaseNode.TYPE.Priority;
 		this.AutoName();
 	}
 	/*/ inheritance /*/

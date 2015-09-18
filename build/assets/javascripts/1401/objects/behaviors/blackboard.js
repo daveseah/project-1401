@@ -57,12 +57,12 @@ define ([
 /// ALL TREE SHARED MEMORY //////////////////////////////////////////////////
 /// use only for shared tree properties and settings
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Blackboard.method('TreeMemGet', function ( tree_id, key ) {
-		return m_treemem[tree_id+":"+key];
+	Blackboard.method('TreeMemGet', function ( tree, key ) {
+		return m_treemem[tree.id+":"+key];
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Blackboard.method('TreeMemSet', function ( tree_id, key, value ) {
-		m_treemem[tree_id+':'+key] = value;
+	Blackboard.method('TreeMemSet', function ( tree, key, value ) {
+		m_treemem[tree.id+':'+key] = value;
 	});
 
 
@@ -80,16 +80,20 @@ define ([
 
 ///	UNIQUE NODE MEMORY //////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Blackboard.method('NodeMemGet', function ( node_id, key ){
-		var tree_id = this.TreePath();
-		return this.Get(tree_id+':'+node_id+':'+key);
+	Blackboard.method('NodeMemGet', function ( node, key ) {
+		var hash = this.NodeMemKey(node,key);
+		return this.Get(hash);
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Blackboard.method('NodeMemSet', function ( node_id, key, value ){
-		var tree_id = this.TreePath();
-		this.Set(tree_id+':'+node_id+':'+key, value);
+	Blackboard.method('NodeMemSet', function ( node, key, value ) {
+		var hash = this.NodeMemKey(node,key);
+		this.Set(hash, value);
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	Blackboard.method('NodeMemKey', function ( node, key ) {
+		key = (key!==undefined) ? ':'+key : '';
+		return this.TreePath()+':'+node.id + key;
+	});
 
 
 /// SUBTREE PATH SUPPORT ////////////////////////////////////////////////////
