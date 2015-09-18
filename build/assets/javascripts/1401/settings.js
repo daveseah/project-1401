@@ -284,10 +284,12 @@ define ([
 	SETTINGS.DEBUG_TRACE_BY_KEY 	= true;
 	SETTINGS.DEBUG_SHOW_TIME		= true;
 	// polled by BehaviorTree
-	SETTINGS.DEBUG_AI 				= true;
+	SETTINGS.DEBUG_AI 				= false;
 	SETTINGS.DEBUG_AI_STEP			= false;
 	// polled by master to slow update cycle
 	SETTINGS.DEBUG_INTERVAL			= 0;
+	SETTINGS.SLOW_FACTOR			= 10;
+	SETTINGS.SLOW_MULTIPLE 			= 1;
 	// internal debug state switch
 	SETTINGS.DEBUG_KEY_STATE 		= false;
 	window.DBGKEY = false;
@@ -316,12 +318,17 @@ define ([
 						SETTINGS.DEBUG_AI_STEP = true;
 						break;
 					case 189: // '-'
-						SETTINGS.DEBUG_INTERVAL = S.TIMESTEP * 10;
-						console.log("\t10X SLOW TIMESTEP (ALT= to restore)");
+						SETTINGS.DEBUG_INTERVAL = S.TIMESTEP * SETTINGS.SLOW_FACTOR * SETTINGS.SLOW_MULTIPLE;
+						console.log("*****");
+						console.log("*****", (SETTINGS.SLOW_FACTOR * SETTINGS.SLOW_MULTIPLE)+'X',"SLOW TIMESTEP (ALT= to restore)");
+						console.log("*****");
+						SETTINGS.SLOW_MULTIPLE++;
 						break;
 					case 187: // '='
 						SETTINGS.DEBUG_INTERVAL = S.TIMESTEP;
-						console.log("\tNORMAL TIMESTEP");
+						console.log("*****");
+						console.log("***** NORMAL TIMESTEP");
+						console.log("*****");
 						break;
 					}
 			}
@@ -334,6 +341,20 @@ define ([
 			}
 		}
 	};
+
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Programmatic enable of AI STEP Debugging
+/*/	SETTINGS.EnableAIDebugStepping = function () {
+		SETTINGS.DEBUG_AI = true;
+		var msg = "\n";
+		msg += "********************************\n";
+		msg += " AI STEP DEBUG MODE IS ENABLED!\n";
+		msg += " USE AI STEP KEY (ALT-1)\n";
+		msg += "********************************\n";
+		msg += "\n";
+		console.log(msg);
+	};	
 
 //////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE DEFINITION FOR REQUIREJS **********************************/
