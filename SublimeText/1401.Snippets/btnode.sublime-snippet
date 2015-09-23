@@ -1,6 +1,11 @@
 <snippet>
 	<content><![CDATA[
-/* NOTE: BF is 1401/system/behaviorfactory module */
+/* behavior tree node $1 */
+define ([
+	'1401/system/behaviorfactory'
+], function ( 
+	BF
+) {		
 
 /// $2: $1 ///
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -12,7 +17,8 @@ function ${1:BehaviorNode} ( read_only_conf ) {
 	// save configuration if any, set common flags
 	this.SaveConfig( read_only_conf );
 	// each node has a name
-	this.node_type = BF.TYPE.$2;
+	this.node_type = BF.TYPE.$2
+	this.node_class = '$1';
 	this.AutoName();
 }
 /* inheritance */
@@ -51,11 +57,16 @@ $1.method( 'Tick', function ( pish, int_ms ) {
       AgentMemSet(key, val)
 
 /*/////////////////////////////////////////////////////////////////////////////
-	
+
+///////////////////////////////////////////////////////////////////////////////
+/** RETURN CONSTRUCTOR *******************************************************/
+	return $1;
+
+});
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>/1401btnode</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
-	<scope>source.js</scope>
+	<scope></scope>
 	<description>1401 behavior tree node subclass</description>
 </snippet>
