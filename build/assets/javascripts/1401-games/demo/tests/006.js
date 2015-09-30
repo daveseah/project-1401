@@ -2,16 +2,18 @@
 define ([
 	'keypress',
 	'physicsjs',
+	'1401/system/autosystem',
 	'1401/objects/sysloop',
 	'1401/settings',
 	'1401/system/renderer',
 	'1401/system/visualfactory',
 	'1401/system/piecefactory',
 	'1401-games/demo/modules/controls',
-	'1401-games/demo/modules/ai'
+	'1401-games/demo/modules/ai',
 ], function (
 	KEY,
 	PHYSICS,
+	AUTOSYS,
 	SYSLOOP,
 	SETTINGS,
 	RENDERER,
@@ -126,9 +128,9 @@ define ([
 			function do_nothing () {}
 
 			/* test visual factory update */
-			VISUALFACTORY.RegisterHeartBeatVisual({
+			AUTOSYS.RegisterHeartBeatVisual({
 				Update: function ( int_ms ) {
-					console.log("heartbeat added to visualfactory");
+					console.log("heartbeat added to visualfactory via AUTOSYS");
 				}
 			});
 

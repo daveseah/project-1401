@@ -22,7 +22,8 @@ define ([
 	the 1401 system, so the game programmer doesn't have to remember to add
 	this to their game-main loop. It's called directly from master.js.
 
-	Generally this applies to system-level services in certain cases
+	Generally this applies to system-level services in certain cases,
+	for services such as (not all of these exist yet):
 
 	VisualFactory - sprite animations need periodic updating
 	PieceFactory - state machines and ai need periodic updating
@@ -64,6 +65,17 @@ define ([
 		VISUALFACTORY.HeartBeat( interval_ms );
 		RENDERER.HeartBeat( interval_ms );
 		LOGICFACTORY.HeartBeat( interval_ms );
+	};
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Convenience function so Visuals don't have to import VisualFactory,
+	creating a circular reference
+/*/	API.RegisterHeartBeatVisual = function ( vis ) {
+		VISUALFACTORY.RegisterHeartBeatVisual( vis );
+	};
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Convenience function for registering Renderer heartbeats
+/*/	API.RegisterHeartBeatRenderTask = function ( func ) {
+		RENDERER.RegisterHeartBeatTask( func ); 
 	};
 
 
