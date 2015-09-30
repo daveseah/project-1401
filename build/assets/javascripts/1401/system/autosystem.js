@@ -60,8 +60,8 @@ define ([
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Called by Master so system modules can do housekeeping before GameStep
 /*/	API.HeartBeat = function ( interval_ms ) {
-		VISUALFACTORY.HeartBeat( interval_ms );
 		PIECEFACTORY.HeartBeat( interval_ms );
+		VISUALFACTORY.HeartBeat( interval_ms );
 		RENDERER.HeartBeat( interval_ms );
 		LOGICFACTORY.HeartBeat( interval_ms );
 	};

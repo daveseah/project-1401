@@ -71,22 +71,22 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Heartbeat Tasks execute during before GameStep every frame. This is used
 	by extenders of RENDERER to insert custom processing routines
-/*/	API.RegisterHeartbeatTask = function ( funcObj ) {
-		if (typeof funcObj !== 'function') {
+/*/	API.RegisterHeartBeatTask = function ( func ) {
+		if (typeof func !== 'function') {
 			console.error("RegisterHeartBeat requires a function");
 			return;
 		} 
-		_heartbeat.push(funcObj);
+		_heartbeat.push(func);
 	};	
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Heartbeat Tasks execute during before GameStep every frame. This is used
 	by extenders of RENDERER to insert custom processing routines
-/*/	API.RegisterPrerenderTask = function ( funcObj ) {
-		if (typeof funcObj !== 'function') {
+/*/	API.RegisterPrerenderTask = function ( func ) {
+		if (typeof func !== 'function') {
 			console.error("RegisterPrerenderTask requires a function");
 			return;
 		} 
-		_prerender.push(funcObj);
+		_prerender.push(func);
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/ for manually rendering on every update with explicit call

@@ -66,6 +66,18 @@ define ([
 			m_updatable[i].Update (interval_ms);
 		}
 	};
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.RegisterHeartBeatVisual = function ( vis ) {
+		if (!vis) {
+			console.warn('ERROR:','RegisterHeartBeatVisual');
+			throw new Error('visual is undefined');
+		}
+		if (typeof vis.Update !=='function') {
+			console.warn('ERROR:','RegisterHeartBeatVisual');
+			throw new Error ('visual.Update(int_ms) missing');
+		}
+		m_updatable.push(vis);
+	};
 
 
 /// OBJECT MAKERS ///////////////////////////////////////////////////////////
@@ -88,7 +100,7 @@ define ([
 			var hh = DEFAULT_SPR_TEXTURE.image.height;
 			spr.SetScaleXYZ(ww,hh,1);
 			// save in update array
-			m_updatable.push(spr);
+			this.RegisterHeartBeatVisual(spr);
 		} else {
 			console.error("DEFAULT_SPR_TEXTURE is undefined");
 		}
@@ -112,7 +124,7 @@ define ([
 
 		var threeSprite = new InqSprite (mat);
 		// save in update array
-		m_updatable.push(threeSprite);
+		this.RegisterHeartBeatVisual(threeSprite);
 
 		console.assert(threeSprite, "could not create THREE.Sprite");
 
