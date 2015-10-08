@@ -2,39 +2,49 @@
 	<content><![CDATA[
 /* behavior tree node $1 */
 define ([
-	'1401/system/behaviorfactory'
+	'1401/objects/behaviors/nodes/base',
+//	'1401/objects/behaviors/nodes/action'
+//	'1401/objects/behaviors/nodes/decorator'
+//	'1401/objects/behaviors/nodes/condition'
 ], function ( 
-	BF
+	BN,
+//	Action || Condition || Decorator
 ) {		
 
 /// $2: $1 ///
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/* subclass from BF.$2 */
+/* subclass from $2 */
 function ${1:BehaviorNode} ( read_only_conf ) {
 	// call the parent constructor
-	// BF.Condition, BF.Action, or BF.Decorator
-	BF.${2:Action}.call (this);	
+	// BN.Condition, BN.Action, or BN.Decorator
+	${2:Action}.call (this);	
 	// save configuration if any, set common flags
 	this.SaveConfig( read_only_conf );
 	// each node has a name
-	this.node_type = BF.TYPE.$2
+	this.node_type = BN.TYPE.$2;
 	this.node_class = '$1';
 	this.AutoName();
 }
 /* inheritance */
-$1.inheritsFrom(BF.$2);
+$1.inheritsFrom($2);
 
 /* overrides */
 // $1.method( 'Enter', function ( pish ) { });
 // $1.method( 'Open', function ( pish ) { });
 $1.method( 'Tick', function ( pish, int_ms ) {
 	$0
-	return BF.SUCCESS;	// or BF.FAILURE or BF.RUNNING
+	return BN.SUCCESS;	// or BN.FAILURE or BN.RUNNING
 });
 // $1.method( 'Close', function ( pish ) { });
 // $1.method( 'Exit', function ( pish ) { });
 
 /*/////////////////////////////////////////////////////////////////////////////
+
+   Helpful Debug
+   read_only_conf has special properties set by this.SaveConfig()
+      this.DBG            - set if 'config.trace' is defined
+                            use to activate debug messages in the behavior
+                            node when authoring
 
    Helpful Methods
       this.MasterTime()   - current time in ms elapsed
@@ -44,15 +54,17 @@ $1.method( 'Tick', function ( pish, int_ms ) {
       pish.ai.behavior    - access behavior tree running the piece
       this.DBG            - set true if config.debug was true
 
-   Blackboard Local Memory is unique for every node in a piece's BT
-      this.BBGet(key) 
-      this.BBSet(key,val)
+   Blackboard Local Memory is unique for every node in a piece's BT:
+      this.BBGet(pish,key) 
+      this.BBSet(pish,key,val)
 
    Blackboard Tree Memory is shared by all pieces using that tree
+   in pish.ai.blackboard:
       TreeMemGet(tree_id, key)
       TreeMemSet(tree_id, key, val)
 
    Blackboard Agent Memory is shared by all nodes running in a piece
+   in pish.ai.blackboard:
       AgentMemGet(key)
       AgentMemSet(key, val)
 
