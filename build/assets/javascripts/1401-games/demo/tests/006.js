@@ -33,7 +33,7 @@ define ([
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE DECLARATION *******************************************************/
 
-	var MOD = SYSLOOP.New("Test03");
+	var MOD = SYSLOOP.New("Test06");
 
 	MOD.SetHandler( 'Construct', m_Construct );
 	MOD.SetHandler( 'Start', m_Start );

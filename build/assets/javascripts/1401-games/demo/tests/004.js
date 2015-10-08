@@ -29,7 +29,7 @@ define ([
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE DECLARATION *******************************************************/
 
-	var MOD = SYSLOOP.New("Test03");
+	var MOD = SYSLOOP.New("Test04");
 	MOD.EnableUpdate( true );
 	MOD.EnableInput( true );
 
