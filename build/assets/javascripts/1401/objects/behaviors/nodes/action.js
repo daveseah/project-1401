@@ -38,7 +38,7 @@ define ([
 		//	call the parent constructor		
 		BaseNode.call (this);
 		// save node configuration, if any
-		this.config = read_only_conf;
+		this.SaveConfig(read_only_conf);
 		// each node has a name
 		this.node_type = BaseNode.TYPE.Action;
 		this.AutoName();
@@ -59,10 +59,14 @@ define ([
 /*/	Action.method('Tick', function ( pish, int_ms ) {
 		// execute every tick, must return status
 		// console.log(this.name,"tick",pish.name.bracket());
-		if (Math.random()>0.5) 
+		var out = this.DBG || this.name.bracket();
+		if (Math.random()>0.5) {
+			if (this.DBG) console.log(out,"success");
 			return BaseNode.SUCCESS;
-		else
+		} else {
+			if (this.DBG) console.log(out,"fail");
 			return BaseNode.FAILURE;
+		}
 	});
 
 ///////////////////////////////////////////////////////////////////////////////

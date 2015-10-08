@@ -4,10 +4,13 @@ define ([
 	'1401/objects/behaviors/tree',
 	'1401/objects/behaviors/nodes/base',
 	'1401/objects/behaviors/nodes/sequence',
+	'1401/objects/behaviors/nodes/memsequence',
 	'1401/objects/behaviors/nodes/priority',
+	'1401/objects/behaviors/nodes/mempriority',
 	'1401/objects/behaviors/nodes/decorator',
 	'1401/objects/behaviors/nodes/condition',
 	'1401/objects/behaviors/nodes/action',
+	'1401/objects/behaviors/nodes/wait',
 	'1401/objects/behaviors/nodes/subtree',
 	'1401/objects/behaviors/blackboard'
 
@@ -16,10 +19,13 @@ define ([
 	BehaviorTree,
 	BaseNode,
 	Sequence,
+	MemSequence,
 	Priority,
+	MemPriority,
 	Decorator,
 	Condition,
 	Action,
+	Wait,
 	SubTree,
 	Blackboard
 ) {
@@ -172,20 +178,31 @@ define ([
 		return new Sequence ( children );
 	};
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	BF.NewMemSequence = function ( children ) {
+		return new MemSequence ( children );
+	};
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	BF.NewPriority = function ( children ) {
+		return new Priority ( children );
+	};
+/// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	BF.NewMemPriority = function ( children ) {
 		return new Priority ( children );
 	};
 
 
 ///	BASE CONSTRUCTORS ///////////////////////////////////////////////////////
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	BF.Priority 	= Priority;
 	BF.Sequence 	= Sequence;
+	BF.MemSequence 	= MemSequence;
+	BF.Priority 	= Priority;
+	BF.MemPriority 	= MemPriority;
 	BF.BaseNode 	= BaseNode;
 	BF.Action 		= Action;
+	BF.Wait 		= Wait;
 	BF.Condition 	= Condition;
 	BF.Decorator 	= Decorator;
-	BF.SubTree 	= SubTree;
+	BF.SubTree 		= SubTree;
 		
 
 ///////////////////////////////////////////////////////////////////////////////

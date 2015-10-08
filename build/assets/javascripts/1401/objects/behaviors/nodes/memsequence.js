@@ -1,4 +1,4 @@
-/* sequence.js */
+/* memsequence.js */
 define ([
 	'1401/settings',
 	'1401/objects/behaviors/nodes/base'
@@ -7,15 +7,15 @@ define ([
 	BaseNode
 ) {
 
-	var DBGOUT = false;
-
 /**	BehaviorTree Sequence ***************************************************\
 
-	A SequenceNode is a type of composite that returns SUCCESS ONLY IF all its
-	children return are successful. Each child is executed one after the
-	other.
+	A MemSequenceNode is a type of composite that returns SUCCESS ONLY IF 
+	all its children return are successful. Like a regular Sequence,
+	each child is executed one after the other. MemSequences remember if
+	a child returned RUNNING, and can return directly to it on the next
+	call.
 
-		var node = SequenceNode ([
+		var node = MemSequenceNode ([
 			Suceeder(),
 			Failer()
 		]);
@@ -28,7 +28,7 @@ define ([
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function SequenceNode ( children, read_only_conf ) {
+	function MemSequenceNode ( children, read_only_conf ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
 
@@ -42,7 +42,7 @@ define ([
 		this.AutoName();
 	}
 	/*/ inheritance /*/
-	SequenceNode.inheritsFrom(BaseNode);
+	MemSequenceNode.inheritsFrom(BaseNode);
 
 ///	'methods' ///////////////////////////////////////////////////////////////
 
@@ -55,12 +55,19 @@ define ([
 
 /// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	SequenceNode.method('Tick', function ( pish, int_ms ) {
+	MemSequenceNode.method('Open', function ( pish ) {
+		this.BBSet(pish,'_current',0);
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	MemSequenceNode.method('Tick', function ( pish, int_ms ) {
 		out = this.DBG || this.name.bracket();
-		for (i=0;i<this.children.length;i++) {
+		for (i=this.BBGet(pish,'_current');i<this.children.length;i++) {
 			child = this.children[i];
 			status = child.Execute(pish, int_ms);
 			if (status!==BaseNode.SUCCESS) {
+				if (status==BaseNode.RUNNING) {
+					this.BBSet(pish,'_current',i);
+				}
 				if (this.DBG) {
 					out+= ' '+child.name+'-'+status+' ABORT';
 					console.log(out);
@@ -88,6 +95,6 @@ define ([
 
 /** RETURN CONSTRUCTOR *******************************************************/
 
-	return SequenceNode;
+	return MemSequenceNode;
 
 });

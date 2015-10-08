@@ -1,4 +1,4 @@
-/* priority.js */
+/* mempriority.js */
 define ([
 	'1401/settings',
 	'1401/objects/behaviors/nodes/base'
@@ -7,15 +7,15 @@ define ([
 	BaseNode
 ) {
 
-	var DBGOUT = true;
-
 /**	BehaviorTree Priority ***************************************************\
 	
-	A PriorityNode is a type of composite that returns SUCCESS if any one of
-	its children is successful. It returns RUNNING until  all children have
-	reported in.
+	A MemPriorityNode is a type of composite that returns SUCCESS if any one of
+	its children is successful. Similar to PriorityNode, this version
+	It returns RUNNING until all children have reported in, but also
+	remembers the LAST child it was checking so it skips ones that have
+	run before.
 
-		var node = PriorityNode ([
+		var node = MemPriorityNode ([
 			Failer(),
 			Failer(),
 			Suceeder(),
@@ -31,7 +31,7 @@ define ([
 /** OBJECT DECLARATION ******************************************************/
 
 	/* constructor */
-	function PriorityNode ( children, read_only_conf ) {
+	function MemPriorityNode ( children, read_only_conf ) {
 		//	call the parent constructor		
 		BaseNode.call (this);
 
@@ -45,7 +45,7 @@ define ([
 		this.AutoName();
 	}
 	/*/ inheritance /*/
-	PriorityNode.inheritsFrom(BaseNode);
+	MemPriorityNode.inheritsFrom(BaseNode);
 
 ///	'methods' ///////////////////////////////////////////////////////////////
 
@@ -58,25 +58,32 @@ define ([
 
 /// see basenode.js for overrideable methods!
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	PriorityNode.method('Tick', function ( pish, int_ms ) {
+	MemPriorityNode.method('Open', function ( pish ) {
+		this.BBSet(pish,'_current',0);
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	MemPriorityNode.method('Tick', function ( pish, int_ms ) {
 		out = this.DBG || this.name.bracket();
-		for (i=0;i<this.children.length;i++) {
+		for (i=this.BBGet(pish,'_current');i<this.children.length;i++) {
 			child = this.children[i];
 			status = child.Execute(pish,int_ms);
 			if (status!==BaseNode.FAILURE) {
-				if (DBGOUT) {
+				if (status===BaseNode.RUNNING) {
+					this.BBSet(pish,'_current',i);
+				}
+				if (this.DBG) {
 					out+= ' '+child.name+'-'+status+' SUCCESS';
 					console.log(out);
 				}
 				return status;
 			} else {
-				if (DBGOUT) {
+				if (this.DBG) {
 					out+= ' '+child.name+'-'+status;
 					console.log(out);
 				}
 			}
 		}
-		if (DBGOUT) console.log(out,"all",this.children.length,"failed!");
+		if (this.DBG) console.log(out,"all",this.children.length,"failed!");
 		return BaseNode.FAILURE;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -93,6 +100,6 @@ define ([
 
 /** RETURN CONSTRUCTOR *******************************************************/
 
-	return PriorityNode;
+	return MemPriorityNode;
 
 });

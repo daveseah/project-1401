@@ -127,9 +127,8 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Utility to save shared configuration properties
 /*/	BaseNode.method('SaveConfig', function ( read_only_conf ) {
-		this.config = read_only_conf;
-		this.DBG = (this.config.debug!==undefined) ? this.config.debug : false;
-		this.MEMO = this.config.memo || '';
+		this.config = read_only_conf || {};
+		this.DBG = (this.config.trace!==undefined) ? this.config.trace : false;
 	});
 
 
@@ -202,7 +201,7 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	initialize the node data structures in prep for running
 /*/	BaseNode.method('Open', function ( pish ) {
-		// setup that happens just once
+		// setup that happens just once per run
 		// console.log(this.name,"open",pish.name.bracket());
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -40,7 +40,7 @@ define ([
 		// save the child node
 		this.children.push(child);
 		// save configuration if any
-		this.config = read_only_conf;
+		this.SaveConfig(read_only_conf);
 
 		// each node has a name
 		this.node_type = BaseNode.TYPE.Decorator;

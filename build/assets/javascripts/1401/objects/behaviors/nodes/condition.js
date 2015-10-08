@@ -38,7 +38,7 @@ define ([
 		//	call the parent constructor		
 		BaseNode.call (this);
 		// save node configuration, if any
-		this.config = read_only_conf;
+		this.SaveConfig(read_only_conf);
 		// each node has a name
 		this.node_type = BaseNode.TYPE.Condition;
 		this.AutoName();

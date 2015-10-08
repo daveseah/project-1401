@@ -40,7 +40,7 @@ define ([
 		// save tree_node
 		this.tree_node = tree_node;
 		// save node configuration, if any
-		this.config = read_only_conf;
+		this.SaveConfig(read_only_conf);
 		// each node has a name
 		this.node_type = BaseNode.TYPE.SubTree;
 		this.AutoName();
