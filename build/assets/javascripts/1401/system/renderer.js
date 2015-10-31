@@ -240,7 +240,7 @@ define ([
 		if (BG_SPRITE) {
 			return BG_SPRITE;
 		} else {
-			console.error('No background set');
+			console.log('CurrentBackground(): No background has been set yet');
 			return undefined;
 		}
 	};
