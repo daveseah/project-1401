@@ -151,7 +151,12 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddBackgroundVisual = function ( visual ) {
 		RP_BG.add(visual);
-		if (DBGOUT) console.log("added "+visual.id,">>> RP_BG");
+		if (DBGOUT) {
+			console.log("added "+visual.id,">>> RP_BG");
+			if ((RP_BG.camera.far + visual.position.z)<0) {
+				console.warn('*** WARN *** BG visual may not be in view fustrum of BGCAM');
+			}
+		}
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddUIVisual = function ( visual ) {
@@ -221,7 +226,7 @@ define ([
 		var bgMat = new THREE.SpriteMaterial( {map:bgMap} );
 		if (BG_SPRITE) this.RemoveBackgroundVisual(BG_SPRITE);
 		BG_SPRITE = new THREE.Sprite(bgMat);
-		BG_SPRITE.position.set(0,0,-1000); // clip for 2D is 1000
+		BG_SPRITE.position.set(0,0,-999); // clip for 2D is 1000
 		this.AddBackgroundVisual(BG_SPRITE);
 	
 		function mi_SaveHeight(texture) {
@@ -229,6 +234,15 @@ define ([
 			if (callback) callback.call(callee, texture);
 		}
 
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.CurrentBackground = function () {
+		if (BG_SPRITE) {
+			return BG_SPRITE;
+		} else {
+			console.error('No background set');
+			return undefined;
+		}
 	};
 
 

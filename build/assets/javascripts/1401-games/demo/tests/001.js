@@ -157,6 +157,11 @@ define ([
 	function m_Start() {
 		window.DBG_Out( "<b>System Loop Test</b>" );
 		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/001</tt>" );
+
+		window.DBG_Out( "Check console for BackgroundObject access test" );
+		console.group("Background Object Access Test");
+		console.log("Current Background ThreeObject",RENDERER.CurrentBackground());
+		console.groupEnd();
 	}	
 
 
