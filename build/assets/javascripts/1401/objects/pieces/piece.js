@@ -281,6 +281,11 @@ define ([
 
 ///	VISUAL METHODS ////////////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+	Piece.method('IsVisible', function () {
+		if (!this.visual) return false;
+		return (this.visual.visible);
+	});
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Piece.method ('Visual', function () {
 		return this.visual;
 	});

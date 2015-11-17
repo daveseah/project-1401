@@ -47,6 +47,18 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	API.PiecesExecute = ProtoPiece.ExecuteAll;
 
+/// PIECE LOOKUP /////////////////////////////////////////////////////////////
+	API.GetPieceById = function ( id ) {
+		if (!id) throw "need id";
+		var p = ProtoPiece.PieceDict[id];
+		if (!p) throw "piece with id "+ id +" doesn't exist";
+		return p;
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	API.GetPieceByVisual = function ( visual ) {
+		return this.GetPieceById(visual.pieceId);
+	};
+
 
 ///	FACTORY METHODS //////////////////////////////////////////////////////////
 
