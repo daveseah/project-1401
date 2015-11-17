@@ -136,22 +136,22 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddWorldVisual = function ( visual ) {
 		RP_WORLD.add(visual);
-		if (DBGOUT) console.log("added "+visual.id,">>> RP_WORLD");
+		if (DBGOUT && SETTINGS.InfoTrace('rpass')) console.log("added "+visual.id,">>> RP_WORLD");
 	};
 ///	---
 	API.SetWorldVisualFog = function ( fog ) {
 		RP_WORLD.fog = fog;
-		if (DBGOUT) console.log("added fog"+fog.name,">>> RP_WORLD");
+		if (DBGOUT && SETTINGS.InfoTrace('rpass')) console.log("added fog"+fog.name,">>> RP_WORLD");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddWorldOverlayVisual = function ( visual ) {
 		RP_WORLD2.add(visual);
-		if (DBGOUT) console.log("added "+visual.id,">>> RP_WORLD2");
+		if (DBGOUT && SETTINGS.InfoTrace('rpass')) console.log("added "+visual.id,">>> RP_WORLD2");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddBackgroundVisual = function ( visual ) {
 		RP_BG.add(visual);
-		if (DBGOUT) {
+		if (DBGOUT && SETTINGS.InfoTrace('rpass')) {
 			console.log("added "+visual.id,">>> RP_BG");
 			if ((RP_BG.camera.far + visual.position.z)<0) {
 				console.warn('*** WARN *** BG visual may not be in view fustrum of BGCAM');
@@ -161,37 +161,37 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddUIVisual = function ( visual ) {
 		RP_UI.add(visual);
-		if (DBGOUT) console.log("added "+visual.id,">>> RP_UI");
+		if (DBGOUT && SETTINGS.InfoTrace('rpass')) console.log("added "+visual.id,">>> RP_UI");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.AddScreenOverlayVisual = function ( visual ) {
 		RP_OVER.add(visual);
-		if (DBGOUT) console.log("added "+visual.id,">>> RP_OVER");
+		if (DBGOUT && SETTINGS.InfoTrace('rpass')) console.log("added "+visual.id,">>> RP_OVER");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveBackgroundVisual = function ( visual ) {
 		RP_BG.remove(visual);
-		if (DBGOUT) console.log("RP_BG >>>",visual.id.toString(),"removed");
+		if (DBGOUT && SETTINGS.InfoTrace('rpass')) console.log("RP_BG >>>",visual.id.toString(),"removed");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveWorldVisual = function ( visual ) {
 		RP_WORLD.remove(visual);
-		if (DBGOUT) console.log("RP_WORLD >>>",visual.id.toString(),"removed");
+		if (DBGOUT && SETTINGS.InfoTrace('rpass')) console.log("RP_WORLD >>>",visual.id.toString(),"removed");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveWorldOverlayVisual = function ( visual ) {
 		RP_WORLD2.remove(visual);
-		if (DBGOUT) console.log("RP_WORLD2 >>>",visual.id.toString(),"removed");
+		if (DBGOUT && SETTINGS.InfoTrace('rpass')) console.log("RP_WORLD2 >>>",visual.id.toString(),"removed");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveUIVisual = function ( visual ) {
 		RP_UI.remove(visual);
-		if (DBGOUT) console.log("RP_UI >>>",visual.id.toString(),"removed");
+		if (DBGOUT && SETTINGS.InfoTrace('rpass')) console.log("RP_UI >>>",visual.id.toString(),"removed");
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	API.RemoveScreenOverlayVisual = function ( visual ) {
 		RP_OVER.remove(visual);
-		if (DBGOUT) console.log("RP_OVER >>>",visual.id.toString(),"removed");
+		if (DBGOUT && SETTINGS.InfoTrace('rpass')) console.log("RP_OVER >>>",visual.id.toString(),"removed");
 	};
 
 
@@ -240,7 +240,7 @@ define ([
 		if (BG_SPRITE) {
 			return BG_SPRITE;
 		} else {
-			console.log('CurrentBackground(): No background has been set yet');
+			console.error('No background set');
 			return undefined;
 		}
 	};
@@ -322,7 +322,7 @@ define ([
 			console.error("perspective camera raypicking is not yet implemented");
 		}
 
-		var objects = RP.pieces.children;
+		var objects = RP_WORLD.children;
 		var intersections = raycaster.intersectObjects(objects);
 
 		var type = (camera instanceof THREE.PerspectiveCamera) ? 'PerspectiveCam' : 'OrthoCam';

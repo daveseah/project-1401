@@ -50,6 +50,16 @@ define ([
 		S[key]=value;
 	};
 
+/// 1401 Debug Trace Flags (set in master.yaml)
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+/*/ Look for trace flags in system1401.dbg_trace
+/*/	SETTINGS.InfoTrace = function ( key ) {
+		var sys = S.system1401;
+		if (!sys) return false;
+		var trace = sys.info_trace;
+		if (!trace) return false;
+		return (trace[key]===true);
+	};
 
 /// SYSTEM INITIALIZATION ////////////////////////////////////////////////////
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

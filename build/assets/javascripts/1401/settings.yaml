@@ -8,4 +8,6 @@
 system1401:
   author: "Dave Seah"
   description: "Javascript Game Shell"
-  
+  info_trace:
+    rpass: false
+    sprite: false  

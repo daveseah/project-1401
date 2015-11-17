@@ -385,7 +385,9 @@ define ([
 /*/	InqSprite.method('GoSequence', function ( seqName, offset ) {
 		if (this.textureQueue.length) {
 			this.sequenceQueue.push({name:seqName, offset: offset, mode:'go'});
-			console.log("Sprite.GoSequence(): deferring",seqName.bracket(),"until texture loaded");
+			if (SETTINGS.InfoTrace('sprite')) {
+				console.log("Sprite.GoSequence(): deferring",seqName.bracket(),"until texture loaded");
+			}
 			return;
 		}
 		runs = InqSprite.MODE_STOPPED;
