@@ -229,7 +229,7 @@ define ([
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('ScreenCam', function () { return this.camSCREEN; });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	Viewport.method('WebGL', function () { return this.WebGL; });
+	Viewport.method('WebGL', function () { return this.webGL; });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('Clear', function () { this.webGL.clear(); });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
