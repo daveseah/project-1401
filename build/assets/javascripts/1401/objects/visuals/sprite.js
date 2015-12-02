@@ -258,10 +258,11 @@ define ([
 	sizing of sprites (think of it as a zoom)
 /*/	InqSprite.method('SetZoom', function ( s ) {
 		this.zoom = s;
+		// handle asynchronous loading condition
 		if (this.TextureIsLoaded()) {
-			var ww = this.material.map.image.width;
-			var hh = this.material.map.image.height;
-			this.SetScaleXYZ(ww,hh,1);
+			var dim = this.SpriteDimensions();
+			// SetScaleXYZ will use zoom setting
+			this.SetScaleXYZ( dim.w, dim.h, 1);
 		} else {
 			if (DBGOUT) console.warn("Called SetZoom("+this.zoom+") before texture loaded. Deferring operation");
 		}
