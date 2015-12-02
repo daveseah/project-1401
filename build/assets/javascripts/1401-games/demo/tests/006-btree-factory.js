@@ -1,4 +1,4 @@
-/* demo/test/007.js */
+/* demo/test/006.js */
 define ([
 	'keypress',
 	'physicsjs',
@@ -24,10 +24,11 @@ define ([
 	var DBGOUT = true;
 
 ///////////////////////////////////////////////////////////////////////////////
-/**	SUBMODULE TEST 005 *******************************************************\
+/**	SUBMODULE TEST 006 *******************************************************\
 
-	This test module exercises the behavior tree system through
-	ai.js, so must of the running code is there.
+	This test module exercises the behavior tree system by creating a
+	behaviors through the new BehaviorFactory module. See the Start()
+	handler
 
 
 ///////////////////////////////////////////////////////////////////////////////

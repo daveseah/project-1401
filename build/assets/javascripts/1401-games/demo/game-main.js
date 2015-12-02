@@ -4,7 +4,8 @@ define ([
 	'1401/settings',
 	'1401/objects/sysloop',
 	'1401/system/renderer',
-	'1401-games/demo/tests/007'		/*** SELECT TEST *************************/
+	/*** SELECT TEST *************************/
+	'1401-games/demo/tests/004-ship-movement'
 ], function ( 
 	DBG,
 	SETTINGS,
