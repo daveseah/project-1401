@@ -50,7 +50,7 @@ define ([
 		// to ensure proper scaling
 		this.fractionalWidth = null;
 		this.fractionalHeight = null;
-		this.scaleFactor = 1;
+		this.zoom = 1;
 
 		// update handler
 		this.updateFunc = null;
@@ -169,6 +169,8 @@ define ([
 		this.material.map = texture;
 		this.material.needsUpdate = true;
 
+		// support function called on successful texture load, called only once
+		// per texture path apparently (?)
 		function st_onload ( texture ) {
 			var loaded = that.textureQueue.shift();
 			if (DBGOUT) console.log("Sprite.SetTexture(): async load complete",loaded);
@@ -178,7 +180,7 @@ define ([
 			var hh = texture.image.height;
 
 			// set the sprite to the proper size
-			that.SetScaleXYZ(ww,hh,1);
+			that.SetScaleXYZ( ww, hh, 1 );
 			if (DBGOUT) console.log("Sprite.SetTexture(): setting scale",ww+'x'+hh);
 
 			// inform callee
@@ -203,24 +205,70 @@ define ([
 		this.material.rotation = rot;
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*/	This is a ThreeJS-specific non-uniform scale setter. It's used to size
-	a sprite exactly to the size it should be
-/*/	InqSprite.method('SetScaleXYZ', function ( x,y,z ) {
-		this.scale.set(x,y,z); // for threeJS scaling, which we are controlling
+/*/	return true if material loaded
+/*/	InqSprite.method('TextureIsLoaded', function () {
+		return this.material.map.image!==undefined;
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	InqSprite.method('ScaleXYZ', function () {
+/*/	return size of sprite texture (material) if it's been loaded yet,
+	undefined if invalid
+/*/	InqSprite.method('TextureDimensions', function () {
+		if (this.TextureIsLoaded()) {
+			return { 
+				w: this.material.map.image.width, 
+				h: this.material.map.image.height
+			};
+		} else {
+			console.error('Sprite texture not yet loaded, so texture dimensions not available');
+			return undefined;
+		}
+	});
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	return size of sprite (taking spritesheet into account) if it's valid,
+	undefined if invalid
+/*/	InqSprite.method('SpriteDimensions', function () {
+		if (this.TextureIsLoaded()) {
+			var fracWidth = this.fractionalWidth || 1;
+			var fracHeight = this.fractionalHeight || 1;
+			var dim = this.TextureDimensions();
+			dim.w *= fracWidth;
+			dim.h *= fracHeight;
+			return dim;
+		} else {
+			console.error('Sprite texture not yet loaded, so Sprite dimensions not available');
+			return undefined;
+		}
+	});
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	This is a ThreeJS-specific non-uniform scale setter. It's used to size
+	a sprite exactly to the size it should be. Z is not scaled.
+/*/	InqSprite.method('SetScaleXYZ', function ( x,y,z ) {
+		var s = this.zoom;
+		this.scale.set(s*x,s*y,z); // for threeJS scaling, which we are controlling
+	});
+//	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*	This will return the current scale of the sprite, which might not be what
+	you want. Use TextureDimensions() and SpriteDimensions() to get the 
+	native size of the sprite texture (spritesheet) or sprite base dimensions.
+/*/	InqSprite.method('ScaleXYZ', function () {
 		return { x: scale.x, y: scale.y, z: scale.z }; // for threeJS scaling
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	This is a universal scaling factor, separate from ScaleXYZ, for relative
 	sizing of sprites (think of it as a zoom)
 /*/	InqSprite.method('SetZoom', function ( s ) {
-		this.scaleFactor = s;
+		this.zoom = s;
+		if (this.TextureIsLoaded()) {
+			var ww = this.material.map.image.width;
+			var hh = this.material.map.image.height;
+			this.SetScaleXYZ(ww,hh,1);
+		} else {
+			if (DBGOUT) console.warn("Called SetZoom("+this.zoom+") before texture loaded. Deferring operation");
+		}
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	InqSprite.method('Zoom', function ( s ) {
-		return this.scaleFactor;
+		return this.zoom;
 	});
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	InqSprite.method('Show', function () {
