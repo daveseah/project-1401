@@ -209,12 +209,11 @@ define ([
 		}
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	SysLoop.method('LoadAssets', function ( doneFunc ) {
+	SysLoop.method('LoadAssets', function ( checkIn ) {
 		if (this.HandleLoadAssets) {
-			this.HandleLoadAssets.call(this, doneFunc);
+			this.HandleLoadAssets.call(this, checkIn);
 		} else {
 			if (DBGOUT) console.log(this.name,"LoadAssets: no handler defined");
-			doneFunc.call(this);
 		}
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

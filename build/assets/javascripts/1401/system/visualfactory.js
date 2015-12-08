@@ -45,15 +45,15 @@ define ([
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Load preliminary assets when called by master.js. Callback signals that
 	its assets have been completely loaded.
-/*/	API.LoadAssets = function ( callback ) {
+/*/	API.LoadAssets = function ( checkIn ) {
 		var path = SETTINGS.SystemPath('common/default-visual.png');
 
 		DEFAULT_SPR_TEXTURE = THREE.ImageUtils.loadTexture (path,THREE.UVMAPPING,
 			la_onload, la_onerr);
 		function la_onload ( texture ) {
-			if (DBGOUT)    console.log("VisualFactory.LoadAssets() complete");
+			if (DBGOUT) console.log("VisualFactory.LoadAssets() complete");
 			// signal we are done loading
-			if (callback) callback(this);
+			if (checkIn) checkIn.Notify("VisualFactory.LoadAssets");
 		}
 		function la_onerr ( err ) {
 			console.log("LoadAssets",err);
@@ -107,12 +107,12 @@ define ([
 		return spr;	
 	};
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*/	Main Sprite Maker Method, taking a texturePath and an optional callback when the sprite
+/*/	Main Sprite Maker Method, taking a texturePath and an optional checkIn when the sprite
 	is completely initialized.
 /*/	API.MakeStaticSprite = function ( texturePath, onValid ) {
 		if (typeof texturePath != 'string') throw "texturePath must be string";
 		if (!texturePath) throw "texturePath can not be empty";
-		if (!onValid) console.warn("MakeSprite: onValid callback for notification recommended!");
+		if (!onValid) console.warn("MakeSprite: onValid checkIn for notification recommended!");
 
 		SETTINGS.XSSTextureCheck (texturePath);
 

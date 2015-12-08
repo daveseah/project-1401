@@ -2,11 +2,13 @@ define ([
 	'1401/settings',
 	'1401/objects/sysloop',
 	'1401/system/autosystem',
+	'1401/objects/logic/checkinmonitor',
 	'1401-games/_empty/game-main'
 ], function (
 	SETTINGS,
 	SYSLOOP,
 	AUTOSYS,
+	CheckInMonitor,
 	DEFAULT_GAME
 ) {
 
@@ -99,7 +101,10 @@ define ([
 		/* load game module asynchronously */
 		if (USE_DYNAMIC_LOADING) {
 			// this breaks with mimosa build -omp
-			console.info ("!!! DYNAMIC LOAD", module_path);
+			var str = module_path;
+			if (module_path.length>32) 
+				str = module_path.substr(module_path.length-32);
+			console.info ("DYNAMIC LOAD ..."+str);
 			require ( [module_path], m_GameInstantiated );
 		} else {
 			console.info("!!! STATIC LOAD", DEFAULT_GAME.name.bracket());
@@ -133,11 +138,10 @@ define ([
 		AUTOSYS.Initialize();
 		SYSLOOP.InitializeAll();
 
-		/* NOTE */
-		/* the async assets loading is not yet working */
-
-		AUTOSYS.LoadAssets ( m_GameConstructAndStart );
-		SYSLOOP.LoadAssetsAll ( function () {} );
+		cim = new CheckInMonitor( _master, m_GameConstructAndStart );
+		AUTOSYS.LoadAssets( cim.NewCheckIn('autosys') );
+		SYSLOOP.LoadAssetsAll ( cim.NewCheckIn('sysloop') );
+		cim.Activate();
 
 		// ...execution continues in m_gameConstructAndStart()
 

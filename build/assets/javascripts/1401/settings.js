@@ -218,12 +218,25 @@ define ([
 
 			// print notice on asynch load
 			var filename = yamlFilePath.replace(/^.*[\\\/]/, '');
-			console.info("!!! DYNAMIC LOAD",yamlFilePath);
+			var str = yamlFilePath;
+			if (yamlFilePath.length>32) 
+				str = yamlFilePath.substr(yamlFilePath.length-32);
+			console.info("SETTINGS LOAD ..."+str);
 			// let caller know we're done!
 			callback.call(that, true);
 
 		});
 
+	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Load YAML configuration file using newer CheckInMonitor (CIM) convention, 
+	which is useful for loading multiple within SYSLOOP.LoadAssets() 
+	using sub-CIMs
+/*/	SETTINGS.ManagedLoad = function ( yamlFilePath, checkIn ) {
+		if (!checkIn) throw new Error ('ManagedLoad req CheckInMonitor object');
+		SETTINGS.Load( yamlFilePath, this, function (yobj) { 
+			checkIn.Notify(yamlFilePath);
+		});
 	};
 
 
