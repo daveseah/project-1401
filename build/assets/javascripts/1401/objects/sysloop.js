@@ -1,10 +1,12 @@
 /* sysloop.js */
 define ([
 	'1401/system/autosystem',
-	'1401/system/piecefactory'
+	'1401/system/piecefactory',
+	'1401/objects/logic/checkinmonitor'
 ], function ( 
 	AUTOSYS,
-	PIECEFACTORY
+	PIECEFACTORY,
+	CheckInMonitor
 ) {
 
 	var DBGOUT = false;
@@ -214,6 +216,7 @@ define ([
 			this.HandleLoadAssets.call(this, checkIn);
 		} else {
 			if (DBGOUT) console.log(this.name,"LoadAssets: no handler defined");
+			checkIn.Notify();
 		}
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -378,12 +381,22 @@ define ([
 		m_master_gameloop.Initialize();
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	FACTORY.LoadAssetsAll = function ( doneCallback ) {
+	FACTORY.LoadAssetsAll = function ( checkIn ) {
+		var mycim = new CheckInMonitor( this, f_LoadComplete );
 		arr = m_LoopsArray();
 		for (i=0;i<arr.length;i++) {
-			m_loops[arr[i]].LoadAssets(doneCallback);
+			var sloop = m_loops[arr[i]];
+			var name = sloop.name || 'undefined'+i;
+			var cin = mycim.NewCheckIn('sysloop.'+sloop.name);
+			sloop.LoadAssets( cin );
 		}
-		m_master_gameloop.LoadAssets(doneCallback);
+		mycim.Activate();
+
+		// this is called when the monitored loads are done
+		function f_LoadComplete () {
+			// last checkIn.Notify() handled by master game loop
+			m_master_gameloop.LoadAssets(checkIn);
+		}
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	FACTORY.ConstructAll = function ( ) {

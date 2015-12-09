@@ -50,6 +50,7 @@ define ([
 
 		// create a new CheckInMonitor to handle our subyaml loads
 		var mycim = new CheckInMonitor( that, f_LoadComplete );
+		mycim.ShowDebug(true);
 		for (var i=0;i<yamls.length;i++) {
 			SETTINGS.ManagedLoad( yamls[i], mycim.NewCheckIn('yaml'+i) );
 		}
@@ -59,11 +60,12 @@ define ([
 		// this is called when the monitored loads are done
 		function f_LoadComplete () {
 			console.log("DONE! SETTINGS('gamemeta') is:",SETTINGS('gamemeta'));
-			console.log('Delaying 3000 milliseconds before firing notify...');
+			console.log('Arbitrary delay 3000 milliseconds before firing notify...');
 			// CRITICAL: tell master notify we're done!
 			setTimeout(function(){
-				checkIn.Notify('007-LoadAssets');
-				console.log('...master startup continues!');
+				checkIn.Notify();
+				console.log('.. master startup continues!');
+				mycim.ShowDebug(false);
 			}, 3000);
 		}
 

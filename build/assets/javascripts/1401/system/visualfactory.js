@@ -53,7 +53,7 @@ define ([
 		function la_onload ( texture ) {
 			if (DBGOUT) console.log("VisualFactory.LoadAssets() complete");
 			// signal we are done loading
-			if (checkIn) checkIn.Notify("VisualFactory.LoadAssets");
+			if (checkIn) checkIn.Notify();
 		}
 		function la_onerr ( err ) {
 			console.log("LoadAssets",err);

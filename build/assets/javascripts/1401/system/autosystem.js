@@ -4,13 +4,15 @@ define ([
 	'1401/system/renderer',
 	'1401/system/visualfactory',
 	'1401/system/piecefactory',
-	'1401/system/logicfactory'
+	'1401/system/logicfactory',
+	'1401/objects/logic/checkinmonitor'
 ], function ( 
 	SETTINGS,
 	RENDERER,
 	VISUALFACTORY,
 	PIECEFACTORY,
-	LOGICFACTORY
+	LOGICFACTORY,
+	CheckInMonitor
 ) {
 
 	var DBGOUT = true;
@@ -48,6 +50,8 @@ define ([
 	var API = {};
 	API.name = "autosystem";
 
+	var that = this;
+
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/ Called by Master
 /*/	API.Initialize = function () {
@@ -55,8 +59,18 @@ define ([
 	};
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/ Called by Master
-/*/	API.LoadAssets = function ( callback ) {
-		VISUALFACTORY.LoadAssets (callback);
+/*/	API.LoadAssets = function ( checkIn ) {
+
+		var mycim = new CheckInMonitor( this, f_LoadComplete );
+		VISUALFACTORY.LoadAssets (mycim.NewCheckIn('autosys.visualfactory'));
+		mycim.Activate();
+
+		// this is called when the monitored loads are done
+		function f_LoadComplete () {
+			checkIn.Notify('AUTOSYS.LoadAssets');
+		}
+
+		
 	};
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Called by Master so system modules can do housekeeping before GameStep

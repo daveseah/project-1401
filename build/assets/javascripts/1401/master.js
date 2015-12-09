@@ -80,6 +80,8 @@ define ([
 	var m_game = null;			// current game
 	var m_viewmodel = null;		// parent viewmodel
 
+	var m_timeout_id;			// used for LoadAssets timeout
+
 	var m_timer_id;
 	var m_current_time_ms = 0;	// global timer
 	var m_interval_ms = SETTINGS('TIMESTEP');
@@ -138,12 +140,20 @@ define ([
 		AUTOSYS.Initialize();
 		SYSLOOP.InitializeAll();
 
-		cim = new CheckInMonitor( _master, m_GameConstructAndStart );
-		AUTOSYS.LoadAssets( cim.NewCheckIn('autosys') );
-		SYSLOOP.LoadAssetsAll ( cim.NewCheckIn('sysloop') );
+		var cim = new CheckInMonitor( _master, function () {
+			clearInterval(m_timeout_id);
+			// ...execution continues in m_gameConstructAndStart()
+			m_GameConstructAndStart();
+		});
+
+		AUTOSYS.LoadAssets( cim.NewCheckIn('master.autosys') );
+		SYSLOOP.LoadAssetsAll ( cim.NewCheckIn('master.sysloop') );
 		cim.Activate();
 
-		// ...execution continues in m_gameConstructAndStart()
+		m_timeout_id = setInterval(function(){
+			console.log(cim.name,"still waiting...");
+			console.log(cim.status.string);
+		},5000);
 
 	}
 	

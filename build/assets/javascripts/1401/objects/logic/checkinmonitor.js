@@ -1,8 +1,8 @@
 /* checkinmonitor.js */
 define ([
-	'1401/objects/logic/exec'
+	'1401/objects/logic/checkin'
 ], function ( 
-	Exec
+	CheckIn
 ) {
 
 	var DBGOUT = false;
@@ -48,18 +48,28 @@ define ([
 		this.active = false;
 		this.count = 0;
 	});
-
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Enable debugging manually
+/*/	CheckInMonitor.method('ShowDebug', function ( flag ) {
+		flag = (flag===undefined) ? true : flag;
+		DBGOUT = flag;
+		if (flag) 
+			console.log("++ CheckInMonitor DBGOUT enabled");
+		else 
+			console.log("-- CheckInMonitor DBGOUT disabled");
+	});
 
 /** METHODS ******************************************************************/
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*/	creates an Exec function that notifies the creating CheckInMonitor
+/*/	creates an CheckIn Object that notifies the creating CheckInMonitor
 	so it can keep track of when all CheckIns have completed
 /*/	CheckInMonitor.method('NewCheckIn', function ( name ) {
 		if (!name) throw new Error('NewCheckIn requires name identifier');
-		var exec = new Exec ( name, this.PRI_CheckIn, this );
-		this.checkedOut.push(exec);
-		return exec;
+		if (DBGOUT) console.log(this.id,'checkin created:',name);
+		var checkIn = new CheckIn ( name, this.PRI_CheckIn, this );
+		this.checkedOut.push(checkIn);
+		return checkIn;
 	});
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,7 +77,7 @@ define ([
 	queues. Call this when all check-in objects have been created.
 /*/	CheckInMonitor.method('Activate', function () {
 		this.active = true;
-		if (DBGOUT) console.log(this.id,'check-in processing activated');
+		if (DBGOUT) console.log(this.id,'>>> PROCESSING >>>');
 		this.PRI_CheckInCheck();
 	});
 
@@ -80,10 +90,10 @@ define ([
 		// check if actively processing
 		var left = this.checkedOut.length - this.count;
 		if (!this.active) {
-			if (DBGOUT) console.log(this.id,'check-in',name.bracket(),left,'left (inactive)');
+			if (DBGOUT) console.log(this.id, name.bracket(),'checked-in,',left ,'left (inactive)');
 			return;
 		}
-		if (DBGOUT) console.log(this.id,'check-in',name.bracket(),left,'left');
+		if (DBGOUT) console.log(this.id,name.bracket(),'checked-in,',left ,'left');
 		this.PRI_CheckInCheck();
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -97,6 +107,18 @@ define ([
 			// reset!
 			this.Initialize();
 		}
+	});
+
+
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Return status object
+/*/	CheckInMonitor.method('Status', function () {
+		var status = {};
+		status.string = "counted:"+this.count;
+		status.string += " checkedIn:"+this.checkedIn.length;
+		status.string += " checkedOut:"+this.checkedOut.length;
+		status.string += " active:"+this.active;
+		return status;
 	});
 
 
