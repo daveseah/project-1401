@@ -151,9 +151,9 @@ define ([
 		cim.Activate();
 
 		m_timeout_id = setInterval(function(){
-			console.log(cim.name,"still waiting...");
-			console.log(cim.status.string);
-		},5000);
+			console.log('Still waiting for LoadAssets to complete...');
+			console.log(cim.Status().string);
+		}, 5000);
 
 	}
 	
