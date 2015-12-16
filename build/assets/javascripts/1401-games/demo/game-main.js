@@ -5,7 +5,7 @@ define ([
 	'1401/objects/sysloop',
 	'1401/system/renderer',
 	/*** SELECT TEST *************************/
-	'1401-games/demo/tests/007-loadassets'
+	'1401-games/demo/tests/004-ship-movement'
 ], function ( 
 	DBG,
 	SETTINGS,

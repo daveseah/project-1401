@@ -155,7 +155,7 @@ define ([
 		BF.DefineBehavior('testMe', bb);
 		BF.AssignBehavior('testme', crixa);
 
-		window.DBG_Out( "<b>Behavior Tree AI PART II</b>" );
+		window.DBG_Out( "TEST 006 <b>Behavior Tree AI PART II</b>" );
 		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/007</tt>" );
 		window.DBG_Out( "Test MemSequence and MemPriority composites" );
 

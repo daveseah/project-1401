@@ -97,7 +97,7 @@ define ([
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Start() {
-		window.DBG_Out( "<b>Finite Star Scroll Parallax</b>" );
+		window.DBG_Out( "TEST 002 <b>Finite Star Scroll Parallax</b>" );
 		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/002</tt>" );
 	}	
 

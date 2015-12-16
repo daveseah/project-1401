@@ -43,7 +43,7 @@ define ([
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Start() {
-		window.DBG_Out( "<b>Infinite Star Scroll Parallax</b>" );
+		window.DBG_Out( "TEST 003 <b>Infinite Star Scroll Parallax</b>" );
 		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/003</tt>" );
 	}	
 

@@ -81,7 +81,7 @@ define ([
 	function m_Start() {
 		console.group("Start");
 
-		window.DBG_Out( "<b>007 LoadAssets Test</b>" );
+		window.DBG_Out( "TEST 007 <b>Synchronized LoadAssets Test</b>" );
 		window.DBG_Out( "See console for debug test messages" );
 
 		console.groupEnd();

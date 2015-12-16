@@ -144,7 +144,7 @@ define ([
 		console.log(". spritesheet dim",crixa.Visual().TextureDimensions());
 		console.log(". sprite dim",crixa.Visual().SpriteDimensions());
 
-		window.DBG_Out( "<b>Simple Ship Movement and Control</b>" );
+		window.DBG_Out( "TEST 04 <b>Simple Ship Movement and Control</b>" );
 		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/004</tt>" );
 		window.DBG_Out( "Use WASDQE to move. SPACE brakes." );
 	}	
