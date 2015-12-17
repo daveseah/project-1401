@@ -103,10 +103,18 @@ define ([
 	        crixa.SetVisual(shipSprite);
 	        crixa.SetPositionXYZ(0,0,0);
 
-	        console.warn("SHIP TEXTURELOADED?",crixa.Visual().TextureIsLoaded());
-			console.log(". spritesheet dim",crixa.Visual().TextureDimensions());
-			console.log(". sprite dim",crixa.Visual().SpriteDimensions());
+	        // demonstration of texture validity
+	        var textureLoaded = crixa.Visual().TextureIsLoaded();
+	        console.log("SHIP TEXTURE LOADED TEST OK?",textureLoaded);
+	        if (textureLoaded) {
+				console.log(". spritesheet dim",crixa.Visual().TextureDimensions());
+				console.log(". sprite dim",crixa.Visual().SpriteDimensions());
+	        } else {
+	        	console.log(".. note textures load asynchronously, so the dimensions are not available yet...");
+	        	console.log(".. sprite class handles this automatically so you don't have to.")
+	        }
 
+	        // make sprites
 			for (i=0;i<3;i++) {
 				platform = VISUALFACTORY.MakeStaticSprite(
 					SETTINGS.AssetPath('resources/teleport.png'),
@@ -140,9 +148,6 @@ define ([
 	function m_Start() {
 		RENDERER.SelectWorld3D();
 		SHIPCONTROLS.BindKeys();
-        console.warn("SHIP TEXTURELOADED?",crixa.Visual().TextureIsLoaded());
-		console.log(". spritesheet dim",crixa.Visual().TextureDimensions());
-		console.log(". sprite dim",crixa.Visual().SpriteDimensions());
 
 		window.DBG_Out( "TEST 04 <b>Simple Ship Movement and Control</b>" );
 		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/004</tt>" );
@@ -150,7 +155,6 @@ define ([
 	}	
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-	var LOAD_WATCH = false;
 	function m_GetInput ( interval_ms ) {
 		cin = crixa_inputs = SHIPCONTROLS.GetInput();
 		if (!!crixa_inputs.forward_acc) {
@@ -162,15 +166,6 @@ define ([
 		crixa.Brake(crixa_inputs.brake_lin);
 		crixa.AccelerateRotation(cin.rot_acc);
 		crixa.BrakeRotation(crixa_inputs.brake_rot);
-		if (!LOAD_WATCH) {
-			var test = crixa.Visual().TextureIsLoaded();
-	    	console.warn("SHIP TEXTURELOADED?",test);
-	    	if (test) {
-	    		LOAD_WATCH = true;
-	    		console.log(". spritesheet dim",crixa.Visual().TextureDimensions());
-	    		console.log(". sprite dim",crixa.Visual().SpriteDimensions());
-	    	}
-	    }
 	}
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
