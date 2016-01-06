@@ -17,10 +17,10 @@
 /*/	$1.SetHandler('Initialize', function() {
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/*/	load external assets, call callback_done() when done loading
-/*/	$1.SetHandler('LoadAssets', function( callback_done ) {
-		// callback on complete
-		callback_done();
+/*/	load external assets, call checkin.Notify() when done loading
+/*/	$1.SetHandler('LoadAssets', function( checkin ) {
+		// signal checkin
+		checkin.Notify();
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	build data and datastructures for this module
