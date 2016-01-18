@@ -5,41 +5,124 @@ define ([
 	SETTINGS
 ) {
 
-	var DBGOUT = true;
+	var DBGOUT = false;
 
 /**	Timer *******************************************************************\
 
-	Constructor function Timer() also has some utility functions attached
-	as static, global class management.
+	To use: In Initialize(), call Timer.InitializePool() once to allocate a
+	a pool of timers.  After that, you can call Timer.NewTimer() and 
+	Timer.DisposeTimer() any time after the IniitalizePool() is invoked.
 
-	SetNotifyDelayed ( f )
-	SetNotifyComplete ( f) 
-	SetNotifyRepeat ( f )
+	### GENERAL USE ###
 
-	SetModeCounter ()
-	SetModeTimer ()
-	SetModeOneShot ()
-	SetModeRepeat ( count )
+	Create a new timer, and always dispose of it when you're done!
 
-	Start ( period, delay )
-	Reset ( f )
-	Pause ()
-	UnPause()
-	TogglePause()
+		var timer = Timer.NewTimer();
+		timer.Dispose();
 
-	IsComplete()
-	IsDelayed()
-	IsRunning()
-	IsPaused()
 
-	TimeElapsed()
-	TimeRemaining()
+	METHODS
 
-	Count()
-	CountRemaining()
+	The following methods are available on the Timer objects. In
+	general, you set up the MODE and callbacks, then call Start().
 
-	Update(elapsed_ms)
-	Dispose () -- this is a module-level thing.
+	COUNTER MODE
+
+	This is an infinite count-up counter, reporting number of ticks
+
+		timer.SetModeCounter();
+		// tick every 3 seconds, after a 1 sec delayed start		
+		timer.Start( 3000, 1000 );
+		// inspect timer count
+		var current = timer.Count();
+		// returns 1 always, because it never stops
+		var remaining = timer.CountRemaining();
+
+	TIMER MODE
+
+	This is an infinite count-up timer, reporting elapsed millseconds
+
+		timer.SetModeTimer();
+		// start timing 
+		timer.Start(); 
+		// inspect
+		var currentMs = timer.TimeElapsed();
+		// returns 1 always, because it never stops
+		var remaining = timer.TimeRemaining(); 
+
+	ONE SHOT MODE
+
+	This is the default timer, which starts and then stops when
+	the specified period is complete.
+
+		timer.SetModeOneShot();
+		// start timer with duration 3000, starting delayed by 500
+		timer.Start( 1000, 500 );
+		// inspect
+		var isComplete = timer.IsComplete();
+		var elapsed = timer.TimeElapsed();
+		var remaining = timer.TimeRemaining();
+
+	REPEATING MODE
+
+	Works like ONES SHOT mode, except it repeats for the specified
+	number of times before completing. If you set the count to 0,
+	then it repeats forever. This is useful when using the callabcks.
+
+		timer.SetModeRepeat( 100 );
+		// start timer with duration 1000, no delay
+		timer.Start( 1000 );
+		// set callback handler that ticks every time
+		// the repeat occurs
+		timer.SetNotifyRepeat( function ( t ) {
+			console.log('timer', t.id, 'completed countdown');
+			console.log('. remaining count',t.CountRemaining());
+		});
+		// set callback handler that calls when all counts are
+		// done
+		timer.SetNotifyComplete( function ( t ) {
+			console.log('timer', t.id, 'finished');
+		});
+
+	PAUSING OPERATION
+
+		timer.Pause();
+		timer.UnPause();
+		timer.TogglePause();
+
+	REUSING A TIMER 
+
+		If you want to reuse a timer instance that's handy, use Reset()
+		on the instance then set it up again.
+
+			timer.Reset();
+			// do everything again
+			timer.SetModeRepeat ( 100 );
+			timer.SetNotifyComplete( function ( t ) {
+				console.log('timer', t.id, 'finished');
+			});
+			timer.Start( 1000, 3000 );
+
+	TIMER INSPECTION 
+
+	There are a variety of timer inspection methods. Note that the
+	return value depends on the timer mode.
+
+		var isComplete = timer.IsComplete();
+		var isDelayed = timer.IsDelayed();
+		var isRunning = timer.IsRunning();
+		var isPaused = timer.IsPaused();
+
+		var elapsed = timer.TimeElapsed()
+		var remaining = timer.TimeRemaining()
+		var count = timer.Count();
+		var countLeft = CountRemaining();
+
+	TIMER NOTIFICATION
+
+		SetNotifyDelayed ( f ) - callback on delayed start
+		SetNotifyComplete ( f) - callback on timer complete
+		SetNotifyRepeat ( f ) - callback on timer repeat
 
 /** OBJECT DECLARATION ******************************************************/
 
@@ -47,17 +130,17 @@ define ([
 
 	/* constructor */
 	function Timer () {
-		this.id = ++Timer.idCounter;
 		this.Reset();
+		this.id = ++Timer.idCounter;
 	}
 	/* class id counter */
 	Timer.idCounter = 0;
 	/* class constants - mode */
-	Timer.MODE_ONESHOT 		= 1;	// timer complete at end of period
-	Timer.MODE_REPEAT 		= 2;	// timer repeats every period
-	Timer.MODE_LOOP 		= 3;	// timer repeats every period N times
-	Timer.MODE_TIMER		= 4;	// timer just keeps track of time
-	Timer.MODE_COUNTER		= 5;	// counter counts every period
+	Timer.MODE_ONESHOT 		= 'S';	// timer complete at end of period
+	Timer.MODE_REPEAT 		= 'R';	// timer repeats every period
+	Timer.MODE_LOOP 		= 'L';	// timer repeats every period N times
+	Timer.MODE_TIMING		= 'T';	// timer just keeps track of time
+	Timer.MODE_COUNTER		= 'C';	// counter counts every period
 	/* class constants - timer state */
 	Timer.WAITING			= 10;	// created but not initialized
 	Timer.READY 			= 11;	// initialized and ready to go
@@ -70,8 +153,8 @@ define ([
 		this.loop_count = 0;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Timer.method('SetModeTimer', function () {
-		this.mode = Timer.MODE_TIMER;
+	Timer.method('SetModeTiming', function () {
+		this.mode = Timer.MODE_TIMING;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Timer.method('SetModeOneShot', function () {
@@ -178,14 +261,14 @@ define ([
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Timer.method('TimeElapsed', function () {
-		return m_GetSystemTimestep() - this.time_start;
+		return SETTINGS.MasterTime() - this.time_start;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Timer.method('TimeRemaining', function () {
 		// in timer mode, there's ALWAYS more time...
-		if (this.mode==Timer.MODE_TIMER) return 1;
+		if (this.mode==Timer.MODE_TIMING) return 1;
 		// otherwise, return positive remaining time in milliseconds
-		var tt = this.time_end - m_GetSystemTimestep();
+		var tt = this.time_end - SETTINGS.MasterTime();
 		if (tt<0) tt = 0;
 		return tt;
 	});
@@ -203,7 +286,8 @@ define ([
 		return this.loop_max - this.loop_count;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-/*/	internal method to update timer state, called by m_Update()
+/*/	internal method to update timer state, called by Timer.Heartbeat()
+	DON'T CALL THIS
 /*/	Timer.method('Update', function ( elapsed_ms ) {
 
 		// are we paused? extend the time_end by current interval
@@ -215,7 +299,7 @@ define ([
 		if (this.status===Timer.WAITING) return;
 		if (this.status===Timer.COMPLETE) return;
 
-		var current_time = m_GetSystemTimestep();
+		var current_time = SETTINGS.MasterTime();
 
 		// otherwise, do timer magic!
 		switch (this.status) {
@@ -224,24 +308,25 @@ define ([
 					this.time_end = this.time_end + this.period;
 					this.status = Timer.RUNNING;
 					if (this.notifyDelayed)
-						this.notifyDelayed.call({});
+						this.notifyDelayed.call({},this);
+					if (DBGOUT) console.log('del start',this.id);
 				}
 				break;
 			case Timer.RUNNING:
-				if (this.mode == Timer.MODE_TIMER) break;
+				if (this.mode == Timer.MODE_TIMING) break;
 				if (current_time > this.time_end) {
 					switch (this.mode) {
 						case Timer.MODE_ONESHOT:
 							this.status = Timer.COMPLETE;
 							if (this.notifyComplete) 
-								this.notifyComplete.call({});
+								this.notifyComplete.call({},this);
 							break;
 						case Timer.MODE_REPEAT:
 							this.status = Timer.RUNNING;
 							this.time_start = current_time;
 							this.time_end = this.time_start + this.period;
 							if (this.notifyRepeat)
-								this.notifyRepeat.call({});
+								this.notifyRepeat.call({},this);
 							break;
 						case Timer.MODE_LOOP:
 							if (++this.loop_count < this.loop_max) {
@@ -249,11 +334,12 @@ define ([
 								this.time_start = current_time;
 								this.time_end = this.time_start + this.period;
 								if (this.notifyRepeat)
-									this.notifyRepeat.call({});
+									this.notifyRepeat.call({},this);
 							} else {
 								this.status = Timer.COMPLETE;
+								if (DBGOUT) console.log(this.id,"COMPLETE");
 								if (this.notifyComplete) 
-									this.notifyComplete.call({});
+									this.notifyComplete.call({},this);
 							}
 							break;
 						case Timer.MODE_COUNTER:
@@ -261,7 +347,7 @@ define ([
 							this.time_start = current_time;
 							this.time_end = this.time_start + this.period;
 							if (this.notifyRepeat)
-								this.notifyRepeat.call({});
+								this.notifyRepeat.call({},this);
 							break;
 
 					} // switch: mode
@@ -271,47 +357,56 @@ define ([
 
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Timer.method('Dispose', function () {
-		m_DisposeTimer(this);
+/*/ Dispose of Timer by removing it from pool. Convenience feature so you
+	don't have to think about pools.
+/*/	Timer.method('Dispose', function () {
+		Timer.DisposeTimer(this);
 	});
 
 
 
 /** MODULE DATA STRUCTURES ***************************************************/
 
-	Timer.pool_size = 100;
+	Timer.pool_size = 0;
 	Timer.pool = [];
 	Timer.pool_index = 0;
 
+	// allocate counter storage to avoid growing heap on update calls
+	var pobj, i;
+
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Timer.InitializePool = function ( psize ) {
-		Timer.pool_size = psize || Timer.pool_size;
-		for (var i=0;i<Timer.pool_size;i++){
-			var tobj = {
+/*/ Initialize the pool of Timer objects, which hold a timer instance,
+	an allocation flag, and a timer index number. N
+/*/	Timer.InitializePool = function ( psize ) {
+		Timer.pool_size = psize || Timer.pool_size || 100;
+		for (i=0;i<Timer.pool_size;i++){
+			// new pobj each time to store new pieces
+			var pobj = {
 				timer: new Timer(),
 				allocated: false,
 				index: i
 			};
-			Timer.pool[i] = tobj;
+			Timer.pool[i] = pobj;
 		}
 	};
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Timer.NewTimer = function ( period, delay ) {
 		var timer = null;
-		var tobj;
-		for (var i=0;i<Timer.pool_size;i++) {
-			tobj = Timer.pool[Timer.pool_index];
-			if (!tobj.allocated) {
-				tobj.allocated = true;
-				timer = tobj.timer;
+		if (Timer.pool.length===0) 
+			console.assert('Timer.InitializePool() was not called');
+		for (i=0;i<Timer.pool_size;i++) {
+			pobj = Timer.pool[Timer.pool_index];
+			if (!pobj.allocated) {
+				pobj.allocated = true;
+				timer = pobj.timer;
 				timer.Reset();
 				break;
 			}
 			Timer.pool_index++;
-			if (Timer.pool_index>Timer.pool_size) Timer.pool_index = 0;
+			if (Timer.pool_index>=Timer.pool_size) Timer.pool_index = 0;
 		}
-		console.assert(timer,"*** ERR *** all timers allocated");
+		if (!timer) throw new Error("*** all timers allocated; increase pool size");
 		if (DBGOUT) console.log("Timer.NewTimer: timer",timer.id,"allocated");
 		return timer;
 	};
@@ -320,12 +415,11 @@ define ([
 	Timer.DisposeTimer = function ( timer ) {
 
 		var found = false;
-		var tobj = null;
-		for (var i=0;i<Timer.pool_size;i++) {
-			tobj = Timer.pool[Timer.pool_index];
-			if (tobj.timer===timer) {
-				tobj.allocated = false;
-				tobj.timer.Reset();
+		for (i=0;i<Timer.pool_size;i++) {
+			pobj = Timer.pool[Timer.pool_index];
+			if (pobj.timer===timer) {
+				pobj.allocated = false;
+				pobj.timer.Reset();
 				found = true;
 				break;
 			}
@@ -334,16 +428,18 @@ define ([
 		}
 		if (DBGOUT) {
 			if (found) 
-				console.log("Timer.DisposeTimer: timer",tobj.timer.id,"released");
+				console.log("Timer.DisposeTimer: timer",pobj.timer.id,"released");
 			else 
 				console.log("Timer.DisposeTimer: timer",timer.id,"was not found in pool");
 		}
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Timer.HeartBeat = function ( interval_ms ) {
-		for (var i=0;i<Timer.pool_size;i++) {
-			tobj = Timer.pool[Timer.pool_index];
-			if (tobj.allocated) tobj.Update ( interval_ms );
+		for (i=0;i<Timer.pool_size;i++) {
+			pobj = Timer.pool[i];
+			if (pobj.allocated) {
+				pobj.timer.Update ( interval_ms );
+			}
 		}
 	};
 

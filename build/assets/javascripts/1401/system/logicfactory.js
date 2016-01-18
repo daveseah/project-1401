@@ -35,8 +35,14 @@ var MAX_TIMERS = 100;			// total number of timers to create
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	Called by Master to initialize logic systems 
 /*/	API.Initialize = function () {
+
+		/* 	DAVE SEZ:
+			it is now the responsibility of the author to initialize the
+		 	timer pool! See new Timer.js docs
+		 */
+
 		// create a bunch of timers
-		Timer.InitializePool();
+		// Timer.InitializePool();
 	};
 /// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/	return an available timer from the timer pool
