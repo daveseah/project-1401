@@ -51,10 +51,12 @@ define ([
 
 	var num_timers = 10;	// number of timers to create and test
 	var num_modetests = 4;
+	var num_extra = 1;
 	var tOneShot;
 	var tRepeat;
 	var tCounter;
 	var tTiming;
+	var tPaused;
 
 ///////////////////////////////////////////////////////////////////////////////
 /** MODULE HANDLER FUNCTIONS *************************************************/
@@ -62,7 +64,7 @@ define ([
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_Construct() {
 		console.log("*** ALLOCATING",num_timers,"TIMERS");
-		Timer.InitializePool(num_timers + num_modetests);
+		Timer.InitializePool(num_timers + num_modetests + num_extra);
 
 		console.log("*** BUILDING SPACE ENVIRONMENT");
         var i, platform;
@@ -163,18 +165,24 @@ define ([
 		window.DBG_Out( "TEST 008 <b>Debug Timer</b>" );
 		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/008</tt>" );
 
+		console.log("*** test pausing");
+		tPaused = Timer.NewTimer();
+		tPaused.Start(10000);
+		tPaused.Pause();
+
 		console.log("*** Setting Random Timer Durations");
 		for (var i=0;i<num_timers;i++) {
 			var timer = Timer.NewTimer();
 			timer.SetModeOneShot();
-			timer.SetNotifyComplete( function ( t ) {
-				console.log('completed',t.id,'now disposing');
-				t.Dispose();
-			});
+			timer.SetNotifyComplete(disposeMe);
 			var dur = Math.floor(Math.random()*4000+1000);
 			var del = Math.floor(Math.random()*5000);
 			console.log("starting timer",timer.id,'dur/delay',dur,del);
 			timer.Start(dur,del);
+		}
+		function disposeMe(t) {
+			console.log('completed',t.id,'now disposing');
+			t.Dispose();
 		}
 
 		// mode tests
@@ -257,13 +265,13 @@ define ([
 		vp = RENDERER.Viewport();
 		vp.Track(crixa.Position());
 
-
 		/* rotate stars */	
 		layers = starfields.length;
 		for (i=0;i<starfields.length;i++){
 			sf = starfields[i];
 			sf.Track(crixa.Position());
-		}		counter += interval_ms;
+		}
+		counter += interval_ms;
 	}
 
 
