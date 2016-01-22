@@ -349,7 +349,7 @@ define ([
 			m_master_gameloop.Release();
 		}
 		m_master_gameloop = new SysLoop(name);
-		console.info("MASTER SYSLOOP INSTANCE CREATED",m_master_gameloop.name.bracket());
+		console.log("MASTER SYSLOOP INSTANCE CREATED",m_master_gameloop.name.bracket());
 		return m_master_gameloop;
 	};
 

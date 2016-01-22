@@ -201,8 +201,8 @@ define ([
 			// if there's a problem, bail
 			if (yobj===null) {
 				if (failureIsOK) {
-					console.info("SETTINGS: ignoring missing settings file");
-					console.info(",        ",yamlFilePath);
+					console.warn("SETTINGS: ignoring missing settings file");
+					console.warn(",        ",yamlFilePath);
 					callback.call(that,false);
 				} else {
 					console.error("Could not load 1401 master settings file:",yamlFilePath);
@@ -221,7 +221,7 @@ define ([
 			var str = yamlFilePath;
 			if (yamlFilePath.length>32) 
 				str = yamlFilePath.substr(yamlFilePath.length-32);
-			console.info("SETTINGS LOAD ..."+str);
+			console.log("SETTINGS LOAD ..."+str);
 			// let caller know we're done!
 			callback.call(that, true);
 
