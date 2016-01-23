@@ -106,10 +106,10 @@ define ([
 			var str = module_path;
 			if (module_path.length>32) 
 				str = module_path.substr(module_path.length-32);
-			console.info ("DYNAMIC LOAD ..."+str);
+			console.log ("DYNAMIC LOAD ..."+str);
 			require ( [module_path], m_GameInstantiated );
 		} else {
-			console.info("!!! STATIC LOAD", DEFAULT_GAME.name.bracket());
+			console.log("!!! STATIC LOAD", DEFAULT_GAME.name.bracket());
 			m_GameInstantiated ( DEFAULT_GAME );
 		}
 		// ...execution continues in m_GameInstantiate()

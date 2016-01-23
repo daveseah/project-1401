@@ -50,6 +50,9 @@ define ([
 		// mouseraycasting
 		this.pickers 		= null;		// subscribes to mouse click events
 	}
+
+///	INITIALIZATION ///////////////////////////////////////////////////////////
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// Step 1. Initialize the WebGL surface and size containers exactly
 	Viewport.method('InitializeRenderer', function ( width, height, containerId ) {
@@ -147,6 +150,9 @@ define ([
 		// assign default world camera as 2D
 		this.camWORLD = this.cam2D;
 	});
+
+///	CAMERAS AND DIMENSIONS ///////////////////////////////////////////////////
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	// for updating when browser size changes (TBD)
 	Viewport.method('SetDimensions',function ( width, height ){
@@ -214,6 +220,9 @@ define ([
 		this.camBG.updateProjectionMatrix();
 		this.camSCREEN.updateProjectionMatrix();
 	});
+
+///	ACCESSOR METHODS /////////////////////////////////////////////////////////
+
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('AspectRatio', function () {
 		return this.aspect;
@@ -231,6 +240,11 @@ define ([
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('WebGL', function () { return this.webGL; });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	Viewport.method('WebGLCanvas', function () { return this.webGL.domElement; });
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+///	RENDER CONTROL ///////////////////////////////////////////////////////////
+
 	Viewport.method('Clear', function () { this.webGL.clear(); });
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('ClearDepth', function () { this.webGL.clearDepth(); });
@@ -247,7 +261,7 @@ define ([
 		this.camWORLD = this.cam3D;
 	});
 
-///	CAMERA CONTROL ///////////////////////////////////////////////////////////
+///	CAMERA UTILITIES /////////////////////////////////////////////////////////
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	Viewport.method('Track', function ( vector3 ) {

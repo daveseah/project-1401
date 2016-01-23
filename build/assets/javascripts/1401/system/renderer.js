@@ -29,6 +29,9 @@ define ([
 
 	var PICK_SUBSCRIBERS = null;			// API.SubscribeToMousePicks()
 
+	var CAPTURE_SCREEN = false;				// for screen capturing
+	var CAPTURE_CALLBACK = null;
+
 	var _prerender = [];					// registered render
 	var _heartbeat = [];					// registered renderer heartbeat
 
@@ -88,6 +91,16 @@ define ([
 		} 
 		_prerender.push(func);
 	};
+///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*/	Capture
+/*/	API.CaptureJPEG = function ( callback ) {
+		CAPTURE_SCREEN = true;
+		if (typeof callback==='function') {
+			CAPTURE_CALLBACK = callback;
+		} else {
+			throw new Error('CaptureJPEG requires a callback function to receive jpg base64 data');
+		}
+	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/ for manually rendering on every update with explicit call
 /*/	API.Render = function () {
@@ -112,6 +125,16 @@ define ([
 		VIEWPORT.ClearDepth();
 		VIEWPORT.Render ( RP_OVER );
 
+		// screen capture
+		if (CAPTURE_SCREEN) {
+			var buffer = VIEWPORT.WebGLCanvas();
+			var jpg = buffer.toDataURL( 'image/jpeg', 0.5 );
+			if (CAPTURE_CALLBACK) {
+				CAPTURE_CALLBACK.call( this, jpg );
+				CAPTURE_CALLBACK = null;
+			}
+			CAPTURE_SCREEN = false;
+		}
 	};
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*/ call once to start auto drawing with no need to call on update
@@ -330,11 +353,18 @@ define ([
 			// console.log(type,'('+x.toFixed(2)+', '+y.toFixed(2)+')',intersections);
 			for (var i=0;i<PICK_SUBSCRIBERS.length;i++) {
 				var func = PICK_SUBSCRIBERS[i];
-				func.call(null,intersections);
+				func.call( null, intersections );
 			}
 		}
 	}
 
+	window.dbg_capscrn = function () {
+		API.CaptureJPEG(function(jpg){
+			var img = $("<img src='"+jpg+"' style='padding:4px;float:left;width:100px;height:100px'>");
+			$('#debug').append(img);
+		});
+		return "capturing data";
+	};
 
 ///////////////////////////////////////////////////////////////////////////////
 /** RETURN MODULE DEFINITION FOR REQUIREJS ***********************************/
