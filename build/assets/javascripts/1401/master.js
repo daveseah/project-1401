@@ -212,7 +212,7 @@ define ([
 			}
 		} catch (e) {
 			console.error(e.stack);
-			debugger;
+			throw new Error(e);
 		}
 
 	}

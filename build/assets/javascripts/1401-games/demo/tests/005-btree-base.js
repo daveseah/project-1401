@@ -143,7 +143,7 @@ define ([
 
 		window.DBG_Out( "TEST 005 <b>Behavior Tree AI</b>" );
 		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/005</tt>" );
-		window.DBG_Out( "This is a work in progress." )
+		window.DBG_Out( "This is a work in progress." );
 
 	}	
 
