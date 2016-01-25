@@ -125,7 +125,7 @@ define ([
 			console.log(". sprite dim",crixa.Visual().SpriteDimensions());
         } else {
         	console.log(".. note textures load asynchronously, so the dimensions are not available yet...");
-        	console.log(".. sprite class handles this automatically so you don't have to.")
+        	console.log(".. sprite class handles this automatically so you don't have to.");
         }
 
         // make sprites

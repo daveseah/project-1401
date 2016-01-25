@@ -192,7 +192,7 @@ define ([
 		};
 		window.DBG_OutClean = function ( msg, selector ) {
 			API.Out(msg,true,selector);
-		}
+		};
 	}
 
 
