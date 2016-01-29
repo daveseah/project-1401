@@ -16,6 +16,7 @@ requirejs.config({
         'yaml':'../vendor/yaml.js/yaml',
         'physicsjs' : '../vendor/physicsjs/physicsjs-full',
         'keypress' : '../vendor/Keypress/keypress-2.1.3.min',
+        'howler' : '../vendor/howler/howler',
         'webrtc-shim' : '../vendor/webrtc-adapter/adapter',
         'socket-io': '../vendor-shimmed/socket.io'
 	},
@@ -47,7 +48,7 @@ define(function(require) {
 	system.debug(true);
 	//>>excludeEnd("build");
 
-	app.title = '1401 Game Shell';
+	app.title = 'AppShell';
 
 	app.configurePlugins({
 		router: true,
