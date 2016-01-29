@@ -106,3 +106,14 @@ exports.config =
       'ids': false
       'box-sizing': false
       'adjoining-classes': false
+
+  copy: {
+    extensions: [ 
+      "js",  "css", "png", "jpg",
+      "html", "eot", "svg", "ttf", 
+      "woff", "otf", "yaml", "ico",
+      "htc", "htm", "json", "txt",
+      "xml", "xsd", "map", "md",
+      "mp4", "ogg", "mp3", "m3a"
+    ]
+  }
