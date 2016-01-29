@@ -2,6 +2,7 @@
 define ([
 	'keypress',
 	'physicsjs',
+	'howler',
 	'1401/objects/sysloop',
 	'1401/settings',
 	'1401/system/renderer',
@@ -11,6 +12,7 @@ define ([
 ], function ( 
 	KEY,
 	PHYSICS,
+	HOWLER,
 	SYSLOOP,
 	SETTINGS,
 	RENDERER,
@@ -45,6 +47,9 @@ define ([
 	var crixa;				// ship piece
 	var crixa_inputs;		// encoded controller inputs
 	var starfields = [];	// parallax starfield layersey
+
+	var snd_pewpew;			// sound instance (howler.js)
+	var snd_music;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -103,6 +108,11 @@ define ([
 	        crixa.SetVisual(shipSprite);
 	        crixa.SetPositionXYZ(0,0,0);
 
+	        // add extra shooting command
+	        crixa.Shoot = function ( bool ) {
+	        	if (bool) snd_pewpew.play();
+	        };
+
 	        // demonstration of texture validity
 	        var textureLoaded = crixa.Visual().TextureIsLoaded();
 	        console.log("SHIP TEXTURE LOADED TEST OK?",textureLoaded);
@@ -137,6 +147,12 @@ define ([
 
 			function do_nothing () {}
 
+			// load sound
+			var sfx = SETTINGS.AssetPath('resources/pewpew.ogg');
+			snd_pewpew = new Howl({
+				urls: [sfx]
+			});
+
 	}
 
 ///	HEAP-SAVING PRE-ALLOCATED VARIABLES /////////////////////////////////////
@@ -151,7 +167,7 @@ define ([
 
 		window.DBG_Out( "TEST 04 <b>Simple Ship Movement and Control</b>" );
 		window.DBG_Out( "<tt>game-main include: 1401-games/demo/tests/004</tt>" );
-		window.DBG_Out( "Use WASDQE to move. SPACE brakes." );
+		window.DBG_Out( "Use WASDQE to move. SPACE brakes. C fires." );
 	}	
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -166,6 +182,7 @@ define ([
 		crixa.Brake(crixa_inputs.brake_lin);
 		crixa.AccelerateRotation(cin.rot_acc);
 		crixa.BrakeRotation(crixa_inputs.brake_rot);
+		crixa.Shoot(SHIPCONTROLS.Fire());
 	}
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

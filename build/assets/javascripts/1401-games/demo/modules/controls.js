@@ -22,8 +22,13 @@ define ([
 		side_acc: 		0,
 		rot_acc: 		0,
 		brake_lin: 		0,
-		brake_rot:   	0
+		brake_rot:   	0,
+		fire: 			0,
+		fireReady: 		true
 	};
+
+	m_fireready = true;
+
 
 	// default values
 	var DEFAULT_ACC 		= 0.001;	// units per second^2
@@ -52,6 +57,14 @@ define ([
 	CONTROLS.BindKeys = function () {
 		if (!_key) _key = new KEY.Listener();
 		m_BindThrusters( _key );
+	};
+
+	CONTROLS.Fire = function () {
+		if (_input.fire===1) {
+			_input.fire = 0;
+			return true;
+		} 	
+		return false;
 	};
 
 
@@ -144,6 +157,26 @@ define ([
 			on_keyup: function () {
 				if (DBGOUT) console.log("brake released");
 				_input.brake_lin = 0;
+			}
+		});
+
+		key.register_combo({
+			keys: 'c',
+			prevent_repeat: true,
+			on_keydown: function () {
+				if (!_input.fireTimer) {
+					_input.fireTimer = setInterval(function(){
+						_input.fireReady = true;
+						_input.fireTimer = null;
+					},1000);
+					_input.fire = 1;
+				} else {
+					_input.fire = 0;
+				}
+
+			},
+			on_keyup: function () {
+				_input.fire = 0;
 			}
 		});
 
