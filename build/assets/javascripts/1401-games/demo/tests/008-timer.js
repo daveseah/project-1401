@@ -167,8 +167,24 @@ define ([
 
 		console.log("*** test pausing");
 		tPaused = Timer.NewTimer();
-		tPaused.Start(10000);
-		tPaused.Pause();
+		tPaused.Start(5000,20000);
+		tPaused.SetNotifyDelayed(function(t){
+			console.log('*** TPAUSED START 5000 ms');
+			setTimeout(function(){
+				// pause after 3 seconds
+				console.log('*** TPAUSED pausing 2500 ms');
+				tPaused.Pause();
+				setTimeout(function(){
+					// unpause after 2.5 seconds.
+					console.log('*** TPAUSED resuming...');
+					tPaused.UnPause();
+				},2500);
+			},3000);
+		});
+		tPaused.SetNotifyComplete(function(t) {
+			console.log('*** TPAUSED TimeElapsed(), TimePaused()',t.TimeElapsed(),t.TimePaused());
+			console.log('timeElapsed-timePaused = time spent running (should be 5000):',t.TimeElapsed()-t.TimePaused());
+		});
 
 		console.log("*** Setting Random Timer Durations");
 		for (var i=0;i<num_timers;i++) {
@@ -232,17 +248,19 @@ define ([
 		}
 
 		var status = setInterval( function () {
-				console.log(info(tOneShot)+' - '+info(tRepeat)+' - '+info(tCounter)+' - '+info(tTiming));
-			},1000);
+			// do status traces only for first 15 seconds
+			if (tTiming.TimeElapsed()>10000) return;
+			console.log(info(tOneShot)+' - '+info(tRepeat)+' - '+info(tCounter)+' - '+info(tTiming));
+		},1000);
 			
-			function info(timer) {
-				var str = timer.id+":";
-				str += timer.TimeElapsed()+'/'+timer.TimeRemaining()+' ';
-				str += timer.Count()+'/'+timer.CountRemaining();
-				return str;
-			}
-
+		function info(timer) {
+			var str = timer.id+":";
+			str += timer.TimeElapsed()+'/'+timer.TimeRemaining()+' ';
+			str += timer.Count()+'/'+timer.CountRemaining();
+			return str;
 		}
+
+	}
 
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	function m_GetInput ( interval_ms ) {
