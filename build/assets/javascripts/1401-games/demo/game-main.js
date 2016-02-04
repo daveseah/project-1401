@@ -4,8 +4,15 @@ define ([
 	'1401/settings',
 	'1401/objects/sysloop',
 	'1401/system/renderer',
-	/*** SELECT TEST *************************/
+/*** UNCOMMENT ONE TEST *****************************************************/
+//	'1401-games/demo/tests/001-gameloop'
+//	'1401-games/demo/tests/002-stars-finite'
+//	'1401-games/demo/tests/003-stars-infinite'
 	'1401-games/demo/tests/004-ship-movement'
+//	'1401-games/demo/tests/005-btree-base'
+//	'1401-games/demo/tests/006-btree-factory'
+//	'1401-games/demo/tests/007-loadassets'
+//	'1401-games/demo/tests/008-timer'
 ], function ( 
 	DBG,
 	SETTINGS,
