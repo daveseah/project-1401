@@ -182,8 +182,8 @@ define ([
 			},3000);
 		});
 		tPaused.SetNotifyComplete(function(t) {
-			console.log('*** TPAUSED TimeElapsed(), DurationPaused()',t.TimeElapsed(),t.DurationPaused());
-			console.log('timeElapsed-durationPaused = time spent running (should be 5000):',t.TimeElapsed()-t.DurationPaused());
+			console.log('*** TPAUSED TimeElapsed(), TimePaused()',t.TimeElapsed(),t.TimePaused());
+			console.log('timeElapsed-timePaused = time spent running (should be 5000):',t.TimeElapsed()-t.TimePaused());
 		});
 
 		console.log("*** Setting Random Timer Durations");
@@ -249,7 +249,7 @@ define ([
 
 		var status = setInterval( function () {
 			// do status traces only for first 15 seconds
-			if (tTiming.TimeElapsed()>15000) return;
+			if (tTiming.TimeElapsed()>10000) return;
 			console.log(info(tOneShot)+' - '+info(tRepeat)+' - '+info(tCounter)+' - '+info(tTiming));
 		},1000);
 			

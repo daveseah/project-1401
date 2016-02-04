@@ -275,7 +275,7 @@ define ([
 		return tt;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Timer.method('DurationPaused', function () {
+	Timer.method('TimePaused', function () {
 		return this.duration_paused;
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -311,9 +311,9 @@ define ([
 		// otherwise, do timer magic!
 		switch (this.status) {
 			case Timer.DELAYED:
-				if (current_time > this.time_end) {
+				if (current_time >= this.time_end) {
 					this.time_start = current_time;
-					this.time_end = this.time_end + this.period;
+					this.time_end = current_time + this.period;
 					this.status = Timer.RUNNING;
 					if (this.notifyDelayed)
 						this.notifyDelayed.call({},this);
@@ -322,7 +322,7 @@ define ([
 				break;
 			case Timer.RUNNING:
 				if (this.mode == Timer.MODE_TIMING) break;
-				if (current_time > this.time_end) {
+				if (current_time >= this.time_end) {
 					switch (this.mode) {
 						case Timer.MODE_ONESHOT:
 							this.status = Timer.COMPLETE;
