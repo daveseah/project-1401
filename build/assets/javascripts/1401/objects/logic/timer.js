@@ -20,7 +20,6 @@ define ([
 		var timer = Timer.NewTimer();
 		timer.Dispose();
 
-
 	METHODS
 
 	The following methods are available on the Timer objects. In
@@ -221,7 +220,10 @@ define ([
 		}
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Timer.method('Reset', function ( f ) {
+	Timer.method('Reset', function ( opt ) {
+		opt = opt || {};
+		opt.saveHandlers = opt.saveHandlers || false;
+
 		this.mode = Timer.MODE_ONESHOT;
 		this.status = Timer.WAITING;
 		this.isPaused = false;
@@ -235,16 +237,24 @@ define ([
 		this.loop_count = 0;
 		this.duration_paused = 0;
 		
-		this.notifyRepeat = null;
-		this.notifyComplete = null;
-		this.notifyDelayed = null;
+		if (!opt.saveHandlers) {
+			this.notifyRepeat = null;
+			this.notifyComplete = null;
+			this.notifyDelayed = null;
+		}
 	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Timer.method('Pause', function () { this.isPaused = true; });
+	Timer.method('Pause', function () { 
+		if (IsRunning()) this.isPaused = true;
+	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Timer.method('UnPause', function () { this.isPaused = false; });
+	Timer.method('UnPause', function () { 
+		if (IsRunning()) this.isPaused = false; 
+	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-	Timer.method('TogglePause', function () { this.isPaused = !this.isPaused; });
+	Timer.method('TogglePause', function () { 
+		if (IsRunning()) this.isPaused = !this.isPaused; 
+	});
 ///	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 	Timer.method('IsComplete', function () {
 		return (this.status===Timer.COMPLETE);
